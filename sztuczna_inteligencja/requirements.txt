@@ -1,0 +1,7 @@
+numpy
+matplotlib
+jupyter
+pandas
+pytest
+seaborn
+nbconvert[webpdf]
