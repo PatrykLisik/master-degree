@@ -1,0 +1,46 @@
+@startuml Przedszkole
+
+class Przedszkole{
+    przyjmij_dziecko(Rodzic r, Dziecko d, Opiekun o)
+    przyjmij_dziecko(Rodzic r, Dziecko d)
+    dodaj_opiekuna(Opienkun o)
+    wydaj_dziecko(Rodzic r, Dziecko d, Opiekun o)
+}
+class DziennikObecności
+class ObecnośćGrupy{
+
+    opiekun: Opiekun
+    data: Date
+    lista_obecności: List<ObecnośćWpis>  
+}
+class ObecnośćWpis{
+    dziecko
+}
+class Opiekun{
+    id
+    imię
+    nazwisko
+}
+class Rodzic{
+    id
+    imię
+    nazwisko
+}
+class Dziecko{
+    id
+    imię
+    nazwisko
+}
+
+Rodzic o-- Dziecko
+Rodzic -- Przedszkole
+Opiekun --o Przedszkole
+Dziecko -- Przedszkole
+ObecnośćWpis -- Dziecko
+ObecnośćGrupy *-- ObecnośćWpis
+Opiekun -- ObecnośćGrupy
+ObecnośćGrupy --* DziennikObecności
+DziennikObecności -- Przedszkole
+
+
+@enduml

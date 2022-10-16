@@ -1,0 +1,20 @@
+@startuml wyżywienie
+
+(*) --> "Pobierz listę dostępnych posiłków"
+--> "Stwórz listę wybranych"
+if "czy wystarczająco posiłków na 7 dni?" as if1 then
+-->[Tak] "Zamów składniki"
+-->Magazynuj
+-->Nakarm dzieci
+-->(*)
+else
+-->[Nie] "Wybierz posiłek"
+    if czy składniki dostępne? then 
+        --> [Tak] Dodaj do listy wybrnaych posiłków
+        --> ===Spawdzony===
+    else
+        --> [Nie] ===Spawdzony===
+    endif
+--> if1
+endif
+@enduml
