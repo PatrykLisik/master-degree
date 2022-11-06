@@ -1,0 +1,7 @@
+<http://www.abc.com/paper/345/>  <http://www.abc.com#tytul> "Jądro systemu operacyjnego".
+<http://www.abc.com/paper/345/>  <http://www.abc.com#autor> "Grzegorza Nowaka".
+<http://www.abc.com/paper/345/>  <http://www.abc.com#zawartosc> "jak napisać własny system operacyjny".
+<http://www.abc.com/paper/345/>  <http://www.abc.com#data_publikacji> "18 lipca 2003".
+<http://www.abc.com/os> <http://www.abc.com#tytul> "Systemy operacyjne".
+<http://www.abc.com/os> <http://www.abc.com#artykul> <http://www.abc.com/paper/345/>.
+

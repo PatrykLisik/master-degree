@@ -1,0 +1,8 @@
+<http://moto.pl/uzywane/012345/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://makolab.com/ucento#Osobowy>.
+<http://moto.pl/uzywane/012345/> <http://makolab.com/uconto#przebieg> "120000".
+<http://moto.pl/uzywane/012345/> <http://makolab.com/uconto#rocznik> "2005"^^<http://www.w3.org/2001/XMLSchema#gYear>.
+<http://moto.pl/uzywane/012345/> <http://makolab.com/uconto#silnik> _:silnik.
+_:silnik <http://makolab.com/uconto#pojemnosc> <http://makolab.com/uconto/eng/1600>.
+_:silnik <http://makolab.com/uconto#paliwo> <http://makolab.com/uconto/pet/diesel>.
+<http://moto.pl/uzywane/012345/> <http://makolab.com/uconto#dodadtkowe_wyposarzenie> "czujnik_deszczu".
+<http://moto.pl/uzywane/012345/> <http://makolab.com/uconto#dodadtkowe_wyposarzenie> "kontrola_trakcji".

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:ns0="http://www.abc.com#">
+
+  <rdf:Description rdf:about="http://www.abc.com/paper/345/">
+    <ns0:tytul>Jądro systemu operacyjnego</ns0:tytul>
+    <ns0:autor>Grzegorza Nowaka</ns0:autor>
+    <ns0:zawartosc>jak napisać własny system operacyjny</ns0:zawartosc>
+    <ns0:data_publikacji>18 lipca 2003</ns0:data_publikacji>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://www.abc.com/os">
+    <ns0:tytul>Systemy operacyjne</ns0:tytul>
+    <ns0:artykul rdf:resource="http://www.abc.com/paper/345/"/>
+  </rdf:Description>
+
+</rdf:RDF>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:ns0="http://makolab.com/uconto#">
+
+  <rdf:Description rdf:about="http://moto.pl/uzywane/012345/">
+    <rdf:type rdf:resource="http://makolab.com/ucento#Osobowy"/>
+    <ns0:przebieg>120000</ns0:przebieg>
+    <ns0:rocznik rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">2005</ns0:rocznik>
+    <ns0:silnik>
+      <rdf:Description>
+        <ns0:pojemnosc rdf:resource="http://makolab.com/uconto/eng/1600"/>
+        <ns0:paliwo rdf:resource="http://makolab.com/uconto/pet/diesel"/>
+      </rdf:Description>
+    </ns0:silnik>
+
+    <ns0:dodadtkowe_wyposarzenie>czujnik_deszczu</ns0:dodadtkowe_wyposarzenie>
+    <ns0:dodadtkowe_wyposarzenie>kontrola_trakcji</ns0:dodadtkowe_wyposarzenie>
+  </rdf:Description>
+
+</rdf:RDF>

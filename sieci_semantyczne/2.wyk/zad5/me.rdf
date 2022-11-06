@@ -1,0 +1,23 @@
+<rdf:RDF
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+      xmlns:foaf="http://xmlns.com/foaf/0.1/"
+      xmlns:admin="http://webns.net/mvcb/">
+
+<foaf:Person rdf:about="https://www.facebook.com/patryk.lisik#me">
+<foaf:name>Patry Lisik</foaf:name>
+<foaf:title>inż</foaf:title>
+<foaf:givenname>Patry</foaf:givenname>
+<foaf:family_name>Lisik</foaf:family_name>
+<foaf:mbox_sha1sum>f5212acaaf6a5850f86d904952e1db7b94f3f775</foaf:mbox_sha1sum>
+<foaf:phone rdf:resource="tel:667276830"/>
+<foaf:knows>
+<foaf:Person>
+<foaf:name>Rafał Kowalski</foaf:name>
+<foaf:mbox_sha1sum>e0c2a3d3e6e0a836cc9c5f17a5e05c53f4d77b20</foaf:mbox_sha1sum>
+<rdfs:seeAlso rdf:resource="Rafał Kowalski2"/></foaf:Person></foaf:knows>
+<foaf:knows>
+<foaf:Person>
+<foaf:name>Rafał Kowalski2</foaf:name>
+<foaf:mbox_sha1sum>cfe33c51101813e26adfbf0f044b2905fd4f1599</foaf:mbox_sha1sum></foaf:Person></foaf:knows></foaf:Person>
+</rdf:RDF>
