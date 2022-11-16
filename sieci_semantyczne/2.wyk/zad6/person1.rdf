@@ -1,0 +1,16 @@
+<rdf:RDF
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+      xmlns:foaf="http://xmlns.com/foaf/0.1/"
+      xmlns:admin="http://webns.net/mvcb/">
+<foaf:Person rdf:ID="person-1">
+<foaf:name>Wiliam Sparks</foaf:name>
+<foaf:givenname>Wiliam</foaf:givenname>
+<foaf:family_name>Sparks</foaf:family_name>
+<foaf:phone rdf:resource="tel:4355556789"/>
+    <foaf:city>Springfield</foaf:city>
+        <foaf:state>Massachusetts</foaf:state>
+</foaf:Person>
+</rdf:RDF>
+
+

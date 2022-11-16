@@ -1,0 +1,10 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://njh.me/#person-2>
+  a foaf:Person ;
+  foaf:name "Constance Sim" ;
+  foaf:givenname "Constance" ;
+  foaf:family_name "Sim" ;
+  foaf:phone <tel:3125552238> ;
+  foaf:city "Chicago" ;
+  foaf:state "Illinois"

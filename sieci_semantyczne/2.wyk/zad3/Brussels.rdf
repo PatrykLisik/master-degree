@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<rdf:RDF
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:geography="http://www.example.org/geography#"
+xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" >
+<rdf:Description rdf:about="http://www.example.org/geography#Brussels">
+    <geography:capitalOf rdf:resource="http://www.example.org/geography#Belgium"/>
+    <geography:name xml:lang="fr">Bruxelles</geography:name>
+    <geography:name xml:lang="nl">Brussel</geography:name>
+    <geography:name xml:lang="en">Brussels</geography:name>
+        <geography:population>185103</geography:population>
+    <rdf:type rdf:resource="http://www.example.org/geography#City"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.example.org/geography#Belgium">
+    <rdf:type rdf:resource="http://www.example.org/geography#Country"/>
+    <geography:population>11778842</geography:population>
+</rdf:Description>
+
+</rdf:RDF>

@@ -1,0 +1,10 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://njh.me/#person-1>
+  a foaf:Person ;
+  foaf:name "Wiliam Sparks" ;
+  foaf:givenname "Wiliam" ;
+  foaf:family_name "Sparks" ;
+  foaf:phone <tel:4355556789> ;
+  foaf:city "Springfield" ;
+  foaf:state "Massachusetts" .
