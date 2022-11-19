@@ -1,0 +1,31 @@
+@startuml recive_child
+actor Parent  as parent
+actor Preschool_worker as worker
+entity System   as sys
+database    Database    as db
+
+parent -> worker : put under care child
+worker -> sys : add child presence
+alt system is available
+    sys -> db: find child by name
+    activate sys
+    sys -> sys: check if child is eligible for care
+
+    alt child is eligible 
+    sys -> db : save child presence
+    db --> sys
+    sys --> worker: sucess
+    deactivate sys
+    worker --> parent: inform about sucess
+    else child is not eligible
+    activate sys
+    sys -> worker: inform ablout failure
+    deactivate sys
+    worker -> parent: inform about failure
+    end
+else system is not available
+worker --> parent: inform about the problem
+worker -> worker : take hand note 
+end
+
+@enduml

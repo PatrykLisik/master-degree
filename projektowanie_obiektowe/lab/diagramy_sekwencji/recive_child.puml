@@ -1,0 +1,17 @@
+@startuml recive_child
+actor Parent  as parent
+actor Preschool_worker as worker
+entity System   as system
+database    Database    as db
+
+parent -> worker : put under care child
+worker -> system : add child presence
+system -> db : save child presence
+activate system
+db -> system
+deactivate system
+system -> worker: add sucess
+
+worker -> parent: inform about sucess
+
+@enduml
