@@ -1,0 +1,24 @@
+#1
+<A> rdfs:subClassOf  <C>
+<B> rdfs:subClassOf  <C>
+
+#2
+
+<P> rdfs:subPropertyOf <R>
+<P> rdfs:subPropertyOf <S>
+
+#3
+<A> rdfs:subClassOf  <B>
+<B> rdfs:subClassOf  <A>
+
+#4
+<A> rdfs:subClassOf  <C>
+<B> rdfs:subClassOf  <C>
+
+#5 
+<P> rdfs:subPropertyOf <S>
+<R> rdfs:subPropertyOf <S>
+
+
+
+zad 5 opisać dwie książki

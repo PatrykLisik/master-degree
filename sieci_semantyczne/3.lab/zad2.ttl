@@ -1,0 +1,31 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. 
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@base <http://www.example.pl/>.
+
+<countryName> rdf:type rdf:Property.
+<border> rdf:type rdf:Property.
+<belongs> rdf:type rdf:Property.
+<locates> rdf:type rdf:Property.
+<isPartOf> rdf:type rdf:Property.
+
+<country> rdf:type rdfs:Class.
+<city> rdf:type rdfs:Class.
+<capital> rdf:type rdfs:Class.
+<statel> rdf:type rdfs:Class.
+
+<countryName> rdfs:domain <country>.
+<countryName> rdfs:range rdfs:Literal.
+
+<border> rdfs:domain <country>.
+<border> rdfs:range <country>.
+
+<belongs> rdfs:range <country>.
+<belongs> rdfs:domain <city>.
+
+<capital> rdfs:subClassOf <city>.
+
+<isPartOf>  rdfs:range <country>.
+<isPartOf>  rdfs:domain <statel>.
+
+<locates> rdfs:range <city>.
+<locates> rdfs:domain <statel>.
