@@ -51,6 +51,11 @@ docker exec -it mongo mongo
 
 komendy w mongo shell 
 
+tworzenie bazy danych
+```javascript
+db.createCollection('books_by_author');
+```
+
 ```javascript
 db.books_by_authors.insertOne({
     _id: 1, 

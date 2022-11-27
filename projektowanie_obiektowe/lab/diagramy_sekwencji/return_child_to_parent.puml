@@ -20,7 +20,6 @@ alt system is available
     else child is not eligible
     activate sys
     sys -> worker: inform ablout failure
-    deactivate sys
     worker -> parent: inform about failure
     end
 else system is not available
