@@ -50,7 +50,8 @@ db.result.aggregate([{$set: {total: {$sum: ["$sum1", "$sum2"]}}}, {$project: {to
 ```
 
 ```javascript
-db.result.aggregate([{$set: {total: {$sum: ["$sum1", "$sum2"]}}}, {$project: {total: true}}, {$group: {_id: {$mod: ["$_id", 3]}, docs: {$push: {gr: "$_id", total: "$total"}}}}]);
+db.result.aggregate([{$set: {total: {$sum: ["$sum1", "$sum2"]}}}, {$project: {total: true}},
+ {$group: {_id: {$mod: ["$_id", 3]}, docs: {$push: {gr: "$_id", total: "$total"}}}}]);
 ```
 
 ```javascript
@@ -64,6 +65,60 @@ db.result.aggregate([{$lookup: {from: 'at2', localField: '_id', foreignField: 'g
 ```
 
 
+## Zadanie 
+Mamy dane dwie kolekcje dokumentów: Products i Transactions. Products opisuje produkty, Transactions opisuje fakty kupienia jakiejś ilości produktu przez klienta
 ```javascript
+db.createCollection('Products');
+db.createCollection('Transactions');
+db.Products.insertMany([
+    {
+        _id: 1, nazwa: "rower", cena: 1000.0
+    },
+    {
+        _id: 2, nazwa: "młotek", cena: 200.0
+    },
+    {
+        _id: 3, nazwa: "zeszyt", cena: 100.0
+    }
+]);
+db.Transactions.insertMany([
+    {
+        id_klient: 1, id_prod: 1, ilosc: 1
+    },
+    {
+        id_klient: 1, id_prod: 2, ilosc: 2
+    },
+    {
+        id_klient: 1, id_prod: 1, ilosc: 1
+    },
+    {
+        id_klient: 2, id_prod: 3, ilosc: 2
+    },
+    {
+        id_klient: 2, id_prod: 2, ilosc: 3
+    },
+]);
+```
+
+Stworzyć potok agregacji który pokaże dla każdego klienta jego zakupy i ich sumaryczną wartość
+
+[
+  {
+    _id: 1,
+    total: 2400,
+    products: [
+      { nazwa: 'młotek', cena: 200, ilosc: 2 },
+      { nazwa: 'rower', cena: 1000, ilosc: 2 }
+    ]
+  }
+]
+
+```javascript
+db.Transactions.aggregate([
+    {$lookup: {from: 'Products', localField: 'id_prod', foreignField: '_id', as: "product"}},
+    {$set: {"product": {$first: "$product"} } },
+    {$group: {"total":  {$sum: {$mul: {"ilosc", "product.cena"}} } } }
+
+    ]);
 
 ```
