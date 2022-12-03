@@ -1,0 +1,61 @@
+@prefix ex: <http://www.example.org/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+ex:X rdf:type rdfs:Class.
+ex:Y rdf:type rdfs:Class.
+ex:Z rdf:type rdfs:Class.
+ex:Q rdf:type rdfs:Class.
+ex:P rdf:type rdfs:Class.
+ex:R rdf:type rdfs:Class.
+ex:Y rdfs:subClassOf ex:X.
+ex:Z rdfs:subClassOf ex:Y.
+ex:P rdfs:subClassOf ex:P.
+ex:Q rdfs:subClassOf ex:R.
+ex:p1 rdf:type rdf:Property.
+ex:p1 rdfs:domain ex:Z.
+ex:p1 rdfs:range ex:Q.
+ex:p2 rdf:type rdf:Property.
+ex:p2 rdfs:range ex:R.
+ex:p1 rdfs:subPropertyOf ex:p2.
+
+
+ex:a ex:p1 ex:b. 
+ex:p1 rdfs:subPropertyOf ex:p2 
+=>
+ex:a ex:p2 ex:b.
+
+ex:a ex:p2 ex:b.
+ex:p2 rdfs:range ex:R.
+=>
+ex:b rdf:type ex:R
+
+ex:b rdf:type ex:R
+ex:Q rdfs:subClassOf ex:R
+=>
+ex:b rdf:type ex:Q
+
+ex:a ex:p1 ex:b.
+ex:p1 rdfs:domain ex:Z.
+=>
+ex:a rdf:type  ex:Z
+ 
+ex:a rdf:type  ex:Z.
+ex:Z rdfs:subClassOf ex:Y.
+=>
+ex:a rdf:type  ex:Y
+ 
+ex:a rdf:type  ex:Y.
+ex:Y rdfs:subClassOf ex:X.
+=>
+ex:a rdf:type  ex:X
+
+
+ex:a ex:p1 ex:b.
+ex:p1 rdfs:range ex:Q.
+=>
+ex:b rdf:type ex:Q
+ 
+ex:b rdf:type ex:Q.
+ex:Q rdfs:subClassOf ex:R.
+=>
+ ex:b rdf:type ex:R

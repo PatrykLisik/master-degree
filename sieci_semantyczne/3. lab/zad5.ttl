@@ -1,0 +1,26 @@
+@prefix : <http://www.uni.lodz.pl/st/books/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+:KsiazkaAlbum rdf:type rdfs:Class.
+:KsiazkaHistoria rdf:type rdfs:Class;
+        rdfs:subClassOf :KsiazkaAlbum.
+
+:KsiazkaSztuka rdf:type rdfs:Class;
+                rdfs:subClassOf: KsiazkaAlbum.
+
+books:Autor rdf:type dfs:Class.
+books:tytul rdf:type rdf:Property;
+            rdfs:domain books:Ksiazka;
+            rdfs:range rdfs:Literal.
+books:maAutora rdf:type rdf:Property;
+                rdfs:domain books:Ksiazka;
+                rdfs:range books:Autor.
+
+
+<Graboń Ika> books:Autor.
+
+<https://www.empik.com/kawa-instrukcja-obslugi-najpopularniejszego-napoju-na-swiecie-grabon-ika,p1145091267,ksiazka-p>
+        books:tytul "Kawa. Instrukcja obsługi najpopularniejszego napoju na świecie";
+        books:maAutora <Graboń Ika>;
+        rdf:type books:KsiazkaHistoria, books:KsiazkaHistoria
