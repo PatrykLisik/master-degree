@@ -1,0 +1,220 @@
+@prefix : <http://www.wfis.uni.lodz.pl/plisik/onto/books#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix books: <http://www.uni.lodz.pl/st/books/> .
+@base <http://www.wfis.uni.lodz.pl/plisik/onto/books> .
+
+<http://www.wfis.uni.lodz.pl/plisik/onto/books> rdf:type owl:Ontology ;
+                                                 rdfs:comment "Komentarz do IRI"@pl ;
+                                                 owl:versionInfo "v0.1"@pl .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.uni.lodz.pl/st/books/maAutora
+books:maAutora rdf:type owl:ObjectProperty ;
+               rdfs:domain books:Ksiazka ;
+               rdfs:range books:Autor .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#maWydawcę
+:maWydawcę rdf:type owl:ObjectProperty ;
+           rdfs:subPropertyOf owl:topObjectProperty .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.uni.lodz.pl/st/books/tytul
+books:tytul rdf:type owl:DatatypeProperty ;
+            rdfs:domain books:Ksiazka ;
+            rdfs:range rdfs:Literal .
+
+
+###  http://www.w3.org/2002/07/owl#topDataProperty
+owl:topDataProperty rdfs:domain books:Ksiazka ;
+                    rdfs:range rdf:PlainLiteral .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#ISBN
+:ISBN rdf:type owl:DatatypeProperty ;
+      rdfs:subPropertyOf owl:topDataProperty .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#iloscStron
+:iloscStron rdf:type owl:DatatypeProperty ;
+            rdfs:subPropertyOf owl:topDataProperty ;
+            rdfs:domain books:Ksiazka ;
+            rdfs:range xsd:integer .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#rokWydania
+:rokWydania rdf:type owl:DatatypeProperty ;
+            rdfs:subPropertyOf owl:topDataProperty ;
+            rdfs:domain books:Ksiazka ;
+            rdfs:range xsd:dateTime .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.uni.lodz.pl/st/books/Autor
+books:Autor rdf:type owl:Class .
+
+
+###  http://www.uni.lodz.pl/st/books/Ksiazka
+books:Ksiazka rdf:type owl:Class ;
+              rdfs:subClassOf [ rdf:type owl:Restriction ;
+                                owl:onProperty books:maAutora ;
+                                owl:someValuesFrom books:Autor
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :maWydawcę ;
+                                owl:someValuesFrom :Wydawca
+                              ] .
+
+
+###  http://www.uni.lodz.pl/st/books/KsiazkaAlbum
+books:KsiazkaAlbum rdf:type owl:Class ;
+                   rdfs:subClassOf books:Ksiazka .
+
+
+###  http://www.uni.lodz.pl/st/books/KsiazkaHistoria
+books:KsiazkaHistoria rdf:type owl:Class ;
+                      rdfs:subClassOf books:Ksiazka .
+
+
+###  http://www.uni.lodz.pl/st/books/KsiazkaSztuka
+books:KsiazkaSztuka rdf:type owl:Class ;
+                    rdfs:subClassOf books:KsiazkaAlbum .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#KsiazkaObcojęzyczna
+:KsiazkaObcojęzyczna rdf:type owl:Class ;
+                     rdfs:subClassOf books:Ksiazka .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#KsiążkaWydawcyKrajowego
+:KsiążkaWydawcyKrajowego rdf:type owl:Class ;
+                         rdfs:subClassOf books:Ksiazka ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :maWydawcę ;
+                                           owl:allValuesFrom :WydawcaKrajowy
+                                         ] .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#ObcojęzycznaHistoria
+:ObcojęzycznaHistoria rdf:type owl:Class ;
+                      owl:equivalentClass [ owl:intersectionOf ( books:KsiazkaHistoria
+                                                                 :KsiazkaObcojęzyczna
+                                                               ) ;
+                                            rdf:type owl:Class
+                                          ] ;
+                      rdfs:subClassOf books:Ksiazka .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#Wydawca
+:Wydawca rdf:type owl:Class ;
+         owl:equivalentClass [ rdf:type owl:Class ;
+                               owl:unionOf ( :WydawcaKrajowy
+                                             :Wydawca_zagraniczny
+                                           )
+                             ] .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#WydawcaKrajowy
+:WydawcaKrajowy rdf:type owl:Class ;
+                rdfs:subClassOf :Wydawca ,
+                                [ rdf:type owl:Class ;
+                                  owl:complementOf :WydawcaKrajowy
+                                ] .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#Wydawca_zagraniczny
+:Wydawca_zagraniczny rdf:type owl:Class ;
+                     rdfs:subClassOf :Wydawca ;
+                     rdfs:label "wydawca zagranczny" .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#a1
+:a1 rdf:type owl:NamedIndividual ,
+             books:Autor .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#a2
+:a2 rdf:type owl:NamedIndividual ,
+             books:Autor .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#a3
+:a3 rdf:type owl:NamedIndividual ,
+             books:Autor .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#ksiazka123
+:ksiazka123 rdf:type owl:NamedIndividual ,
+                     books:Ksiazka ;
+            books:maAutora :a1 ,
+                           :a2 ;
+            :maWydawcę :w1 ;
+            books:tytul "Jakiś tutuł"@pl ,
+                        "Some title"@en ;
+            :ISBN "12323231212313131"@pl .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#ksiazka124
+:ksiazka124 rdf:type owl:NamedIndividual ,
+                     books:Ksiazka ;
+            books:maAutora :a2 ;
+            :maWydawcę :wz1 ;
+            :ISBN "1232131231231" .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#w1
+:w1 rdf:type owl:NamedIndividual ,
+             :Wydawca .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#w2
+:w2 rdf:type owl:NamedIndividual ,
+             :Wydawca .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#w3
+:w3 rdf:type owl:NamedIndividual ,
+             :Wydawca .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#wk1
+:wk1 rdf:type owl:NamedIndividual ,
+              :WydawcaKrajowy .
+
+
+###  http://www.wfis.uni.lodz.pl/plisik/onto/books#wz1
+:wz1 rdf:type owl:NamedIndividual ,
+              :Wydawca_zagraniczny .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( books:Autor
+                books:Ksiazka
+                :Wydawca
+              )
+] .
+
+
+###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
