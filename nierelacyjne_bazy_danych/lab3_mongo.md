@@ -1,8 +1,8 @@
-# Replikacja 
+# Replikacja
 
 Wspólna sieć dla kontenerów
 
-``` 
+```
 docker network create -d bridge nosqlnet
 ```
 
@@ -17,6 +17,7 @@ docker run -d --name mongo2 --network nosqlnet mongo:4.4.6 --replSet myrs
 `docker exec -it mongo0 mongo`
 
 w mongo 0
+
 ```
 rs.initiate({
  _id: "myrs", 
@@ -28,16 +29,25 @@ rs.initiate({
 });
 ```
 
-`db.createCollection("rs1")`
+```
+db.createCollection("rs1")
+```
 
-`db.rs1.insertMany([{_id:1},{_id:2},{_id:3}]);`
-
+```
+db.rs1.insertMany([{_id:1},{_id:2},{_id:3}]);
+```
 
 W mongo1
 
- `db.getMongo().setReadPref("primaryPreferred")`
- 
- `db.rs1.find()` - mamy dane z primary(mongo0)
+ ```
+ db.getMongo().setReadPref("primaryPreferred")
+ ```
+
+ mamy dane z primary(mongo0)
+
+ ```
+ db.rs1.find()
+ ```
 
 ```
 db.rs1.insertMany([{_id:5},{_id:4}]);
@@ -47,8 +57,11 @@ myrs:SECONDARY> db.rs1.find()
 { "_id" : 2 }
 ```
 
+zabijamy primary
 
-`docker kill mongo0` zabijamy primary 
+```
+docker kill mongo0
+```
 
 ```
  "members" : [
@@ -130,7 +143,8 @@ myrs:SECONDARY> db.rs1.find()
                 }
 ```
 
-zostaje wybrany nowy primary 
+zostaje wybrany nowy primary
+
 ```
 "members" : [
                 {
@@ -212,3 +226,5 @@ zostaje wybrany nowy primary
         ],
 
 ```
+
+`docker stop mongo1 mongo2` - zabijamy kontenry
