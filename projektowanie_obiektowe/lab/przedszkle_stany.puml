@@ -1,0 +1,36 @@
+@startuml stany_przedszkola
+[*] --> zaczyannie_pracy
+zaczyannie_pracy --> przyjmowanie_dzieci
+zaczyannie_pracy: sprzatanie
+
+przyjmowanie_dzieci : Przyjscie rodzica z dzieckiem
+
+przyjmowanie_dzieci -> opieka_nad_dziecmi
+
+opieka_nad_dziecmi --> Wydaj_dzieci
+
+state opieka_nad_dziecmi {
+karminie --> zabawa
+zabawa --> karminie
+
+karminie --> lezakowanie
+karminie --> wycieczka
+
+wycieczka --> lezakowanie
+wycieczka --> zabawa
+
+lezakowanie --> zabawa
+zabawa --> lezakowanie
+
+state wycieczka{
+    ustawanie_w_pary --> marsz 
+    marsz --> oglądanie_zabytku
+    oglądanie_zabytku --> ustawanie_w_pary
+}
+
+
+} 
+
+Wydaj_dzieci --> Zakoncz_prace
+Zakoncz_prace --> [*]
+@enduml

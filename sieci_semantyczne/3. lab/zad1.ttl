@@ -1,0 +1,29 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. 
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@base <http://www.example.pl/>.
+
+#1
+<IRI1> rdf:type rdfs:Class.
+<IRI2> rdf:type rdfs:Class.
+
+#2
+<IRI3> rdfs:subPropertyOf <IRI1>.
+
+#3
+<IRI4> rdf:type <IRI1>.
+
+#4
+<IRI5> rdf:type <IRI2>. 
+<IRI6> rdf:type <IRI2>. 
+
+#5
+
+<IRI3> rdfs:domain <IRI1>. 
+<IRI3> rdfs:range <IRI2>. 
+
+#6
+
+<IRI7> rdfs:subPropertyOf <IRI3>. 
+
+#7
+<IRI6> <IRI3> <IRI4>. 
