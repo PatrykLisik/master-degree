@@ -1,11 +1,11 @@
 # Lab2 - Potoki agregacji 
 
-tworzenie bazy danych
+Tworzenie bazy danych
 ```javascript
 db.createCollection('at');
 ```
 
-wstawiamy dane testowe 
+Wstawiamy dane testowe 
 
 ```javascript
 for(let i=1;i<201;i++){
@@ -18,7 +18,7 @@ for(let i=1;i<201;i++){
 // informacja zwrotna z mongo
 { "acknowledged" : true, "insertedId" : 200 }
 ```
-Wiele operatorów wystęuje w dwóch wersjach: dla wszystkich operacji i dla potoków agregacji.
+Wiele operatorów występuje w dwóch wersjach: dla wszystkich operacji i dla potoków agregacji.
 
 Wypisz obiekty gdzie val1 jest większe niż 30
 ```javascript
@@ -30,7 +30,7 @@ db.at.aggregate([{$match: {$expr: {$lt: ["$val1", "$val2"]}}}]);
 ```
 
 
-Agregacja per grupa i sumy wartośći val1 i val2
+Agregacja per grupa i sumy wartości val1 i val2
 
 ```javascript 
 db.at.aggregate([{$match: {val1: {$gt: 30}}}, {$group: {_id: "$gr", sum1: {$sum: "$val1"}, sum2: {$sum: "$val2"}}}]);
