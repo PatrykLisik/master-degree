@@ -1,0 +1,60 @@
+@startuml use_case_mpk
+left to right direction
+
+actor Client as client
+actor Driver as driver
+actor Admin as admin
+actor "Backoffice Worker" as backoffice_worker
+
+
+package MobileApp {
+usecase "Show available routes" as show_routes
+usecase "Show line stops" as show_stops
+usecase "Show stop timetable" as show_stop_time_table
+}
+
+usecase "Report problem" as report_problem
+
+
+client -> show_routes
+client -> show_stops
+client -> show_stop_time_table
+client -> report_problem
+
+
+
+
+package Backoffice {
+ usecase "CRUD driver" as crud_driver
+ usecase "CRUD vehicle" as crud_vehicle
+ usecase "CRUD timetable" as crud_timetable
+ usecase "CRUD stops" as crud_stops
+
+ usecase "Check driver timetable" as driver_work
+
+package "Problem Process"{
+ usecase "Show problems" as show_problems
+ usecase "Filter problems" as filter_problems
+ usecase "Mark problem as 'in progres' " as problem_in_progress
+ usecase "Mark problem as 'resolved' " as problem_resolved
+}
+ usecase "Check driver of line at given time" as driver_of_line
+
+}
+
+admin -> crud_driver
+admin -> crud_vehicle
+admin -> crud_timetable
+admin -> crud_stops
+
+backoffice_worker --> show_problems
+backoffice_worker -> filter_problems
+backoffice_worker -> problem_in_progress
+backoffice_worker -> problem_resolved
+backoffice_worker -> driver_of_line
+backoffice_worker -> driver_work
+
+driver -> report_problem
+driver -> driver_work
+
+@enduml
