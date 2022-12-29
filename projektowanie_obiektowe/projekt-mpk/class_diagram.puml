@@ -38,7 +38,7 @@ class Stop{
 UUID ID
 String Name
 Tuple<Double,Double> Geolocation
-Map<Stop, DateTime> TimeToOtherStops
+Map<Stop, DeltaTime> TimeToOtherStops
 }
 
 
@@ -74,7 +74,7 @@ interface AbstractDriverRepository{
  void add(Driver)
  void update(UUID, Driver)
  Driver get(UUID)
- List<Driver> getAll()
+ Set<Driver> getAll()
 }
 
 class DriverRepository implements AbstractDriverRepository
@@ -87,7 +87,7 @@ interface AbstractVehicleRepository{
  void add(Vehicle)
  void update(UUID, Vehicle)
  Vehicle get(UUID)
- List<Vehicle> getAll()
+ Set<Vehicle> getAll()
 }
 
 class VehicleRepository implements AbstractVehicleRepository
@@ -96,12 +96,26 @@ class FakeVehicleRepository implements AbstractVehicleRepository
 
 AbstractVehicleRepository *- Vehicle
 
+
+interface AbstractRouteRepository{
+ void add(String, List<Stop>)
+ void update(String, List<UUID>)
+ Route get(String)
+ Set<Route> getAll()
+}
+
+class RouteRepository implements AbstractRouteRepository
+class FakeRouteRepository implements AbstractRouteRepository
+
+
+AbstractRouteRepository *- Route
+
 interface AbstractStopRepository{
- void add(Stop)
- void update(UUID, Stop)
+ Stop add(String, Tuple<Double,Double>)
+ void update(UUID, String, Tuple<Double,Double>)
  Stop get(UUID)
- List<Stop> getAll()
- List<Stop> getMany(List<UUID>)
+ Set<Stop> getAll()
+ Set<Stop> getMany(List<UUID>)
  void setTimeBetweenStops(Stop, Stop, DeltaTime)
 }
 
