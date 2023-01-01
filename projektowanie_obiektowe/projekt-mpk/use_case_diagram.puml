@@ -29,6 +29,7 @@ package Backoffice {
  usecase "CRUD vehicle" as crud_vehicle
  usecase "CRUD timetable" as crud_timetable
  usecase "CRUD stops" as crud_stops
+ usecase "Set time between stops" as set_time_between
 
  usecase "Check driver timetable" as driver_work
 
@@ -46,6 +47,8 @@ admin -> crud_driver
 admin -> crud_vehicle
 admin -> crud_timetable
 admin -> crud_stops
+admin -> set_time_between
+crud_stops <- set_time_between
 
 backoffice_worker --> show_problems
 backoffice_worker -> filter_problems

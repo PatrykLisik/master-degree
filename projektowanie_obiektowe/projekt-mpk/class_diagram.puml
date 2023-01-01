@@ -71,7 +71,7 @@ String Phone
 }
 
 interface AbstractDriverRepository{
- void add(Driver)
+ Driver add(String, String, String, String)
  void update(UUID, Driver)
  Driver get(UUID)
  Set<Driver> getAll()
@@ -111,7 +111,7 @@ class FakeRouteRepository implements AbstractRouteRepository
 AbstractRouteRepository *- Route
 
 interface AbstractStopRepository{
- Stop add(String, Tuple<Double,Double>)
+ Stop add(String, Tuple<Double,Double>, Optional<Map<Stop,DeltaTime>>)
  void update(UUID, String, Tuple<Double,Double>)
  Stop get(UUID)
  Set<Stop> getAll()
