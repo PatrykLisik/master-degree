@@ -2,12 +2,12 @@ from sanic import json, Blueprint
 from sanic.log import logger
 
 from src.repositories.driver_repository import InMemoryDriverRepository
-from src.web.backoffice_usecase import add_driver_usecase, get_driver_usecase, get_all_drivers_usecase, \
+from src.web.driver_usecase import add_driver_usecase, get_driver_usecase, get_all_drivers_usecase, \
     update_driver_use_case
 
-backoffice_blueprint = Blueprint(name="backoffice", url_prefix="backoffice/")
-
 driver_repository = InMemoryDriverRepository()
+
+backoffice_blueprint = Blueprint(name="backoffice", url_prefix="backoffice/")
 
 
 @backoffice_blueprint.post("/driver")

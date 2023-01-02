@@ -1,4 +1,4 @@
-from typing import List, Set, Optional
+from typing import Set, Optional
 
 from src.model.internal_model import Driver
 from src.repositories.driver_repository import AbstractDriverRepository

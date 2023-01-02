@@ -1,13 +1,14 @@
+import decimal
 from dataclasses import dataclass, field
-from typing import List, Dict, Self
 from datetime import timedelta, datetime
+from typing import List, Dict, Self
 
 
-@dataclass
+@dataclass(frozen=True)
 class Stop:
-    id: str
+    id: str = field(hash=True)
     name: str
-    geolocation: (float, float)
+    geolocation: (decimal, decimal)
     time_to_other_stops: Dict[Self, timedelta]
 
 
