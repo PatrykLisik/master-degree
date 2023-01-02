@@ -1,8 +1,6 @@
 import uuid
 from abc import ABC, abstractmethod
-from typing import Set, Dict
-
-from sanic.log import logger
+from typing import Set, Dict, Optional
 
 from src.model.internal_model import Driver
 
@@ -26,7 +24,7 @@ class AbstractDriverRepository(ABC):
         raise NotImplementedError
 
 
-class FakeDriverRepository(AbstractDriverRepository):
+class InMemoryDriverRepository(AbstractDriverRepository):
     _data: Dict[str, Driver] = {}
 
     def add(self, first_name: str, last_name: str, pesel: str, phone: str) -> Driver:
@@ -37,8 +35,8 @@ class FakeDriverRepository(AbstractDriverRepository):
     def update(self, driver_id: str, updated_driver: Driver):
         self._data[driver_id] = updated_driver
 
-    def get(self, driver_id: str) -> Driver:
-        return self._data[driver_id]
+    def get(self, driver_id: str) -> Optional[Driver]:
+        return self._data.get(driver_id, None)
 
     def get_all(self) -> Set[Driver]:
         return set(self._data.values())

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Dict, Self
 from datetime import timedelta, datetime
 
@@ -30,9 +30,9 @@ class Transit:
     vehicle: Vehicle
 
 
-@dataclass
+@dataclass(frozen=True)
 class Driver:
-    id: str
+    id: str = field(hash=True)
     first_name: str
     last_name: str
     PESEL: str
