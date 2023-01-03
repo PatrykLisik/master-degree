@@ -1,15 +1,15 @@
 import decimal
 from dataclasses import dataclass, field
 from datetime import timedelta, datetime
-from typing import List, Dict, Self
+from typing import List, Dict
 
 
 @dataclass(frozen=True)
 class Stop:
     id: str = field(hash=True)
-    name: str
-    geolocation: (decimal, decimal)
-    time_to_other_stops: Dict[Self, timedelta]
+    name: str = field(hash=False)
+    geolocation: (decimal, decimal) = field(hash=False)
+    time_to_other_stops: Dict[str, timedelta] = field(hash=False, default_factory=dict)
 
 
 @dataclass

@@ -2,7 +2,6 @@ import decimal
 import json
 import uuid
 from abc import ABC, abstractmethod
-from dataclasses import asdict
 from datetime import timedelta
 from typing import Set, Dict
 
@@ -63,8 +62,7 @@ class InMemoryStopRepository(AbstractStopRepository):
 
     async def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
         start_stop = await self.get(start_stop_id)
-        end_stop = await self.get(end_stop_id)
-        start_stop.time_to_other_stops[end_stop] = time
+        start_stop.time_to_other_stops[end_stop_id] = time
 
 
 class FileStopRepository(AbstractStopRepository):
@@ -76,14 +74,34 @@ class FileStopRepository(AbstractStopRepository):
             with open(self._file_name, "r+", ) as infile:
                 logger.info("load stops")
                 data = json.load(infile)
-                return {stop_data["id"]: Stop(**stop_data) for stop_data in data}
+                return {stop_data["id"]: Stop(
+                    id=stop_data["id"],
+                    name=stop_data["name"],
+                    geolocation=(stop_data["x"], stop_data["y"]),
+                    time_to_other_stops={times["stop_id"]: timedelta(seconds=times["time_in_sec"])
+                                         for times in stop_data["time_to_other_stops"]}
+                )
+                    for stop_data in data}
         except FileNotFoundError:
             logger.info("load stop file doest not exist")
             return {}
 
     def _set_stops(self, stops: Dict[str, Stop]):
         logger.info("save stops")
-        stops_to_save = [asdict(stop) for stop in stops.values()]
+        stops_to_save = [{
+            "id": stop.id,
+            "name": stop.name,
+            "x": stop.geolocation[0],
+            "y": stop.geolocation[1],
+            "time_to_other_stops": [
+                {
+                    "stop_id": stop_id,
+                    "time_in_sec": time_to_other_stop.seconds
+                } for stop_id, time_to_other_stop in stop.time_to_other_stops.items()
+
+            ]
+
+        } for stop in stops.values()]
         json_to_save = json.dumps(stops_to_save, indent=4)
         with open(self._file_name, "w+") as outfile:
             outfile.write(json_to_save)
@@ -107,7 +125,7 @@ class FileStopRepository(AbstractStopRepository):
         return self._get_stops()[stop_id]
 
     async def get_all(self) -> Set[Stop]:
-        return set(self._get_stops().values())
+        return {stop for stop in self._get_stops().values()}
 
     async def get_many(self, stop_ids: set[str]) -> Set[Stop]:
         return {value for value in self._get_stops().values() if value.id in stop_ids}
@@ -115,7 +133,6 @@ class FileStopRepository(AbstractStopRepository):
     async def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
         stops = self._get_stops()
         start_stop = stops.get(start_stop_id)
-        end_stop = stops.get(end_stop_id)
-        start_stop.time_to_other_stops[end_stop] = time
+        start_stop.time_to_other_stops[end_stop_id] = time
         stops[start_stop_id] = start_stop
         self._set_stops(stops)
