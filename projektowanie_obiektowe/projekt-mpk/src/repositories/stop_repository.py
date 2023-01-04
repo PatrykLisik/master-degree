@@ -13,34 +13,34 @@ from src.model.internal_model import Stop
 class AbstractStopRepository(ABC):
 
     @abstractmethod
-    async def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> Stop:
+    def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> Stop:
         raise NotImplementedError
 
     @abstractmethod
-    async def update(self, stop_id: str, updated_stop: Stop):
+    def update(self, stop_id: str, updated_stop: Stop):
         raise NotImplementedError
 
     @abstractmethod
-    async def get(self, stop_id: str) -> Stop:
+    def get(self, stop_id: str) -> Stop:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_all(self) -> Set[Stop]:
+    def get_all(self) -> Set[Stop]:
         raise NotImplementedError
 
     @abstractmethod
-    async def get_many(self, stop_ids: set[str]) -> Set[Stop]:
+    def get_many(self, stop_ids: set[str]) -> Set[Stop]:
         raise NotImplementedError
 
     @abstractmethod
-    async def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
+    def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
         raise NotImplementedError
 
 
 class InMemoryStopRepository(AbstractStopRepository):
     _stops = {}
 
-    async def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> Stop:
+    def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> Stop:
         new_stop = Stop(name=name,
                         geolocation=(geolocation_x, geolocation_y),
                         time_to_other_stops={},
@@ -48,20 +48,20 @@ class InMemoryStopRepository(AbstractStopRepository):
         self._stops[new_stop.id] = new_stop
         return new_stop
 
-    async def update(self, stop_id: str, updated_stop: Stop):
+    def update(self, stop_id: str, updated_stop: Stop):
         self._stops[stop_id] = updated_stop
 
-    async def get(self, stop_id: str) -> Stop:
+    def get(self, stop_id: str) -> Stop:
         return self._stops[stop_id]
 
-    async def get_all(self) -> Set[Stop]:
+    def get_all(self) -> Set[Stop]:
         return set(self._stops.values())
 
-    async def get_many(self, stop_ids: set[str]) -> Set[Stop]:
+    def get_many(self, stop_ids: set[str]) -> Set[Stop]:
         return {value for value in self._stops.values() if value.id in stop_ids}
 
-    async def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
-        start_stop = await self.get(start_stop_id)
+    def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
+        start_stop = self.get(start_stop_id)
         start_stop.time_to_other_stops[end_stop_id] = time
 
 
@@ -106,7 +106,7 @@ class FileStopRepository(AbstractStopRepository):
         with open(self._file_name, "w+") as outfile:
             outfile.write(json_to_save)
 
-    async def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> Stop:
+    def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> Stop:
         new_stop = Stop(name=name,
                         geolocation=(geolocation_x, geolocation_y),
                         time_to_other_stops={},
@@ -116,21 +116,21 @@ class FileStopRepository(AbstractStopRepository):
         self._set_stops(stops)
         return new_stop
 
-    async def update(self, stop_id: str, updated_stop: Stop):
+    def update(self, stop_id: str, updated_stop: Stop):
         stops = self._get_stops()
         stops[stop_id] = updated_stop
         self._set_stops(stops)
 
-    async def get(self, stop_id: str) -> Stop:
+    def get(self, stop_id: str) -> Stop:
         return self._get_stops()[stop_id]
 
-    async def get_all(self) -> Set[Stop]:
+    def get_all(self) -> Set[Stop]:
         return {stop for stop in self._get_stops().values()}
 
-    async def get_many(self, stop_ids: set[str]) -> Set[Stop]:
+    def get_many(self, stop_ids: set[str]) -> Set[Stop]:
         return {value for value in self._get_stops().values() if value.id in stop_ids}
 
-    async def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
+    def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
         stops = self._get_stops()
         start_stop = stops.get(start_stop_id)
         start_stop.time_to_other_stops[end_stop_id] = time

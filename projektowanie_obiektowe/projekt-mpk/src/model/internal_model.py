@@ -14,8 +14,9 @@ class Stop:
 
 @dataclass
 class Route:
+    id: str
     name: str
-    stops: List[Stop]
+    stops: List[str]
 
 
 @dataclass
@@ -34,7 +35,7 @@ class Transit:
 @dataclass(frozen=True)
 class Driver:
     id: str = field(hash=True)
-    first_name: str
-    last_name: str
-    PESEL: str
-    phone: str
+    first_name: str = field(hash=False)
+    last_name: str = field(hash=False)
+    PESEL: str = field(hash=False)
+    phone: str = field(hash=False)
