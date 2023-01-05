@@ -12,11 +12,11 @@ class Stop:
     time_to_other_stops: Dict[str, timedelta] = field(hash=False, default_factory=dict)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Route:
-    id: str
-    name: str
-    stops: List[str]
+    id: str = field(hash=True)
+    name: str = field(hash=False)
+    stops: List[str] = field(hash=False)
 
 
 @dataclass

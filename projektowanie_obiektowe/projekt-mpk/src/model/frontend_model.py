@@ -53,7 +53,7 @@ class Route:
     @classmethod
     def form_internal(cls, route: InternalRoute, stops_repository: AbstractStopRepository):
         stop_ids = set(route.stops)
-        stops = {stop.id: stop for stop in stops_repository.get_many(stop_ids)}
+        stops = {stop.id: Stop.form_internal(stop) for stop in stops_repository.get_many(stop_ids)}
         return cls(
             id=route.id,
             name=route.name,
