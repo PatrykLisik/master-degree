@@ -19,17 +19,19 @@ class Route:
     stops: List[str] = field(hash=False)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Vehicle:
-    id: str
-    capacity: int
+    id: str = field(hash=True)
+    capacity: int = field(hash=False)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Transit:
-    route: Route
-    start_time: datetime
-    vehicle: Vehicle
+    id: str = field(hash=True)
+    route_id: str = field(hash=False)
+    start_time: datetime = field(hash=False)
+    vehicle_id: str = field(hash=False)
+    driver_id: str = field(hash=False)
 
 
 @dataclass(frozen=True)

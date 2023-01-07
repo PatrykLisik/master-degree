@@ -31,5 +31,5 @@ async def get_route(request, route_id):
 
 @route_blueprint.get("/routes")
 async def get_all_routes(request):
-    routes = get_all_routes_usecase(route_repository=route_repository)
+    routes = get_all_routes_usecase(route_repository=route_repository, stop_repository=stop_repository)
     return json(routes)

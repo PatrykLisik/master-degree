@@ -9,4 +9,5 @@ services:
       - "8080:8080"
     volumes:
       - ./src:/usr/src/
+      - ./data:/usr/data
     entrypoint: "sanic src.server.app --host 0.0.0.0 --port 8080 --dev"

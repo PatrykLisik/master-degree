@@ -47,7 +47,7 @@ class InMemoryDriverRepository(AbstractDriverRepository):
 
 
 class InFileDriverRepository(AbstractDriverRepository):
-    _file_name = "drivers.json"
+    _file_name = "data/drivers.json"
 
     def _get(self) -> Dict[str, Driver]:
         try:

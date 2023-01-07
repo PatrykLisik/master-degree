@@ -66,7 +66,7 @@ class InMemoryStopRepository(AbstractStopRepository):
 
 
 class FileStopRepository(AbstractStopRepository):
-    _file_name = "stop.json"
+    _file_name = "data/stop.json"
 
     def _get_stops(self) -> Dict[str, Stop]:
 

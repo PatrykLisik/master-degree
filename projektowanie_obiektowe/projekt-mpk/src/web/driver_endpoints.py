@@ -7,10 +7,10 @@ from src.web import driver_repository
 from src.web.driver_usecase import add_driver_usecase, get_driver_usecase, get_all_drivers_usecase, \
     update_driver_use_case
 
-backoffice_blueprint = Blueprint(name="backoffice", url_prefix="backoffice/")
+driver_blueprint = Blueprint(name="driver", url_prefix="backoffice/")
 
 
-@backoffice_blueprint.post("/driver")
+@driver_blueprint.post("/driver")
 async def add_driver(request):
     request_data = request.json
     driver = add_driver_usecase(driver_repository=driver_repository, name=request_data.get("name", ""),
@@ -20,14 +20,14 @@ async def add_driver(request):
     return json(asdict(driver))
 
 
-@backoffice_blueprint.get("/driver/<driver_id>")
+@driver_blueprint.get("/driver/<driver_id>")
 async def get_driver(request, driver_id):
     driver = get_driver_usecase(driver_repository, driver_id)
     logger.info(f"driver id: {driver_id}")
     return json(asdict(driver))
 
 
-@backoffice_blueprint.put("/driver/<driver_id>")
+@driver_blueprint.put("/driver/<driver_id>")
 async def update_driver(request, driver_id):
     request_data = request.json
     driver = update_driver_use_case(driver_repository=driver_repository, name=request_data.get("name", None),
@@ -39,7 +39,7 @@ async def update_driver(request, driver_id):
     return json(asdict(driver))
 
 
-@backoffice_blueprint.get("/drivers")
+@driver_blueprint.get("/drivers")
 async def get_all_drivers(request):
     drivers = get_all_drivers_usecase(driver_repository)
     logger.info(f"Drivers {drivers}")

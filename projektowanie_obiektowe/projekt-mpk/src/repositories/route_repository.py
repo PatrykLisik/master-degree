@@ -7,7 +7,6 @@ from typing import Set, Dict, Optional
 from sanic.log import logger
 
 from src.model.internal_model import Route
-from src.repositories.stop_repository import AbstractStopRepository
 
 
 class AbstractRouteRepository(ABC):
@@ -30,10 +29,7 @@ class AbstractRouteRepository(ABC):
 
 
 class InFileRouteRepository(AbstractRouteRepository):
-    _file_name = "routes.json"
-
-    def __init__(self, stop_repo: AbstractStopRepository):
-        self.stop_repo = stop_repo
+    _file_name = "/data/routes.json"
 
     def _get(self) -> Dict[str, Route]:
         try:
@@ -54,9 +50,6 @@ class InFileRouteRepository(AbstractRouteRepository):
         json_to_save = json.dumps(drivers_to_save, indent=4)
         with open(self._file_name, "w+") as outfile:
             outfile.write(json_to_save)
-
-    def __int__(self, stop_repo: AbstractStopRepository):
-        self.stop_repository = stop_repo
 
     def add(self, name: str, stops: list[str]) -> Route:
         new_route = Route(name=name, stops=stops, id=str(uuid.uuid4()))
