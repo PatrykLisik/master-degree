@@ -52,14 +52,14 @@ class InFileDriverRepository(AbstractDriverRepository):
     def _get(self) -> Dict[str, Driver]:
         try:
             with open(self._file_name, "r+", ) as infile:
-                logger.info("load stops")
+                logger.info("load driver")
                 data = json.load(infile)
                 return {driver_data["id"]: Driver(
                     **driver_data
                 )
                     for driver_data in data}
         except FileNotFoundError:
-            logger.info("load stop file doest not exist")
+            logger.info("load driver file doest not exist")
             return {}
 
     def _set(self, drivers: Dict[str, Driver]):

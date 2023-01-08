@@ -1,0 +1,297 @@
+@startuml
+'https://plantuml.com/class-diagram
+left to right direction
+
+package InternalModel #DDDDDD {
+class "Route" as internal_route {
+ String Name
+ List<UUID> Stops
+
+}
+
+
+class "Transit" as internal_transit {
+UUID Route
+UUID StartTime
+UUID Vehicle
+UUID Driver
+}
+
+class "Vehicle" as internal_vehicle{
+UUID ID
+Integer Capacity
+}
+
+class "Driver" as internal_driver {
+ID:UUID
+String FirstName
+String LastName
+String PESEL
+String Phone
+}
+
+class "Stop" as internal_stop {
+UUID ID
+String Name
+Tuple<Double,Double> Geolocation
+Map<UUID, DeltaTime> TimeToOtherStops
+}
+
+
+}
+
+package FrontendModel #DDDDDD {
+
+class "Route" as frontend_route {
+ String Name
+ List<Stop> Stops
+ ..
+ {static} from_internal(InternalModel::Route,AbstractStopRepository)
+}
+
+
+class "Transit" as frontend_transit {
+Route Route
+DateTime StartTime
+Vehicle Vehicle
+Driver Driver
+..
+ {static} from_internal(InternalModel::Transit, AbstractStopRepository,AbstractRouteRepository,AbstractDriverRepository,AbstractVehicleRepository)
+}
+
+class "Vehicle" as frontend_vehicle{
+UUID ID
+Integer Capacity
+..
+ {static} from_internal(InternalModel::Vehicle)
+}
+
+class "Driver" as frontend_driver {
+ID:UUID
+String FirstName
+String LastName
+String PESEL
+String Phone
+..
+ {static} from_internal(InternalModel::Driver)
+}
+
+class "Stop" as frontend_stop {
+UUID ID
+String Name
+Tuple<Double,Double> Geolocation
+Map<Stop, String> TimeToOtherStops
+..
+ {static} from_internal(InternalModel::Stop)
+}
+
+frontend_route o- frontend_stop
+
+frontend_transit -- frontend_route
+frontend_transit -- frontend_vehicle
+frontend_transit -- frontend_driver
+}
+
+frontend_route -- internal_route
+frontend_stop -- internal_stop
+
+frontend_route -- internal_route
+frontend_route -- AbstractStopRepository
+
+frontend_vehicle -- internal_vehicle
+
+frontend_driver -- internal_driver
+
+frontend_transit -- internal_transit
+frontend_transit -- AbstractStopRepository
+frontend_transit -- AbstractRouteRepository
+frontend_transit -- AbstractDriverRepository
+frontend_transit -- AbstractVehicleRepository
+
+
+
+interface AbstractDriverRepository{
+ Driver add(String, String, String, String)
+ void update(UUID, Driver)
+ Driver get(UUID)
+ Set<Driver> getAll()
+}
+
+class DriverRepository implements AbstractDriverRepository
+class ImMemoryDriverRepository implements AbstractDriverRepository
+
+AbstractDriverRepository *- internal_driver
+
+
+interface AbstractVehicleRepository{
+ void add(Vehicle)
+ void update(UUID, Vehicle)
+ Vehicle get(UUID)
+ Set<Vehicle> getAll()
+}
+
+class VehicleRepository implements AbstractVehicleRepository
+class ImMemoryVehicleRepository implements AbstractVehicleRepository
+
+
+AbstractVehicleRepository *- internal_vehicle
+
+
+interface AbstractRouteRepository{
+ void add(String, List<Stop>)
+ void update(String, List<UUID>)
+ Route get(String)
+ Set<Route> getAll()
+}
+
+class RouteRepository implements AbstractRouteRepository
+class ImMemoryRouteRepository implements AbstractRouteRepository
+
+
+AbstractRouteRepository *- internal_route
+
+interface AbstractStopRepository{
+ Stop add(String, Tuple<Double,Double>, Optional<Map<Stop,DeltaTime>>)
+ void update(UUID, String, Tuple<Double,Double>)
+ Stop get(UUID)
+ Set<Stop> getAll()
+ Set<Stop> getMany(List<UUID>)
+ void setTimeBetweenStops(Stop, Stop, DeltaTime)
+}
+
+AbstractStopRepository *- internal_route
+class StopRepository implements AbstractStopRepository
+class ImMemoryStopRepository implements AbstractStopRepository
+
+
+interface AbstractTransitRepository{
+ Transit add(String, Tuple<Double,Double>, Optional<Map<Transit,DeltaTime>>)
+ void update(UUID, String, Tuple<Double,Double>)
+ Transit get(UUID)
+ Set<Transit> getAll()
+ Set<Transit> getMany(List<UUID>)
+ void setTimeBetweenTransits(Transit, Transit, DeltaTime)
+}
+
+AbstractTransitRepository *- internal_transit
+class InFileTransitRepository implements AbstractTransitRepository
+
+package "usecase" #DDDDDD{
+    class DriverUsecase{
+    {static} FrontendModel::Driver add_driver(AbstractDriverRepository, String, String, String, String)
+    {static} FrontendModel::Driver get_driver(AbstractDriverRepository, String)
+    {static} FrontendModel::Driver update_driver(AbstractDriverRepository, String, String, String, String)
+    {static} List<FrontendModel::Driver> get_all_driver(AbstractDriverRepository)
+    }
+
+    DriverUsecase -- AbstractDriverRepository
+
+  class StopUsecase{
+    {static} FrontendModel::Stop add_stop(AbstractStopRepository,String,Double,Double)
+    {static} FrontendModel::Stop get_stop(AbstractStopRepository,UUID)
+    {static} FrontendModel::Stop update_stop(AbstractStopRepository,Stop,UUID)
+    {static} List<FrontendModel::Stop> get_all_stops(AbstractStopRepository
+    {static} FrontendModel::Stop set_time_between_stops(Stop,Stop,DeltaTime)
+
+    }
+
+    StopUsecase -- AbstractStopRepository
+
+  class VehicleUsecase{
+    {static} FrontendModel::Vehicle add_vehicle(AbstractVehicleRepository,String,Double,Double)
+    {static} FrontendModel::Vehicle get_vehicle(AbstractVehicleRepository,UUID)
+    {static} FrontendModel::Vehicle update_vehicle(AbstractVehicleRepository,Vehicle,UUID)
+    {static} List<FrontendModel::Vehicle> get_all_vehicles(AbstractVehicleRepository)
+
+    }
+
+    VehicleUsecase -- AbstractVehicleRepository
+    
+  class RouteUsecase{
+    {static} FrontendModel::Route add_route(AbstractRouteRepository,String,Double,Double)
+    {static} FrontendModel::Route get_route(AbstractRouteRepository,UUID)
+    {static} FrontendModel::Route update_route(AbstractRouteRepository,Route,UUID)
+    {static} List<FrontendModel::Route> get_all_routes(AbstractRouteRepository)
+
+    }
+
+    RouteUsecase -- AbstractStopRepository
+    RouteUsecase -- AbstractRouteRepository
+  class TransitUsecase{
+    {static} FrontendModel::Transit add_transit(AbstractTransitRepository,String,Double,Double)
+    {static} FrontendModel::Transit get_transit(AbstractTransitRepository,UUID)
+    {static} FrontendModel::Transit update_transit(AbstractTransitRepository,Transit,UUID)
+    {static} List<FrontendModel::Transit> get_all_transits(AbstractTransitRepository)
+
+    }
+
+    TransitUsecase -- AbstractStopRepository
+    TransitUsecase -- AbstractTransitRepository
+    TransitUsecase -- AbstractRouteRepository
+    TransitUsecase -- AbstractDriverRepository
+    TransitUsecase -- AbstractVehicleRepository
+
+    class MobileAppUsecase{
+    Map<String,UUID> get_all_routes_usecase(AbstractRouteRepository)
+    List<Tuple<String,String>> get_route_stops_usecase(AbstractRouteRepository,AbstractStopRepository,String)
+    List<DateTime> get_stop_timetable_usecase(AbstractRouteRepository,AbstractStopRepository,AbstractTransitRepository,String,String)
+    }
+
+    MobileAppUsecase -- AbstractStopRepository
+    MobileAppUsecase -- AbstractTransitRepository
+    MobileAppUsecase -- AbstractRouteRepository
+    MobileAppUsecase -- AbstractDriverRepository
+    MobileAppUsecase -- AbstractVehicleRepository
+
+}
+
+package web #DDDDDD{
+    class DriverEndpoints{
+    {static} HttpResponse add_driver(HttpRequest)
+    {static} HttpResponse get_driver(HttpRequest)
+    {static} HttpResponse update_driver(HttpRequest)
+    {static} HttpResponse get_all_driver(HttpRequest)
+    }
+    DriverEndpoints -- DriverUsecase
+
+    class StopEndpoints{
+    {static} HttpResponse add_stop(HttpRequest)
+    {static} HttpResponse get_stop(HttpRequest)
+    {static} HttpResponse update_stop(HttpRequest)
+    {static} HttpResponse get_all_stops(HttpRequest)
+    }
+    StopEndpoints -- StopUsecase
+
+    class VehicleEndpoints{
+    {static} HttpResponse add_vehicle(HttpRequest)
+    {static} HttpResponse get_vehicle(HttpRequest)
+    {static} HttpResponse update_vehicle(HttpRequest)
+    {static} HttpResponse get_all_vehicles(HttpRequest)
+    }
+    VehicleEndpoints -- VehicleUsecase
+
+    class RouteEndpoints{
+    {static} HttpResponse add_route(HttpRequest)
+    {static} HttpResponse get_route(HttpRequest)
+    {static} HttpResponse update_route(HttpRequest)
+    {static} HttpResponse get_all_routes(HttpRequest)
+    }
+    RouteEndpoints -- RouteUsecase
+
+   class TransitEndpoints{
+    {static} HttpResponse add_transit(HttpRequest)
+    {static} HttpResponse get_transit(HttpRequest)
+    {static} HttpResponse update_transit(HttpRequest)
+    {static} HttpResponse get_all_transits(HttpRequest)
+    }
+    TransitEndpoints -- TransitUsecase
+
+    class MobileAppEndpoints{
+     {static} HttpResponse get_all_routes_usecase(HttpRequest)
+     {static} HttpResponse get_route_stops_usecase(HttpRequest)
+     {static} HttpResponse get_stop_timetable_usecase(HttpRequest)
+    }
+    MobileAppEndpoints -- MobileAppUsecase
+}
+
+@enduml

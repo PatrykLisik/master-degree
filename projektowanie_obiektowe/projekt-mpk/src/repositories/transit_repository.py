@@ -39,7 +39,7 @@ class InFileTransitRepository(AbstractTransitRepository):
     def _get(self) -> Dict[str, Transit]:
         try:
             with open(self._file_name, "r+", ) as infile:
-                logger.info("load stops")
+                logger.info("load transit")
                 data = json.load(infile)
                 return {transit_data["id"]: Transit(
                     id=transit_data["id"],
@@ -50,7 +50,7 @@ class InFileTransitRepository(AbstractTransitRepository):
                 )
                     for transit_data in data}
         except FileNotFoundError:
-            logger.info("load stop file doest not exist")
+            logger.info("load transit file doest not exist")
             return {}
 
     def _set(self, transits: Dict[str, Transit]):

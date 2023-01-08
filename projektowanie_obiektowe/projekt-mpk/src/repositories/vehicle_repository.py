@@ -61,7 +61,7 @@ class InFileVehicleRepository(AbstractVehicleRepository):
                 )
                     for vehicle_data in data}
         except FileNotFoundError:
-            logger.info("load stop file doest not exist")
+            logger.info("load vehicle file doest not exist")
             return {}
 
     def _set(self, vehicles: Dict[str, Vehicle]):

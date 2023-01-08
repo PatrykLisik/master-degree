@@ -1,0 +1,49 @@
+@startuml use_case_mpk
+left to right direction
+
+actor Client as client
+actor Admin as admin
+
+
+package MobileApp {
+usecase "Show available routes" as show_routes
+usecase "Show line stops" as show_stops
+usecase "Show stop timetable" as show_stop_time_table
+
+show_routes <- show_stops : <<include>>
+note right of show_stops : "Line must be selected"
+show_stops <- show_stop_time_table : <<include>>
+note right of show_stop_time_table : "Line and stop must be selected"
+}
+
+
+
+client -> show_routes
+client -> show_stops
+client -> show_stop_time_table
+
+
+
+
+package Backoffice {
+ usecase "CRUD driver" as crud_driver
+ usecase "CRUD vehicle" as crud_vehicle
+ usecase "CRUD timetable" as crud_timetable
+ usecase "CRUD stops" as crud_stops
+ usecase "CRUD Transit" as crud_transit
+ usecase "CRUD Route" as crud_route
+ usecase "Set time between stops" as set_time_between
+
+}
+
+
+admin -> crud_driver
+admin -> crud_vehicle
+admin -> crud_timetable
+admin -> crud_stops
+admin -> set_time_between
+admin -> crud_transit
+admin -> crud_route
+crud_stops <- set_time_between
+
+@enduml
