@@ -29,12 +29,12 @@ class AbstractRouteRepository(ABC):
 
 
 class InFileRouteRepository(AbstractRouteRepository):
-    _file_name = "/data/routes.json"
+    _file_name = "data/routes.json"
 
     def _get(self) -> Dict[str, Route]:
         try:
             with open(self._file_name, "r+", ) as infile:
-                logger.info("load stops")
+                logger.info("load routes")
                 data = json.load(infile)
                 return {route_data["id"]: Route(
                     **route_data

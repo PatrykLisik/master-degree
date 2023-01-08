@@ -1,3 +1,4 @@
+import json as jjson
 from dataclasses import asdict
 
 from sanic import Blueprint, json
@@ -24,12 +25,13 @@ async def add_route(request):
 @route_blueprint.get("/route/<route_id>")
 async def get_route(request, route_id):
     route = get_route_usecase(route_repository=route_repository,
-                              stop_repository=stop_repository, route_id=route_id)
+                              stop_repository=stop_repository,
+                              route_id=route_id)
     logger.info(f"route: {route}")
-    return json(asdict(route))
+    return json(asdict(route), dumps=jjson.dumps, default=str)
 
 
 @route_blueprint.get("/routes")
 async def get_all_routes(request):
     routes = get_all_routes_usecase(route_repository=route_repository, stop_repository=stop_repository)
-    return json(routes)
+    return json([asdict(route) for route in routes])
