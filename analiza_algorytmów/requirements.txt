@@ -5,3 +5,4 @@ pandas
 pytest
 seaborn
 nbconvert[webpdf]
+matplotlib-label-lines
