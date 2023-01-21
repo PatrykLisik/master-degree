@@ -1,0 +1,156 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[verbose,a4paper,tmargin=3cm,bmargin=3cm,lmargin=2.5cm,rmargin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+% \usepackage{polski}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{float}
+\usepackage{lastpage}
+\usepackage{mathtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{url}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{pdflscape}
+\usepackage{tikz}
+\usepackage{aeguill}
+\usepackage{standalone}
+
+%foot
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyfoot[L]{Patryk Lisik, Mateusz Borowiec, Assignment \# 2}
+\fancyfoot[R]{\thepage\ / \pageref{LastPage}}
+
+\begin{document}
+\begin{titlepage}
+\vspace{3cm}
+
+\begin{minipage}{0.33 \textwidth}
+\begin{flushleft}
+\large
+% Imię i nazwisko:\\
+\textsc{Patryk Lisik}
+\end{flushleft}
+\end{minipage}
+\hspace{0.2\textwidth}
+\begin{minipage}{0.33 \textwidth}
+\begin{flushleft}
+\large
+% Imię i nazwisko:\\
+\textsc{Mateusz Borowiec}
+\end{flushleft}
+\end{minipage}
+
+\vspace{2cm}
+
+{\center\huge\bfseries Agile Methods \par}
+
+\vspace{1.5cm}
+{\center\huge\bfseries Assignment \#2\par}
+
+\end{titlepage}
+\section{Introduction}
+
+The tool would use natural language processing techniques to analyse text data from social media platforms and determine the sentiment (positive, negative, neutral) of the posts. The user could input a specific topic or hashtag to search for, and the tool would return a breakdown of the sentiment of the posts related to that topic or hashtag. Additionally, the tool could also display the posts themselves, along with their sentiment labels, in a visual format such as a bar chart or word cloud.
+
+The sentiment analysis tool would use techniques such as natural language processing and machine learning to analyse text data from social media platforms like Twitter, Facebook, or Instagram. The user would have the ability to input a specific topic or hashtag that they are interested in, and the tool would then search for and gather all relevant posts from that topic or hashtag.
+
+Once the relevant posts have been collected, the tool would use NLP (Natural Language Processing) techniques such as tokenization, POS tagging, and sentiment analysis to determine the sentiment of each post. Sentiment analysis is the process of determining whether a piece of text is positive, negative, or neutral in tone. There are various algorithms and models that can be used to perform sentiment analysis, such as using pre-trained word embeddings or training a machine learning model on a labelled dataset.
+
+The tool would then present the sentiment analysis results in a visual format, such as a bar chart or word cloud. This would allow the user to quickly understand the overall sentiment of the posts related to the specific topic or hashtag they searched for, as well as the distribution of positive, negative, and neutral posts. Additionally, the tool could also display the posts themselves, along with their sentiment labels, in a list or table format, which would allow the user to read the posts and see the sentiment analysis results for each individual post.
+ 
+
+\tableofcontents
+
+\section{Project phases}
+
+There are several phases that would be involved in building a sentiment analysis tool for social media posts, including:
+
+Planning and research: This phase would involve defining the project scope, researching and identifying the specific social media platforms to be used, and gathering a dataset of labelled sentiment data for training the machine learning model.
+
+Data collection: In this phase, the tool would gather the relevant social media posts from the specified platforms and hashtags. The data would be collected using the social media platform's API, which allows the developer to fetch the data in a structured format.
+
+Data preprocessing: The collected data would be preprocessed to remove any irrelevant information such as URLs, emojis, and mentions. The text data would be cleaned, tokenized and transformed into numerical values that the model can understand.
+
+Model Training: Here, the labelled dataset would be used to train a machine learning model. The model would learn the patterns and correlation between the words and the sentiments. This can be done by using various algorithms such as Logistic Regression, Naive Bayes, Random Forest, etc.
+
+Model evaluation: The trained model would be evaluated on a separate dataset to measure its performance. This phase would help to identify any errors or inaccuracies in the model, and make adjustments as needed.
+
+Deployment: Once the model has been trained and evaluated, it would be deployed as a web application or API. This would allow users to input their desired topic or hashtag and receive sentiment analysis results in real-time.
+
+Maintenance: The tool would require regular maintenance and updates to ensure that it continues to function correctly and effectively. This includes monitoring the performance, testing and fixing bugs, as well as updating the dataset and model to improve the performance.
+
+
+ \section{Work breakdown structure and Gantt chart}
+
+ \begin{enumerate}
+     \item Project initiation
+     \begin{enumerate}
+         \item Define project scope and objectives
+         \item Research social media platforms and dataset
+         \item Gather project requirements
+     \end{enumerate}
+     \item  Data collection
+     \begin{enumerate}
+         \item Develop code to access social media platform's API
+         \item Collect social media posts using API
+         \item Preprocess data (remove irrelevant information, tokenize etc.)
+     \end{enumerate}
+     \item Model development
+     \begin{enumerate}
+         \item Train machine learning model using labelled dataset
+         \item Evaluate model performance
+         \item Refine model as needed
+     \end{enumerate}
+     \item Deployment
+     \begin{enumerate}
+         \item Design web application
+         \item Design web API 
+         \item Develop web app and API
+         \item Test application
+         \item Deploy application to hosting platform
+     \end{enumerate}
+     \item Stabilization
+     \begin{enumerate}
+         \item Monitor application performance
+         \item Fix user bugs 
+         \item Update dataset and model to improve performance
+     \end{enumerate}
+     \item Project close
+     \begin{enumerate}
+         \item  Review project progress and deliverables
+         \item Archive project documents and materials
+     \end{enumerate}
+ \end{enumerate}
+
+\begin{figure}[H]
+    \includestandalone[width=1\textwidth]{gantt}
+  \caption{Gantt chart}
+  \label{fig:tikz:gantt}
+\end{figure}
+
+\section{Resources}
+Technical expertise: The project would require a team with knowledge and experience in natural language processing (NLP), machine learning, and web development. The team should have the ability to access social media platform's API, preprocess and extract features from the text data, train and evaluate machine learning models, and develop a web application or API.
+
+Data: A labelled dataset of social media posts with sentiment labels would be required to train the machine learning model. This dataset could be collected from publicly available sources or by using the social media platform's API.
+
+Hardware and software: The project would require access to a computer with sufficient processing power and memory to train machine learning models. The team would also need software for data preprocessing, model training and evaluation, and web development.
+
+Cloud infrastructure: Would be required to host the application and make it available to users.
+
+Time and budget: The project will require a significant amount of time and budget to complete. The team should have a clear understanding of the project schedule and budget, as well as any contingencies for delays or unexpected expenses.
+
+Communication: Clear and regular communication between team members and stakeholders would be essential for the success of the project. This includes keeping everyone informed of progress and any issues that arise, as well as soliciting feedback and input as needed.
+
+Continuous improvement: The project should be evaluated after completion and improve upon it. This would require monitoring the performance, testing and fixing bugs, as well as updating the dataset and model to improve the performance.
+
+\end{document}

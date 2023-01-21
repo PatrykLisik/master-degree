@@ -1,0 +1,62 @@
+@startgantt
+projectscale weekly
+-- Project initiation --
+[Define project scope and objectives] as [define] lasts 10 days
+[Research social media platforms and dataset] as [research] lasts 3 weeks
+[Gather project requirements] as [requirements] lasts 8 days
+[Gather project requirements] starts at [research]'s end
+-- Data collection --
+[Develop code to access social media platform's API] as [api_code] lasts 21 day
+[api_code] starts at [requirements]'s end
+[Collect social media posts using API]  as [collect_data] lasts 5 days
+[collect_data] starts at [api_code]'s end
+[Prepare Preprocess pipeline] as [preproces_pipeline] lasts 3 days
+[preproces_pipeline] starts at [Gather project requirements]'s end
+[preproces data] lasts 1 day
+[preproces data] starts at [collect_data]'s end
+[preproces data] starts at [preproces_pipeline]'s end
+-- Model development --
+[Train machine learning model using labeled dataset] as [train] lasts 3 week and 4 days
+note bottom
+  Assume we need to comeback to this task after evaluation
+end note
+[train]  starts at [preproces data]'s end
+
+[Evaluate model performance] lasts 2 weeks
+[Evaluate model performance]   starts at [train]'s end
+[Refine model as needed] starts at [Evaluate model performance]'s end
+-- Deployment --
+[Design  web app] lasts 15 days
+[Design  web app]  starts at [requirements]'s end
+[Design web api]  lasts 7 days
+[Design web api]  starts at [requirements]'s end
+[Develop web app] lasts 3 weeks
+[Develop web app]  starts at [Design  web app]'s end
+[Develop web api] lasts 3 weeks
+[Develop web api]  starts at [Design web api]'s end
+[Test application] lasts 10 days
+[Test application]  starts at [Develop web app]'s end
+[Test application]  starts at [Develop web api]'s end
+[Deploy application to hosting platform] lasts 4 days
+[Deploy application to hosting platform] starts at [Design web api]'s end
+note bottom
+  Assume app's version can be easily changed and every version is deployed to hosting platform
+end note
+[Let users in] lasts 1 days
+[Let users in] starts at [Test application]'s end
+-- Stabilization --
+
+[Monitor application performance] lasts 30 days
+[Monitor application performance] starts at [Let users in]'s end
+
+[Fix user bugs] lasts 30 days
+[Fix user bugs] starts at [Let users in]'s end
+[Update dataset and model to improve performance] lasts 30 days
+[Update dataset and model to improve performance] starts at [Let users in]'s end
+-- Project close --
+[Review project progress and deliverables] lasts 2 days
+[Review project progress and deliverables] starts at [Update dataset and model to improve performance]'s end
+[Archive project documents and materials] lasts 2 days
+[Archive project documents and materials] starts at [Update dataset and model to improve performance]'s end
+--- THE END ---
+@endgantt
