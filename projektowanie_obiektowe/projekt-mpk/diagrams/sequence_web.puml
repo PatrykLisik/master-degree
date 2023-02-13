@@ -1,0 +1,37 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+'autonumber
+actor mobile_app
+participant web_server
+database file_with_data
+
+mobile_app -> web_server: get all routes
+web_server -> file_with_data: get all routes
+file_with_data --> web_server
+web_server -> mobile_app
+mobile_app -> web_server: get route stops
+web_server -> file_with_data: get route
+web_server --> mobile_app
+file_with_data --> web_server
+web_server -> file_with_data: get stops with ids
+file_with_data --> web_server
+web_server -> web_server: prepare stops
+web_server --> mobile_app
+
+mobile_app -> web_server: get stop timetable
+web_server -> file_with_data: get route
+file_with_data --> web_server
+web_server -> file_with_data: get stops with ids
+file_with_data --> web_server
+web_server -> web_server: compute bus travel time to selected stop
+web_server -> file_with_data: get all transits
+file_with_data --> web_server
+loop filter selected route transits
+web_server -> web_server: check if transit's route id equals route id
+end
+loop prepare stop timetable
+web_server-> web_server: add travel time to transit start
+end
+web_server --> mobile_app
+@enduml

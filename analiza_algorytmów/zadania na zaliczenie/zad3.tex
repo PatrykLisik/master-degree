@@ -1,0 +1,222 @@
+%%%%%%%%%%%% Attribution %%%%%%%%%%%%
+% This template was created by 
+% Chuck F. Rocca at WCSU and may be
+% copied and used freely for 
+% non-commercial purposes.
+% 10-17-2021
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%% Start Document Header %%%%%%%
+% In creating a new document
+% copy and paste the header 
+% as is.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{color}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{forest}
+\usepackage{standalone}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+%"mystyle" code listing set
+\lstset{style=mystyle}
+
+\definecolor{tab1}{gray}{0.94}
+\definecolor{tab2}{rgb}{1, 1, 1}
+\def\code#1{\texttt{#1}}
+
+%%%% Header Information %%%%
+    \include{header}
+
+%%%% Document Information %%%%
+    \title{Zadanie 3}
+    \author{Patryk Lisik}
+    \date{\(13\) Styczeń  2023}
+
+%%%%%%% End Document Header %%%%%%%
+
+
+%%%% Begin Document %%%%
+% note that the document starts with
+% \begin{document} and ends with
+% \end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%% Format Running Header %%%%%
+\markboth{\theauthor}{\thetitle}
+
+%%%% Insert the Title Information %%%
+\maketitle
+
+
+%%%% General Description of the Document %%%%
+\begin{abstract}
+Programista ma napisać kod obliczający wartości funkcji $H(n)$ określonej następującymi równaniami:
+
+\begin{align*}
+&H(0)=1 \\
+&H(1)=3 \\
+&H(n) = [1 H(n-1)][2+H(n-2]
+\end{align*}
+
+Ponieważ jest on zafascynowany pomysłem rekurencji, to natychmiast napisał następujący kod:
+\begin{lstlisting}[mathescape=true]
+function H(n)
+    if n $\le$ 1 then
+        return 2$\cdot$n + 1
+    else
+        return (1+h(n-1))$\cdot$(2+h(n-2))
+    end if
+end function
+\end{lstlisting}
+
+Pomimo swej elegancji i prostoty, algorytm ten jest niewydajny
+dla dużych wartości $n$
+\begin{enumerate}[label=(\alph*)]
+    \item Zbuduj drzewo wszystkiech wywołań funkcji podczas wykonywania wywołania $H(6)$ .
+    Oblicz całkowitą liczbę wywołań funkcji dla $H(6)$.
+    \item Niech $a_n$ będzie całkowitą liczba wywołań funkcji przy obliczaniu H(n).
+    Napisz i rozwiąż związek rekurencyjny spełniany przez $a_n$.
+    \item Przepisz kod dla $H(n)$ tak, aby był on iteracyjny i wydajny.
+\end{enumerate}
+\end{abstract}
+
+
+%%%% Introduction to the General Template %%%%
+\section*{a) Drzewo wywołań}
+\begin{figure}[H]
+    \includestandalone[width=\textwidth]{tree}
+  \caption{Drzewo wywołań funkcji H}
+  \label{fig:tikz:H}
+\end{figure}
+
+\section*{b) Związek rekurencyjny ilości wywołań}
+Ilość wywołań można zdefiniować jako sumę ilości wywołań na poprzednich poziomach dodać obecny poziom. 
+Jest to rekurencja liniowa niejednorodna drugiego rzędu. 
+\begin{align*}
+&a_0 = 1\\
+&a_1 = 1 \\
+&a_n = a_{n-2}+a_{n-1}+1
+\label{eq:recursion}
+\end{align*}
+
+Rozwiążmy rekurencję liniową jednorodną $a_n^o = a_{n-2}+a_{n-1}$.
+Równanie charakterystyczne
+\begin{align*}
+&r^2=r+1 \\
+&r_1=\frac{1+\sqrt{5}}{2} \\
+&r_2=\frac{1-\sqrt{5}}{2}  
+\end{align*}
+
+Rekurencja $a_n^o$ ma rozwiązanie postaci 
+$$ 
+a_n^o = \alpha_1r_1^n+\alpha_2r_2^n
+$$
+
+Znajdujemy szczególne rozwiązanie dla rekurencji niejednorodnej.
+
+\begin{align*}
+&b_n=b_{n-2}+b_{n-1}+1 \\
+&b_n=\beta_0 \\
+&\beta_0=\beta_0+\beta_0+1 \\
+&\beta_0=-1 \\
+\end{align*}
+
+Sumujemy ogólne rozwiązanie rekurencji jednorodnej $a_n^o$ i rozwiązanie szczeólne części niejednorodnej.
+$$
+a_n= \alpha_1\left(\frac{1+\sqrt{5}}{2}\right)^n+\alpha_2\left(\frac{1-\sqrt{5}}{2}\right)^n - 1
+$$
+
+Podstawiamy znane stałe i obliczamy $\alpha_1$ i $\alpha_2$
+
+$$
+\begin{cases}
+a_0=1 \\
+a_1=1
+\end{cases}
+$$
+
+$$
+\begin{cases}
+a_0 = \alpha_1r_1^0+\alpha_2r_2^0 - 1 = \alpha_1 + \alpha_2 - 1 \implies \alpha_2= -\alpha_1+2  \\
+a_1 = \alpha_1r_1^1+\alpha_2r_2^1 - 1 = \alpha_1 \frac{1+\sqrt{5}}{2}+\alpha_2\frac{1-\sqrt{5}}{2} - 1
+\end{cases}
+$$
+
+$$
+1 = \alpha_1 \frac{1+\sqrt{5}}{2}+(-\alpha_1+2)\frac{1-\sqrt{5}}{2} - 1
+$$
+$$
+2 = \alpha_1 \frac{1+\sqrt{5}}{2}+\alpha_1\frac{\sqrt{5}-1}{2}+1-\sqrt{5}
+$$
+
+$$
+1 = \alpha_1 (\frac{1+\sqrt{5}}{2}+\frac{\sqrt{5}-1}{2})-\sqrt{5}
+$$
+$$
+1 = \alpha_1\sqrt{5} -\sqrt{5}
+$$
+$$
+\alpha_1 = \frac{1+\sqrt{5}}{\sqrt{5}} = \frac{5+\sqrt{5}}{5}
+$$
+
+$$
+\begin{cases}
+\alpha_1 = \frac{\sqrt{5}+5}{5} \\
+\alpha_2 =  -\alpha_1+2 = \frac{5-\sqrt{5}}{5} 
+\end{cases}
+$$
+
+Finalnie
+$$
+a_n= \frac{\sqrt{5}+5}{5}\left(\frac{1+\sqrt{5}}{2}\right)^n+\frac{5-\sqrt{5}}{5} \left(\frac{1-\sqrt{5}}{2}\right)^n - 1
+$$
+
+\section*{c) Implementacja iteracyjna}
+Iteracyjna implementacja funkcji $H$ w języku Python 3
+\begin{lstlisting}[language=python]
+def H(x):
+    if x == 0:
+        return 1
+    if x == 1:
+        return 3
+    h_0 = 1
+    h_1 = 3
+    h=None
+    for _ in range(x-1):
+        h = (1+h_1)*(2+h_0)
+        h_0 = h_1
+        h_1 = h
+    return h
+\end{lstlisting}
+\end{document}

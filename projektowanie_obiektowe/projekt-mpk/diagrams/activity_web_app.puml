@@ -1,0 +1,15 @@
+@startuml
+
+start
+:Show all routes;
+:Select route;
+:Show all route's stops;
+:Select route's stop;
+:Compute time to selected stop;
+repeat
+  :Find next route start time;
+  :add time to stop;
+repeatwhile (<b> next route start time exist?)
+:Show stop timetable of chosen route;
+stop
+@enduml

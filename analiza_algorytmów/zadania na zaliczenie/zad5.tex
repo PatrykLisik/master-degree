@@ -1,0 +1,99 @@
+%%%%%%%%%%%% Attribution %%%%%%%%%%%%
+% This template was created by 
+% Chuck F. Rocca at WCSU and may be
+% copied and used freely for 
+% non-commercial purposes.
+% 10-17-2021
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+%"mystyle" code listing set
+\lstset{style=mystyle}
+
+\definecolor{tab1}{gray}{0.94}
+\definecolor{tab2}{rgb}{1, 1, 1}
+\def\code#1{\texttt{#1}}
+ 
+ \newcommand{\floor}[1]{\left\lfloor #1  \right\rfloor}
+ \newcommand{\ceil}[1]{\left\lceil #1 \right\rceil} 
+%%%% Header Information %%%%
+    \include{header}
+
+%%%% Document Information %%%%
+    \title{Zadanie 5}
+    \author{Patryk Lisik}
+    \date{\(21\) Styczeń  2023}
+
+
+\begin{document}
+
+
+\markboth{\theauthor}{\thetitle}
+
+\maketitle
+
+
+\begin{abstract}
+Poniżej jest podana funkcja obliczająca najmniejszy nietrywialny dzielnik (tj. większy od 1) dla liczby całkowitej większej niż 1.
+\begin{lstlisting}[mathescape=true]
+function snd(n)
+    if n $\ge$ 1 then 
+        return 0 
+    else
+        k $\leftarrow$ 2
+        while $k \cdot k \le n$ do
+            if n $\cong$ 0 mod k then
+                return k
+            end if
+        k $\leftarrow$ k + 1
+        end while
+    return n 
+    end if
+end function
+\end{lstlisting}
+\end{abstract}
+Zanalizuj wymaganą pamięć i czas wykonania dla wywołania tej funkcji.
+
+
+\section{Złożoność pamięciowa i czasowa}
+Algorytm wykonuje tylko jedną alokację -- w lini 5 alkownae jest $k=2$.
+Dlatego $M(snd(n))=\Theta(1)$.
+
+Algorytm posiada jedną pętlę z warunkiem $k\cdot k \le n $, co oznacza że wykonuje się ona co najwyżej $\floor{\sqrt{n}}$ razy.
+Wszystkie operacje wewnątrz pętli są stało-czasowe.
+Stąd $T(snd(n)) = O( \floor{\sqrt{n}} ) $. 
+Dla $n \le 1$ algorytm kończy się. Dlatego $T(snd(n)) = \Omega(1) $. 
+
+
+
+
+\end{document}
