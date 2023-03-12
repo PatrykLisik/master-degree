@@ -1,0 +1,8 @@
+numpy
+matplotlib
+jupyter
+pandas
+pytest
+seaborn
+nbconvert[webpdf]
+matplotlib-label-lines
