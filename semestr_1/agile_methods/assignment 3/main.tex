@@ -1,0 +1,187 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[verbose,a4paper,tmargin=3cm,bmargin=3cm,lmargin=2.5cm,rmargin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+
+%foot
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancyplain}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyfoot[L]{Patryk Lisik, Mateusz Borowiec, Assignment \#3}
+\fancyfoot[R]{\thepage\ / \pageref{LastPage}}
+
+\begin{document}
+
+\begin{titlepage}
+\vspace{3cm}
+
+\begin{minipage}{0.33 \textwidth}
+\begin{flushleft}
+\large
+% Imię i nazwisko:\\
+\textsc{Patryk Lisik}
+\end{flushleft}
+\end{minipage}
+\hspace{0.2\textwidth}
+\begin{minipage}{0.33 \textwidth}
+\begin{flushleft}
+\large
+% Imię i nazwisko:\\
+\textsc{Mateusz Borowiec}
+\end{flushleft}
+\end{minipage}
+
+\vspace{2cm}
+
+{\center\huge\bfseries Agile Methods \par}
+
+\vspace{1.5cm}
+{\center\huge\bfseries Assignment \#3\par}
+
+\end{titlepage}
+
+
+
+
+\section{Introduction}
+The purpose of this assignment is to plan a project using the Agile framework, specifically Scrum, for a tool that utilizes natural language processing techniques to analyse text data from social media platforms and determine the sentiment (positive, negative, neutral) of the posts. The objective of this assignment is to understand the differences between traditional project management perspectives and the Agile framework through clearly defining all the roles and tasks associated with the project. The following sections will describe the team members and their roles, the artefacts related to the project, and the necessary events for the project to be implemented.
+\tableofcontents
+
+\newpage
+\section{Team}
+
+\subsection{Product Owner}
+A product owner is a key role in the Scrum framework, responsible for defining, prioritizing, and communicating the requirements for a product or service.
+They are the voice of the customer and the business stakeholders, and are responsible for ensuring that the development team is working on the most valuable features to deliver the highest business value.
+The product owner is a critical role in the Scrum process, and should possess a strong understanding of the product and the market, as well as good communication and leadership skills. 
+
+\subsection{Scrum Master}
+Facilitates the Scrum process and removes any obstacles for the team. The Scrum Master is also ensuring that the team follows the Scrum framework.
+
+\subsection{Development Team}
+Consists of data scientists, natural language processing experts, and software engineers who work on building and testing the tool.  The Development Team is responsible for delivering the product increment at the end of each sprint.
+
+\subsection{Data Analyst}
+A data analyst is a professional who is responsible for collecting, cleaning, analyzing, and interpreting large sets of data to support informed decision making within an organization.
+They will use various analytical tools and techniques, such as statistical analysis, data visualization, and machine learning, to identify patterns, trends, and insights in data.
+
+Data analysts often have a background in statistics, mathematics, computer science, or a related field, and possess strong analytical and problem-solving skills.
+They also need to be proficient in various analytical tools and programming languages, as well as have good communication skills to be able to explain their findings to non-technical stakeholders.
+
+\section{Artefacts}
+
+\subsection{Product Backlog}
+A product backlog is a prioritized list of features, enhancements, and bugs for a product or project. It is an essential tool in Agile development, used to manage and prioritize the work that needs to be done.
+
+The product backlog is typically managed by the product owner, who is responsible for defining and maintaining the backlog, based on the goals and objectives of the project.
+The product owner, works closely with stakeholders such as customers, users, and development team to gather and prioritize the requirements for the product.
+They also maintain the backlog by continuously reassessing the priorities and ensuring that the backlog reflects the current goals and objectives of the project.
+
+The product backlog is a living document, and it is expected to change over time as the product evolves, new requirements are identified, and priorities shift. The items in the backlog are ordered in priority, with the most important and valuable items at the top.
+The items at the top of the backlog are typically worked on during the next sprint, while items lower in the backlog may be worked on at a later time.
+
+The product backlog is a key tool in Agile development, as it provides a clear and transparent view of the work that needs to be done, and allows the team to focus on delivering the most valuable features to the customer.
+
+
+\subsection{Sprint Backlog}
+A sprint backlog is a list of tasks that a development team commits to completing during an upcoming sprint in an Agile development process.
+It is a subset of the product backlog, which is a prioritized list of all the work that needs to be done for a product or project.
+
+During the sprint planning meeting, the development team will review the product backlog and select a set of items that they believe can be completed during the upcoming sprint.
+These items are then added to the sprint backlog.
+The team will also plan out the tasks that need to be done to complete these items and assign them to individual team members.
+
+The sprint backlog is owned by the development team, who is responsible for delivering the work that is on it. 
+They are committed to completing the work that is on the sprint backlog and must do their best to complete it within the sprint time-box.
+
+The sprint backlog is a key tool in Agile development, as it provides a clear and transparent view of the work that needs to be done during the sprint, and allows the team to focus on delivering a potentially releasable product increment at the end of the sprint.
+
+\subsection{Increment}
+An increment is the sum of all the product backlog items completed during a sprint, plus the value of the increments of all previous sprints.
+It refers to the progress made towards a releasable, usable and potentially shippable product at the end of each sprint.
+
+The Increment is a fundamental concept in Scrum, as it represents the work that the development team has done to advance the product towards its final goal.
+Each increment builds upon the previous one and adds new functionality, features or improvements to the product.
+
+At the end of each sprint, the development team is expected to deliver a usable and potentially releasable product increment. This means that the increment should be in a state where it can be shown to stakeholders, and used by customers or users if necessary
+
+\subsection{Data Set}
+The Data Set is a collection of text data from social media platforms that the tool will analyse.
+
+\section{Events}
+
+\subsection{Project identification/kick off}
+The project goal that was chosen in previous assignment is the development of a chatbot for customer service using the Scrum framework.
+The chatbot will be used by a company to handle customer queries and complaints through text-based communication.
+The goal of the project is to improve the efficiency and effectiveness of customer service by  the process of handling common queries and providing instant assistance to customers.
+
+Main goal of this meeting is to team to agree to definitions like definitions of done, acceptance criteria and so on.
+In spite of popularity of scrum familiarity with process cannot be assumed, so part of the meeting need to spent to educate the team. 
+
+
+
+\subsection{Sprint Planning}
+A meeting at the beginning of each sprint where the team plans the work to be done during the sprint.
+The goal of sprint planning is to align the development team with the goals, objectives, and priorities of the project.
+During the sprint planning meeting, the team will review the backlog of work to be done, and the team members will commit to completing a set of tasks during the upcoming sprint.
+The team will also review any dependencies or potential roadblocks, and plan out the work that  to be done to deliver a potentially releasable product increment at the end of the sprint.
+The output of the sprint planning is a sprint backlog, which is a list of tasks that the team commits to completing during the sprint.
+
+\subsection{Daily Scrum}
+A brief meeting held every day and it is typically time-boxed to 15 minutes and it is a meeting exclusively for the development team.
+ The purpose of the Daily Scrum is to provide a consistent and regular opportunity for team members to synchronize their work and plan for the upcoming day.
+During the Daily Scrum, each team member will answer three questions:
+\begin{enumerate}
+    \item What did I do yesterday that helped the Development Team meet the Sprint Goal?
+    \item What will I do today to help the Development Team meet the Sprint Goal?
+    \item Do I see any impediment that prevents me or the Development Team from meeting the Sprint Goal?
+\end{enumerate}
+
+\subsection{Sprint Review}
+A meeting at the end of each sprint. 
+ The goal of the Sprint Review is to demonstrate the work that was completed during the sprint and to gather feedback from stakeholders.
+ During the Sprint Review, the development team will present the work that was completed during the sprint.
+ This includes any new features or improvements to the product, as well as any bugs that were fixed.
+ The team will also demonstrate the work, typically using a working prototype or a live version of the product
+
+ Stakeholders, such as the product owner, customers, and other members of the organization, will have the opportunity to provide feedback and ask questions about the work that was completed.
+ The team will also review the progress that has been made towards the overall goals and objectives of the project, and discuss any adjustments that need to be made to the plan for the next sprint.
+ The outcome of the Sprint Review is a revised product backlog based on the feedback and input from the stakeholders.
+ 
+\subsection{Sprint Retrospective}
+A meeting at the end of each sprint where the team reflects on the sprint and identifies areas for improvement.
+
+During the Sprint Retrospective, the development team will review the work that was completed during the sprint, and discuss what went well and what could have been done better.
+The team will also identify any problems or roadblocks that were encountered, and discuss  for addressing them.
+The team will also identify any improvements that can be made to the process, and make a plan for implementing those improvements in the next sprint.
+
+The Sprint Retrospective is an opportunity for the team to reflect on their work, and make changes that will improve their performance and increase the effectiveness of the team.
+The Sprint Retrospective is a critical part of the Agile development process, as it allows the team to continuously improve and adapt to changing requirements and conditions.
+
+
+
+\section{Conclusion}
+In conclusion, the project to build a data analytics tool for a retail company using an agile approach is a complex and challenging endeavor that requires a skilled and experienced team.
+By following the Scrum framework, we have outlined the roles and responsibilities of key players such as the data analyst and product owner, who will work closely together to deliver the project.
+
+With the agile methodology, the team will be able to adapt to changes and deliver a high-quality product that meets the needs of the business and its customers, by breaking the project into smaller chunks and testing along the way.
+This approach also allows for more frequent feedback and communication with the customer, enabling the team to make any necessary adjustments to ensure that the final product meets the customer's needs.
+
+Overall, this project has the potential to significantly improve the company's decision making and operational efficiency by providing valuable insights and analytics on customer behavior and sales trends.
+With the right team and resources in place, we are confident that we can deliver this project successfully, and with more flexibility and adaptability to changing requirements.
+
+
+\begin{thebibliography}{9}
+\bibitem{scrumguide}
+Scrum Guide, (Scrum.org).
+\bibitem{scrumprimer}
+The Scrum Primer, (ScrumPrimer.org)
+
+\bibitem{agilemanifesto}
+Beck, Kent, Beedle, Mike, van Bennekum, Arie, Cockburn, Alistair, Cunningham, Ward, Fowler, Martin, Grenning, James, Highsmith, Jim, Hunt, Andrew, Jeffries, Ron, Kern, Jon, Marick, Brian, Martin, Robert C., Mellor, Steve, Schwaber, Ken, Sutherland, Jeff and Thomas, Dave Manifesto for Agile Software Development. Manifesto for Agile Software Development (2001). .
+\end{thebibliography}
+
+
+\end{document}
