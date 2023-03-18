@@ -1,0 +1,128 @@
+[
+  {
+    "id": "d0ec2ff1-f3ef-4409-b3f5-c246267f3bd4",
+    "name": "INFLANCKA - GIBALSKIEGO",
+    "x": 43.12,
+    "y": 21.11,
+    "time_to_other_stops": [
+      {
+        "stop_id": "4baef2fe-def8-4ef6-ac2d-69e5b720a04d",
+        "time_in_sec": 60
+      }
+    ]
+  },
+  {
+    "id": "b2627c98-2a83-4558-9316-f0b51ad0786a",
+    "name": "INFLANCKA - MARYSI\u0143SKA",
+    "x": 43.12,
+    "y": 21.11,
+    "time_to_other_stops": []
+  },
+  {
+    "id": "4baef2fe-def8-4ef6-ac2d-69e5b720a04d",
+    "name": "ZAGAJNIKOWA - INFLANCKA",
+    "x": 12.12,
+    "y": 11.11,
+    "time_to_other_stops": [
+      {
+        "stop_id": "d0ec2ff1-f3ef-4409-b3f5-c246267f3bd4",
+        "time_in_sec": 630
+      },
+      {
+        "stop_id": "2798c6b2-7da0-47e9-861f-e251a30e0357",
+        "time_in_sec": 60
+      }
+    ]
+  },
+  {
+    "id": "2798c6b2-7da0-47e9-861f-e251a30e0357",
+    "name": "ZAGAJNIKOWA - OKOPOWA",
+    "x": 12.12,
+    "y": 11.11,
+    "time_to_other_stops": [
+      {
+        "stop_id": "22a6d331-16ad-46bf-b599-d7fe66b56d3a7",
+        "time_in_sec": 60
+      }
+    ]
+  },
+  {
+    "id": "22a6d331-16ad-46bf-b599-d7fe66b56d3a",
+    "name": "SPORNA - BRACKA",
+    "x": 12.12,
+    "y": 11.11,
+    "time_to_other_stops": [
+      {
+        "stop_id": "ae7f982e-2919-4f54-8f81-60b2777dcc4c",
+        "time_in_sec": 60
+      }
+    ]
+  },
+  {
+    "id": "ae7f982e-2919-4f54-8f81-60b2777dcc4c",
+    "name": "SPORNA - WOJSKA POLSKIEGO",
+    "x": 12.12,
+    "y": 11.11,
+    "time_to_other_stops": [
+      {
+        "stop_id": "cf8c1ee9-a04d-4dee-937f-a9b2333aa990",
+        "time_in_sec": 180
+      }
+    ]
+  },
+  {
+    "id": "cf8c1ee9-a04d-4dee-937f-a9b2333aa990",
+    "name": "PALKI - \u0179R\u00d3D\u0141OWA",
+    "x": 12.12,
+    "y": 11.11,
+    "time_to_other_stops": [
+      {
+        "stop_id": "3b0bf02f-6951-42a0-9bf5-ac3f14cb7e41",
+        "time_in_sec": 120
+      }
+    ]
+  },
+  {
+    "id": "6aabf2e8-8591-42a1-85e6-44fe0d6ad424",
+    "name": "MARYSIN STADION",
+    "x": 43.12,
+    "y": 21.11,
+    "time_to_other_stops": [
+      {
+        "stop_id": "3d434e95-92b6-4682-890a-38c963f51213",
+        "time_in_sec": 60
+      }
+    ]
+  },
+  {
+    "id": "3d434e95-92b6-4682-890a-38c963f51213",
+    "name": "MARYSI\u0143SKA - OKOPOWA",
+    "x": 43.12,
+    "y": 21.11,
+    "time_to_other_stops": [
+      {
+        "stop_id": "d0ec2ff1-f3ef-4409-b3f5-c246267f3bd4",
+        "time_in_sec": 120
+      }
+    ]
+  },
+  {
+    "id": "3b0bf02f-6951-42a0-9bf5-ac3f14cb7e41",
+    "name": "P\u00d3\u0141NOCNA - KAMI\u0143SKIEGO",
+    "x": 12.12,
+    "y": 11.11,
+    "time_to_other_stops": [
+      {
+        "stop_id": "87733de2-cb1d-4114-aeb9-f5c2e1378d9d1",
+        "time_in_sec": 120
+      }
+    ]
+  },
+  {
+    "id": "87733de2-cb1d-4114-aeb9-f5c2e1378d9d",
+    "name": "STERLINGA - POMORSKA",
+    "x": 12.12,
+    "y": 11.11,
+    "time_to_other_stops": []
+  }
+]
