@@ -4,7 +4,7 @@ from sanic import json, Blueprint
 from sanic.log import logger
 
 from src.web import transit_repository, driver_repository, vehicle_repository, route_repository, stop_repository
-from src.web.transit_usecase import add_transit_usecase, get_transit_usecase, get_all_transits_usecase
+from src.web.api.transit_usecase import add_transit_usecase, get_transit_usecase, get_all_transits_usecase
 
 transit_blueprint = Blueprint(name="transit")
 

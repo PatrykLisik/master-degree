@@ -2,7 +2,7 @@ from sanic import Blueprint, json
 from sanic.log import logger
 
 from src.web import route_repository, transit_repository, stop_repository
-from src.web.mobile_app_usecase import get_all_routes_usecase, get_route_stops_usecase, get_stop_timetable_usecase
+from src.web.api.mobile_app_usecase import get_all_routes_usecase, get_route_stops_usecase, get_stop_timetable_usecase
 
 mobile_app_blueprint = Blueprint(name="webapp", url_prefix="app")
 

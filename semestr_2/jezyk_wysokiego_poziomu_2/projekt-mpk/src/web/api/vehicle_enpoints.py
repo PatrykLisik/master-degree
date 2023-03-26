@@ -4,7 +4,7 @@ from sanic import json, Blueprint
 from sanic.log import logger
 
 from src.web import vehicle_repository
-from src.web.vehicle_usecase import add_vehicle_usecase, get_vehicle_usecase, get_all_vehicles_usecase, \
+from src.web.api.vehicle_usecase import add_vehicle_usecase, get_vehicle_usecase, get_all_vehicles_usecase, \
     update_vehicle_use_case
 
 vehicle_blueprint = Blueprint(name="vehicle")

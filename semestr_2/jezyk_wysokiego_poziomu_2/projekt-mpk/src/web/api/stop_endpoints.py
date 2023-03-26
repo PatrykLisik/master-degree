@@ -4,7 +4,7 @@ from sanic import json, Blueprint
 from sanic.log import logger
 
 from src.web import stop_repository
-from src.web.stop_usecase import add_stop_usecase, get_stop_usecase, get_all_stop_usecase, \
+from src.web.api.stop_usecase import add_stop_usecase, get_stop_usecase, get_all_stop_usecase, \
     add_time_between_stops_usecase
 
 stop_blueprint = Blueprint(name="stops")

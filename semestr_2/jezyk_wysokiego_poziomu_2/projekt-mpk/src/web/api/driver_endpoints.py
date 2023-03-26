@@ -4,7 +4,7 @@ from sanic import json, Blueprint
 from sanic.log import logger
 
 from src.web import driver_repository
-from src.web.driver_usecase import add_driver_usecase, get_driver_usecase, get_all_drivers_usecase, \
+from src.web.api.driver_usecase import add_driver_usecase, get_driver_usecase, get_all_drivers_usecase, \
     update_driver_use_case
 
 driver_blueprint = Blueprint(name="driver", url_prefix="backoffice/")

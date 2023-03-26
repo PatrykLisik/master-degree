@@ -1,5 +1,12 @@
 version: '3'
 services:
+  db:
+    image: postgres:15.2
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: dev_user
+      POSTGRES_DB: mpk
   server:
     container_name: "mpk_server"
     build:
@@ -10,4 +17,9 @@ services:
     volumes:
       - ./src:/usr/src/
       - ./data:/usr/data
+    depends_on:
+      - db
+    environment:
+      - TEMPLATING_ENABLE_ASYNC=TRUE
+      - TEMPLATING_PATH_TO_TEMPLATES="/usr/src/templates"
     entrypoint: "sanic src.server.app --host 0.0.0.0 --port 8080 --dev"

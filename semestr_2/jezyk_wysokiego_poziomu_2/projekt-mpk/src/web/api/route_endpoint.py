@@ -5,7 +5,7 @@ from sanic import Blueprint, json
 from sanic.log import logger
 
 from src.web import route_repository, stop_repository
-from src.web.route_usecase import add_route_usecase, get_route_usecase, get_all_routes_usecase
+from src.web.api.route_usecase import add_route_usecase, get_route_usecase, get_all_routes_usecase
 
 route_blueprint = Blueprint(name="routes")
 
