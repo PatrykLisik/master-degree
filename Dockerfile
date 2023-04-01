@@ -1,4 +1,4 @@
-FROM jupyter/scipy-notebook:python-3.9.5
+FROM jupyter/scipy-notebook:python-3.10
 
 #VOLUME . /home/jovyan
 COPY requirements.txt requirements.txt
