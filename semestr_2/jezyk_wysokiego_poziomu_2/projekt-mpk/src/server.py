@@ -1,3 +1,5 @@
+import os
+
 from sanic import Sanic
 from sanic_ext import render
 
@@ -7,6 +9,7 @@ from src.web.api.route_endpoint import route_blueprint
 from src.web.api.stop_endpoints import stop_blueprint
 from src.web.api.transit_endpoints import transit_blueprint
 from src.web.api.vehicle_enpoints import vehicle_blueprint
+
 # from src.web.api.frontend_enpoints import html_blueprint
 
 app = Sanic("MPK")
@@ -17,10 +20,18 @@ app.blueprint(route_blueprint)
 app.blueprint(vehicle_blueprint)
 app.blueprint(transit_blueprint)
 app.blueprint(mobile_app_blueprint)
+
 # app.blueprint(html_blueprint)
+app.config.TEMPLATING_PATH_TO_TEMPLATES = os.getenv("TEMPLATING_PATH_TO_TEMPLATES", "templates")
 
 
 @app.get("/")
 async def index(request):
-    return await render("index.html", context={"test_str": "test123"}, status=200)
+    with open("src/templates/index.html", "r") as infile:
+        print(infile.read())
+    print(app.config.TEMPLATING_PATH_TO_TEMPLATES)
+    return await render("index.html", context={"seq": ["three", "four"]}, status=200)
 
+
+if __name__ == '__main__':
+    app.run(dev=True, port=8080, host="0.0.0.0")
