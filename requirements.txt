@@ -6,3 +6,6 @@ pytest
 seaborn
 nbconvert[webpdf]
 Pyppeteer
+xeus-python
+jupyterlab
+tqdm
