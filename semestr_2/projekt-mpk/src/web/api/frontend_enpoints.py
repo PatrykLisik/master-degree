@@ -10,5 +10,10 @@ async def index(request) -> HTTPResponse:
 
 
 @html_blueprint.get("/login")
-async def index(request) -> HTTPResponse:
+async def login(request) -> HTTPResponse:
     return await render("login.html", status=200)
+
+
+@html_blueprint.get("/signup")
+async def signup(request) -> HTTPResponse:
+    return await render("signup.html", status=200)
