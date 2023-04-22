@@ -8,3 +8,7 @@ html_blueprint = Blueprint(name="frontend", url_prefix="/")
 async def index(request) -> HTTPResponse:
     return await render("welcome.html", status=200)
 
+
+@html_blueprint.get("/login")
+async def index(request) -> HTTPResponse:
+    return await render("login.html", status=200)
