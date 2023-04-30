@@ -4,9 +4,13 @@ services:
     image: postgres:15.2
     restart: always
     environment:
-      POSTGRES_PASSWORD: example
-      POSTGRES_USER: dev_user
-      POSTGRES_DB: mpk
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_DB: $POSTGRES_DB
+    healthcheck:
+      test: pg_isready --username=$POSTGRES_USER --dbname=$POSTGRES_DB
+    ports:
+      - "5432:5432"
   server:
     container_name: "mpk_server"
     build:
@@ -17,8 +21,14 @@ services:
     volumes:
       - ./src:/app/src/
       - ./data:/app/data
+      - ./migrations:/app/migrations
     depends_on:
       - db
     environment:
       - TEMPLATING_PATH_TO_TEMPLATES=/app/src/templates/
-    entrypoint: "sanic src.server.app --host 0.0.0.0 --port 8080 --dev"
+      - DB_PASSWORD=$POSTGRES_PASSWORD
+      - DB_USER=$POSTGRES_USER
+      - DB_NAME=$POSTGRES_DB
+      - DB_HOST=db
+      - DB_PORT=5432
+    entrypoint: "alembic upgrade head && sanic src.server.app --host 0.0.0.0 --port 8080 --dev"
