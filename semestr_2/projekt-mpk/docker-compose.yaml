@@ -1,5 +1,22 @@
 version: '3'
 services:
+  pgadmin:
+    image: dpage/pgadmin4:7.0
+    build:
+      context: .
+    environment:
+      - MASTER_PASSWORD_REQUIRED=False
+      - PGADMIN_DEFAULT_EMAIL=admin@dev.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_LISTEN_ADDRESS=0.0.0.0
+      - PGADMIN_LISTEN_PORT=8081
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./serves.json:/pgadmin4/servers.json
+      - ./pg_admin_data:/var/lib/pgadmin
+    depends_on:
+      - db
   db:
     image: postgres:15.2
     restart: always
@@ -11,6 +28,8 @@ services:
       test: pg_isready --username=$POSTGRES_USER --dbname=$POSTGRES_DB
     ports:
       - "5432:5432"
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
   server:
     container_name: "mpk_server"
     build:
@@ -31,4 +50,4 @@ services:
       - DB_NAME=$POSTGRES_DB
       - DB_HOST=db
       - DB_PORT=5432
-    entrypoint: "alembic upgrade head && sanic src.server.app --host 0.0.0.0 --port 8080 --dev"
+    entrypoint: ["/bin/sh", "-c", "alembic upgrade head && sanic src.server.app --host 0.0.0.0 --port 8080 --dev "]

@@ -1,6 +1,7 @@
 import decimal
 from dataclasses import dataclass, field
 from datetime import timedelta, datetime
+from enum import Enum
 from typing import List, Dict
 
 
@@ -41,3 +42,17 @@ class Driver:
     last_name: str = field(hash=False)
     PESEL: str = field(hash=False)
     phone: str = field(hash=False)
+
+
+class UserType(Enum):
+    App = 1
+    Backoffice = 2
+
+
+@dataclass(frozen=True)
+class User:
+    id: str
+    name: str
+    email: str
+    password_hash: str
+    user_type: UserType

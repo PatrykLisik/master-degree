@@ -1,8 +1,8 @@
-"""create user table
+"""init
 
-Revision ID: 2db662ac6b72
+Revision ID: 28bc782dd26d
 Revises: 
-Create Date: 2023-04-30 12:52:11.082340
+Create Date: 2023-04-30 13:43:54.153008
 
 """
 from alembic import op
