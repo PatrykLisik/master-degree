@@ -35,11 +35,18 @@ async def login(request: Request, user_repository: AbstractUserRepository) -> HT
     return add_logged_in_cookie(response, user)
 
 
+@user_blueprint.route("/logout")
+async def logout(request: Request) -> HTTPResponse:
+    response = redirect("/", )
+    response.add_cookie(COOKIE_KEY, max_age=0, value='')
+    return response
+
+
 def add_logged_in_cookie(response: HTTPResponse, user: User) -> HTTPResponse:
     response.add_cookie(COOKIE_KEY, value=json.dumps({
         "name": user.name,
         "email": user.email,
         "id": user.id,
         "type": user.user_type.name
-    },  separators=(',', ':')), secure=False, max_age=300)
+    }, separators=(',', ':')), secure=False, max_age=300)
     return response
