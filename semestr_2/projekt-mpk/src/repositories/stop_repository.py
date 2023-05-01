@@ -1,71 +1,46 @@
 import decimal
 import json
 import uuid
-from abc import ABC, abstractmethod
 from datetime import timedelta
-from typing import Set, Dict
+from typing import Dict, Set
 
 from sanic.log import logger
 
-from src.model.internal_model import Stop
-
-
-class AbstractStopRepository(ABC):
-
-    @abstractmethod
-    def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> Stop:
-        raise NotImplementedError
-
-    @abstractmethod
-    def update(self, stop_id: str, updated_stop: Stop):
-        raise NotImplementedError
-
-    @abstractmethod
-    def get(self, stop_id: str) -> Stop:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_all(self) -> Set[Stop]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_many(self, stop_ids: set[str]) -> Set[Stop]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
-        raise NotImplementedError
+from src.model.domain_model import Stop as DomainStop
+from src.model.infile_mappers import infile_stop_to_domain
+from src.model.infile_model import Stop
+from src.repositories.abstract import AbstractStopRepository
 
 
 class InMemoryStopRepository(AbstractStopRepository):
-    _stops = {}
+    _stops: dict[str, Stop] = {}
 
-    def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> Stop:
+    def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> DomainStop:
         new_stop = Stop(name=name,
                         geolocation=(geolocation_x, geolocation_y),
-                        time_to_other_stops={},
+                        time_to_other_stops_in_seconds={},
                         id=str(uuid.uuid4()))
         self._stops[new_stop.id] = new_stop
-        return new_stop
+        return infile_stop_to_domain(new_stop)
 
-    def update(self, stop_id: str, updated_stop: Stop):
+    def update(self, stop_id: str, updated_stop: DomainStop):
         self._stops[stop_id] = updated_stop
 
-    def get(self, stop_id: str) -> Stop:
-        return self._stops[stop_id]
+    def get(self, stop_id: str) -> DomainStop:
+        return infile_stop_to_domain(self._stops[stop_id])
 
-    def get_all(self) -> Set[Stop]:
-        return set(self._stops.values())
+    def get_all(self) -> Set[DomainStop]:
+        return {infile_stop_to_domain(stop) for stop in self._stops.values()}
 
-    def get_many(self, stop_ids: set[str]) -> Set[Stop]:
-        return {value for value in self._stops.values() if value.id in stop_ids}
+    def get_many(self, stop_ids: set[str]) -> Set[DomainStop]:
+        return {infile_stop_to_domain(value) for value in self._stops.values() if value.id in stop_ids}
 
     def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
-        start_stop = self.get(start_stop_id)
-        start_stop.time_to_other_stops[end_stop_id] = time
+        start_stop = self._stops.get(start_stop_id)
+        start_stop.time_to_other_stops_in_seconds[end_stop_id] = time.seconds
 
 
-class FileStopRepository(AbstractStopRepository):
+class InFileStopRepository(AbstractStopRepository):
     _file_name = "data/stop.json"
 
     def _get_stops(self) -> Dict[str, Stop]:
@@ -78,8 +53,8 @@ class FileStopRepository(AbstractStopRepository):
                     id=stop_data["id"],
                     name=stop_data["name"],
                     geolocation=(stop_data["x"], stop_data["y"]),
-                    time_to_other_stops={times["stop_id"]: timedelta(seconds=times["time_in_sec"])
-                                         for times in stop_data["time_to_other_stops"]}
+                    time_to_other_stops_in_seconds={times["stop_id"]: int(times["time_in_sec"])
+                                                    for times in stop_data["time_to_other_stops_in_seconds"]}
                 )
                     for stop_data in data}
         except FileNotFoundError:
@@ -93,11 +68,11 @@ class FileStopRepository(AbstractStopRepository):
             "name": stop.name,
             "x": stop.geolocation[0],
             "y": stop.geolocation[1],
-            "time_to_other_stops": [
+            "time_to_other_stops_in_seconds": [
                 {
                     "stop_id": stop_id,
-                    "time_in_sec": time_to_other_stop.seconds
-                } for stop_id, time_to_other_stop in stop.time_to_other_stops.items()
+                    "time_in_sec": time_to_other_stop
+                } for stop_id, time_to_other_stop in stop.time_to_other_stops_in_seconds.items()
 
             ]
 
@@ -109,12 +84,12 @@ class FileStopRepository(AbstractStopRepository):
     def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> Stop:
         new_stop = Stop(name=name,
                         geolocation=(geolocation_x, geolocation_y),
-                        time_to_other_stops={},
+                        time_to_other_stops_in_seconds={},
                         id=str(uuid.uuid4()))
         stops = self._get_stops()
         stops[new_stop.id] = new_stop
         self._set_stops(stops)
-        return new_stop
+        return infile_stop_to_domain(new_stop)
 
     def update(self, stop_id: str, updated_stop: Stop):
         stops = self._get_stops()
@@ -122,17 +97,17 @@ class FileStopRepository(AbstractStopRepository):
         self._set_stops(stops)
 
     def get(self, stop_id: str) -> Stop:
-        return self._get_stops()[stop_id]
+        return infile_stop_to_domain(self._get_stops()[stop_id])
 
     def get_all(self) -> Set[Stop]:
-        return {stop for stop in self._get_stops().values()}
+        return {infile_stop_to_domain(stop) for stop in self._get_stops().values()}
 
     def get_many(self, stop_ids: set[str]) -> Set[Stop]:
-        return {value for value in self._get_stops().values() if value.id in stop_ids}
+        return {infile_stop_to_domain(value) for value in self._get_stops().values() if value.id in stop_ids}
 
     def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
         stops = self._get_stops()
         start_stop = stops.get(start_stop_id)
-        start_stop.time_to_other_stops[end_stop_id] = time
+        start_stop.time_to_other_stops_in_seconds[end_stop_id] = time.seconds
         stops[start_stop_id] = start_stop
         self._set_stops(stops)

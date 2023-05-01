@@ -1,60 +1,47 @@
 import json
 import uuid
-from abc import ABC, abstractmethod
 from dataclasses import asdict
-from typing import Set, Dict, Optional
+from typing import Dict, Optional, Set
 
 from sanic.log import logger
 
-from src.model.internal_model import Driver
-
-
-class AbstractDriverRepository(ABC):
-
-    @abstractmethod
-    def add(self, first_name: str, last_name: str, pesel: str, phone: str) -> Driver:
-        raise NotImplementedError
-
-    @abstractmethod
-    def update(self, driver_id: str, updated_driver: Driver):
-        raise NotImplementedError
-
-    @abstractmethod
-    def get(self, driver_id: str) -> Driver:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_all(self) -> Set[Driver]:
-        raise NotImplementedError
+from src.model.domain_model import Driver as DomainDriver
+from src.model.infile_mappers import infile_driver_to_domain
+from src.model.infile_model import Driver as InFileDriver
+from src.repositories.abstract import AbstractDriverRepository
 
 
 class InMemoryDriverRepository(AbstractDriverRepository):
-    _data: Dict[str, Driver] = {}
+    _data: Dict[str, InFileDriver] = {}
 
-    def add(self, first_name: str, last_name: str, pesel: str, phone: str) -> Driver:
-        new_driver = Driver(first_name=first_name, last_name=last_name, PESEL=pesel, phone=phone, id=str(uuid.uuid4()))
+    def add(self, first_name: str, last_name: str, pesel: str, phone: str) -> DomainDriver:
+        new_driver = InFileDriver(first_name=first_name, last_name=last_name, PESEL=pesel, phone=phone,
+                                  id=str(uuid.uuid4()))
         self._data[new_driver.id] = new_driver
-        return new_driver
+        return infile_driver_to_domain(new_driver)
 
-    def update(self, driver_id: str, updated_driver: Driver):
+    def update(self, driver_id: str, updated_driver: DomainDriver):
         self._data[driver_id] = updated_driver
 
-    def get(self, driver_id: str) -> Optional[Driver]:
-        return self._data.get(driver_id, None)
+    def get(self, driver_id: str) -> Optional[DomainDriver]:
+        infile_driver = self._data.get(driver_id, None)
+        if infile_driver is None:
+            return None
+        return infile_driver_to_domain(infile_driver)
 
-    def get_all(self) -> Set[Driver]:
-        return set(self._data.values())
+    def get_all(self) -> Set[DomainDriver]:
+        return {infile_driver_to_domain(infile_driver) for infile_driver in self._data.values()}
 
 
 class InFileDriverRepository(AbstractDriverRepository):
     _file_name = "data/drivers.json"
 
-    def _get(self) -> Dict[str, Driver]:
+    def _get(self) -> Dict[str, InFileDriver]:
         try:
             with open(self._file_name, "r+", ) as infile:
                 logger.info("load driver")
                 data = json.load(infile)
-                return {driver_data["id"]: Driver(
+                return {driver_data["id"]: InFileDriver(
                     **driver_data
                 )
                     for driver_data in data}
@@ -62,28 +49,28 @@ class InFileDriverRepository(AbstractDriverRepository):
             logger.info("load driver file doest not exist")
             return {}
 
-    def _set(self, drivers: Dict[str, Driver]):
+    def _set(self, drivers: Dict[str, InFileDriver]):
         logger.info("save drivers")
         drivers_to_save = [asdict(driver) for driver in drivers.values()]
         json_to_save = json.dumps(drivers_to_save, indent=4)
         with open(self._file_name, "w+") as outfile:
             outfile.write(json_to_save)
 
-    def add(self, first_name: str, last_name: str, pesel: str, phone: str) -> Driver:
-        new_driver = Driver(first_name=first_name, last_name=last_name, PESEL=pesel, phone=phone, id=str(uuid.uuid4()))
+    def add(self, first_name: str, last_name: str, pesel: str, phone: str) -> DomainDriver:
+        new_driver = InFileDriver(first_name=first_name, last_name=last_name, PESEL=pesel, phone=phone, id=str(uuid.uuid4()))
         drivers = self._get()
         drivers[new_driver.id] = new_driver
         self._set(drivers)
         return new_driver
 
-    def update(self, driver_id: str, updated_driver: Driver):
+    def update(self, driver_id: str, updated_driver: DomainDriver):
         drivers = self._get()
         drivers[updated_driver.id] = updated_driver
         self._set(drivers)
 
-    def get(self, driver_id: str) -> Optional[Driver]:
+    def get(self, driver_id: str) -> Optional[DomainDriver]:
         drivers = self._get()
         return drivers.get(driver_id, None)
 
-    def get_all(self) -> Set[Driver]:
-        return set(self._get().values())
+    def get_all(self) -> Set[DomainDriver]:
+        return {infile_driver_to_domain(infile_driver) for infile_driver in self._get().values()}

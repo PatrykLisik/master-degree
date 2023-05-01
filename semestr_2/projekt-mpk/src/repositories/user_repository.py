@@ -1,22 +1,9 @@
-from abc import ABC, abstractmethod
-from typing import Self
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
-from src.database.user import User as DBUser, UserType as DBUserType
-from src.model.internal_model import User, UserType
-
-
-class AbstractUserRepository(ABC):
-
-    @abstractmethod
-    async def add(self, name: str, email: str, password_hash: str, user_type: UserType) -> User:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def login(self, email: str, password_hash: str, ) -> User:
-        raise NotImplementedError
+from src.model.database.user import User as DBUser, UserType as DBUserType
+from src.model.domain_model import User, UserType
+from src.repositories.abstract import AbstractUserRepository
 
 
 class DatabaseUserRepository(AbstractUserRepository):

@@ -2,8 +2,19 @@ import os
 
 from sanic import Sanic
 
-from src.database.connection import async_session_maker
-from src.repositories.user_repository import AbstractUserRepository, DatabaseUserRepository
+from src.model.database.connection import async_session_maker
+from src.repositories.abstract import (
+    AbstractDriverRepository, AbstractRouteRepository, AbstractStopRepository,
+    AbstractTransitRepository,
+    AbstractUserRepository,
+    AbstractVehicleRepository
+)
+from src.repositories.driver_repository import InFileDriverRepository
+from src.repositories.route_repository import InFileRouteRepository
+from src.repositories.stop_repository import InFileStopRepository
+from src.repositories.transit_repository import InFileTransitRepository
+from src.repositories.user_repository import DatabaseUserRepository
+from src.repositories.vehicle_repository import InFileVehicleRepository
 from src.web.api.driver_endpoints import driver_blueprint
 from src.web.api.frontend_enpoints import html_blueprint
 from src.web.api.mobile_app_endpoints import mobile_app_blueprint
@@ -27,6 +38,12 @@ app.blueprint(html_blueprint)
 app.blueprint(user_blueprint)
 
 app.ext.add_dependency(AbstractUserRepository, lambda: DatabaseUserRepository(session_maker=async_session_maker))
+
+app.ext.add_dependency(AbstractDriverRepository, InFileDriverRepository)
+app.ext.add_dependency(AbstractStopRepository, InFileStopRepository)
+app.ext.add_dependency(AbstractVehicleRepository, InFileVehicleRepository)
+app.ext.add_dependency(AbstractTransitRepository, InFileTransitRepository )
+app.ext.add_dependency(AbstractRouteRepository, InFileRouteRepository)
 
 if __name__ == '__main__':
     app.run(port=8080, dev=True)

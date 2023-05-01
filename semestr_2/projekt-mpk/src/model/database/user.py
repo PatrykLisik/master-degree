@@ -1,11 +1,9 @@
-from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import DateTime
-from sqlalchemy import Integer, String, Enum as SQL_Enum
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy import Integer, String
+from sqlalchemy.orm import Mapped, mapped_column
 
-from src.database import Base
+from src.model.database import Base
 
 
 class UserType(Enum):

@@ -2,8 +2,8 @@ import json
 
 from sanic import Blueprint, HTTPResponse, redirect, Request
 
-from src.model.internal_model import User
-from src.repositories.user_repository import AbstractUserRepository
+from src.model.domain_model import User
+from src.repositories.abstract import AbstractUserRepository
 from src.web.api import COOKIE_KEY
 from src.web.api.user_usecase import create_app_user_usecase, login_user_usecase
 

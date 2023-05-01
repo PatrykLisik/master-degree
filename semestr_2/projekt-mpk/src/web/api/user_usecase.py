@@ -1,7 +1,7 @@
 from hashlib import sha256
 
-from src.model.internal_model import UserType
-from src.repositories.user_repository import AbstractUserRepository
+from src.model.domain_model import UserType
+from src.repositories.abstract import AbstractUserRepository
 
 
 async def create_app_user_usecase(user_repository: AbstractUserRepository, name: str, email: str, password: str):

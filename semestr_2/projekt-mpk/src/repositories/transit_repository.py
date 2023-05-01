@@ -1,40 +1,33 @@
 import json
 import uuid
-from abc import ABC, abstractmethod
 from dataclasses import asdict
 from datetime import datetime
-from typing import Set, Dict, Optional
+from typing import Dict, Optional, Set
 
 from sanic.log import logger
 
-from src.model.internal_model import Transit
-
-
-class AbstractTransitRepository(ABC):
-
-    @abstractmethod
-    def add(self,
-            route_id: str,
-            start_time: datetime,
-            vehicle_id: str,
-            driver_id: str) -> Transit:
-        raise NotImplementedError
-
-    @abstractmethod
-    def update(self, transit_id: str, updated_transit: Transit):
-        raise NotImplementedError
-
-    @abstractmethod
-    def get(self, transit_id: str) -> Transit:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_all(self) -> Set[Transit]:
-        raise NotImplementedError
+from src.model.domain_model import Transit as DomainTransit
+from src.model.infile_mappers import infile_transit_to_domain
+from src.model.infile_model import Transit
+from src.repositories.abstract import (
+    AbstractDriverRepository,
+    AbstractRouteRepository,
+    AbstractStopRepository,
+    AbstractTransitRepository, AbstractVehicleRepository
+)
 
 
 class InFileTransitRepository(AbstractTransitRepository):
     _file_name = "data/transits.json"
+
+    def __int__(self, stops_repo: AbstractStopRepository,
+                route_repo: AbstractRouteRepository,
+                driver_repo: AbstractDriverRepository,
+                vehicle_repo: AbstractVehicleRepository):
+        self.stops_repo = stops_repo
+        self.route_repo = route_repo
+        self.driver_repo = driver_repo
+        self.vehicle_repo = vehicle_repo
 
     def _get(self) -> Dict[str, Transit]:
         try:
@@ -46,7 +39,7 @@ class InFileTransitRepository(AbstractTransitRepository):
                     route_id=transit_data["route_id"],
                     vehicle_id=transit_data["vehicle_id"],
                     driver_id=transit_data["driver_id"],
-                    start_time=datetime.fromisoformat(transit_data["start_time"])
+                    start_time=transit_data["start_time"]
                 )
                     for transit_data in data}
         except FileNotFoundError:
@@ -64,22 +57,36 @@ class InFileTransitRepository(AbstractTransitRepository):
             route_id: str,
             start_time: datetime,
             vehicle_id: str,
-            driver_id: str) -> Transit:
-        new_transit = Transit(route_id=route_id, start_time=start_time, vehicle_id=vehicle_id, driver_id=driver_id,
+            driver_id: str) -> DomainTransit:
+        new_transit = Transit(route_id=route_id, start_time=str(start_time), vehicle_id=vehicle_id,
+                              driver_id=driver_id,
                               id=str(uuid.uuid4()))
         transits = self._get()
         transits[new_transit.id] = new_transit
         self._set(transits)
-        return new_transit
+        return infile_transit_to_domain(new_transit, stops_repo=self.stops_repo, route_repo=self.route_repo,
+                                        driver_repo=self.driver_repo, vehicle_repo=self.vehicle_repo)
 
-    def update(self, transit_id: str, updated_transit: Transit):
+    def update(self, transit_id: str, updated_transit: DomainTransit):
         transits = self._get()
-        transits[updated_transit.id] = updated_transit
+        transits[transit_id] = Transit(route_id=updated_transit.route.id, start_time=str(updated_transit.start_time),
+                                       vehicle_id=updated_transit.vehicle.id,
+                                       driver_id=updated_transit.driver.id,
+                                       id=transit_id
+                                       )
         self._set(transits)
 
-    def get(self, transit_id: str) -> Optional[Transit]:
-        transits = self._get()
-        return transits.get(transit_id, None)
+    def get(self, transit_id: str) -> Optional[DomainTransit]:
+        transit = self._get().get(transit_id, None)
+        if transit is None:
+            return None
+        return infile_transit_to_domain(transit, stops_repo=self.stops_repo, route_repo=self.route_repo,
+                                        driver_repo=self.driver_repo, vehicle_repo=self.vehicle_repo)
 
-    def get_all(self) -> Set[Transit]:
-        return set(self._get().values())
+    def get_all(self) -> Set[DomainTransit]:
+        return {infile_transit_to_domain(transit,
+                                         stops_repo=self.stops_repo,
+                                         route_repo=self.route_repo,
+                                         driver_repo=self.driver_repo,
+                                         vehicle_repo=self.vehicle_repo)
+                for transit in self._get().values()}

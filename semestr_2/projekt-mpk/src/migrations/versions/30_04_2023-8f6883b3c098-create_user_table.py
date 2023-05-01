@@ -6,9 +6,8 @@ Create Date: 2023-04-30 13:51:36.709126
 
 """
 from alembic import op
-from sqlalchemy import PrimaryKeyConstraint, Column, VARCHAR, String, Integer, Enum as SQL_Enum
+from sqlalchemy import PrimaryKeyConstraint, Column, VARCHAR, String, Integer
 
-from src.database.user import UserType
 
 # revision identifiers, used by Alembic.
 revision = '8f6883b3c098'

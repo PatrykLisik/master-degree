@@ -1,31 +1,14 @@
 import json
 import uuid
-from abc import ABC, abstractmethod
 from dataclasses import asdict
-from typing import Set, Dict, Optional
+from typing import Dict, Optional, Set
 
 from sanic.log import logger
 
-from src.model.internal_model import Vehicle
-
-
-class AbstractVehicleRepository(ABC):
-
-    @abstractmethod
-    def add(self, capacity: int) -> Vehicle:
-        raise NotImplementedError
-
-    @abstractmethod
-    def update(self, vehicle_id: str, updated_vehicle: Vehicle):
-        raise NotImplementedError
-
-    @abstractmethod
-    def get(self, vehicle_id: str) -> Vehicle:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_all(self) -> Set[Vehicle]:
-        raise NotImplementedError
+from src.model.domain_model import Vehicle as DomainVehicle
+from src.model.infile_mappers import infile_vehicle_to_domain
+from src.model.infile_model import Vehicle
+from src.repositories.abstract import AbstractVehicleRepository
 
 
 class InMemoryVehicleRepository(AbstractVehicleRepository):
@@ -33,19 +16,19 @@ class InMemoryVehicleRepository(AbstractVehicleRepository):
     def __int__(self):
         self._data = {}
 
-    def add(self, capacity: int) -> Vehicle:
+    def add(self, capacity: int) -> DomainVehicle:
         new_vehicle = Vehicle(capacity=capacity, id=str(uuid.uuid4()))
         self._data[new_vehicle.id] = new_vehicle
-        return new_vehicle
+        return infile_vehicle_to_domain(new_vehicle)
 
-    def update(self, vehicle_id: str, updated_vehicle: Vehicle):
-        self._data[vehicle_id] = updated_vehicle
+    def update(self, vehicle_id: str, updated_vehicle: DomainVehicle):
+        self._data[vehicle_id] = Vehicle(capacity=updated_vehicle.capacity, id=updated_vehicle.id)
 
-    def get(self, vehicle_id: str) -> Vehicle:
-        return self._data[vehicle_id]
+    def get(self, vehicle_id: str) -> DomainVehicle:
+        return infile_vehicle_to_domain(self._data[vehicle_id])
 
-    def get_all(self) -> Set[Vehicle]:
-        return set(self._data.values())
+    def get_all(self) -> Set[DomainVehicle]:
+        return {infile_vehicle_to_domain(vehicle) for vehicle in self._data.values()}
 
 
 class InFileVehicleRepository(AbstractVehicleRepository):
@@ -71,21 +54,21 @@ class InFileVehicleRepository(AbstractVehicleRepository):
         with open(self._file_name, "w+") as outfile:
             outfile.write(json_to_save)
 
-    def add(self, capacity: int) -> Vehicle:
+    def add(self, capacity: int) -> DomainVehicle:
         new_vehicle = Vehicle(capacity=capacity, id=str(uuid.uuid4()))
         vehicles = self._get()
         vehicles[new_vehicle.id] = new_vehicle
         self._set(vehicles)
         return new_vehicle
 
-    def update(self, vehicle_id: str, updated_vehicle: Vehicle):
+    def update(self, vehicle_id: str, updated_vehicle: DomainVehicle):
         vehicles = self._get()
-        vehicles[updated_vehicle.id] = updated_vehicle
+        vehicles[updated_vehicle.id] = Vehicle(id=updated_vehicle.id, capacity=updated_vehicle.capacity)
         self._set(vehicles)
 
-    def get(self, vehicle_id: str) -> Optional[Vehicle]:
+    def get(self, vehicle_id: str) -> Optional[DomainVehicle]:
         vehicles = self._get()
-        return vehicles.get(vehicle_id, None)
+        return infile_vehicle_to_domain(vehicles.get(vehicle_id, None))
 
-    def get_all(self) -> Set[Vehicle]:
-        return set(self._get().values())
+    def get_all(self) -> set[DomainVehicle]:
+        return {infile_vehicle_to_domain(vehicle) for vehicle in self._get().values()}

@@ -1,8 +1,8 @@
 from typing import Optional, List
 
-from src.model.frontend_model import Driver
-from src.model.internal_model import Driver as InternalDriver
-from src.repositories.driver_repository import AbstractDriverRepository
+from src.model.domain_model import Driver
+from src.model.infile_model import Driver as InternalDriver
+from src.repositories.abstract import AbstractDriverRepository
 
 
 def add_driver_usecase(driver_repository: AbstractDriverRepository, name: str, surname: str, pesel: str,
