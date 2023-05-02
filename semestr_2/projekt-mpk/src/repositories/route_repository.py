@@ -45,14 +45,14 @@ class InFileRouteRepository(AbstractRouteRepository):
         self._set(routes)
         return infile_route_to_domain(new_route, self.stops_repository)
 
-    def update(self, route_id: str, updated_route: DomainRoute):
+    async def update(self, route_id: str, updated_route: DomainRoute):
         self._get()[route_id] = domain_route_to_infile(updated_route)
 
-    def get(self, route_id: str) -> Optional[DomainRoute]:
+    async def get(self, route_id: str) -> Optional[DomainRoute]:
         route = self._get().get(route_id, None)
         if route is None:
             return None
         return infile_route_to_domain(route, self.stops_repository)
 
-    def get_all(self) -> Set[DomainRoute]:
+    async def get_all(self) -> Set[DomainRoute]:
         return {infile_route_to_domain(route, self.stops_repository) for route in self._get().values()}

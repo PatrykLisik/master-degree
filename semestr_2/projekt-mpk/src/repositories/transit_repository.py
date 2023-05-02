@@ -50,11 +50,11 @@ class InFileTransitRepository(AbstractTransitRepository):
         with open(self._file_name, "w+") as outfile:
             outfile.write(json_to_save)
 
-    def add(self,
-            route_id: str,
-            start_time: datetime,
-            vehicle_id: str,
-            driver_id: str) -> DomainTransit:
+    async def add(self,
+                  route_id: str,
+                  start_time: datetime,
+                  vehicle_id: str,
+                  driver_id: str) -> DomainTransit:
         new_transit = Transit(route_id=route_id, start_time=str(start_time), vehicle_id=vehicle_id,
                               driver_id=driver_id,
                               id=str(uuid.uuid4()))
@@ -64,7 +64,7 @@ class InFileTransitRepository(AbstractTransitRepository):
         return infile_transit_to_domain(new_transit, route_repo=self._route_repo,
                                         driver_repo=self._driver_repo, vehicle_repo=self._vehicle_repo)
 
-    def update(self, transit_id: str, updated_transit: DomainTransit):
+    async def update(self, transit_id: str, updated_transit: DomainTransit):
         transits = self._get()
         transits[transit_id] = Transit(route_id=updated_transit.route.id, start_time=str(updated_transit.start_time),
                                        vehicle_id=updated_transit.vehicle.id,
@@ -73,14 +73,14 @@ class InFileTransitRepository(AbstractTransitRepository):
                                        )
         self._set(transits)
 
-    def get(self, transit_id: str) -> Optional[DomainTransit]:
+    async def get(self, transit_id: str) -> Optional[DomainTransit]:
         transit = self._get().get(transit_id, None)
         if transit is None:
             raise Exception("Transit not found")
         return infile_transit_to_domain(transit, route_repo=self._route_repo,
                                         driver_repo=self._driver_repo, vehicle_repo=self._vehicle_repo)
 
-    def get_all(self) -> Set[DomainTransit]:
+    async def get_all(self) -> Set[DomainTransit]:
         logger.debug(f"self._route_repo {type(self)}")
         return {infile_transit_to_domain(transit=transit,
                                          route_repo=self._route_repo,
@@ -88,5 +88,5 @@ class InFileTransitRepository(AbstractTransitRepository):
                                          vehicle_repo=self._vehicle_repo)
                 for transit in self._get().values()}
 
-    def get_by_route(self, route_id: str) -> Set[DomainTransit]:
+    async def get_by_route(self, route_id: str) -> Set[DomainTransit]:
         return {transit for transit in self.get_all() if transit.route.id == route_id}

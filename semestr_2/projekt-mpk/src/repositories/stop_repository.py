@@ -81,7 +81,7 @@ class InFileStopRepository(AbstractStopRepository):
         with open(self._file_name, "w+") as outfile:
             outfile.write(json_to_save)
 
-    def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> Stop:
+    async def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> Stop:
         new_stop = Stop(name=name,
                         geolocation=(geolocation_x, geolocation_y),
                         time_to_other_stops_in_seconds={},
@@ -91,21 +91,21 @@ class InFileStopRepository(AbstractStopRepository):
         self._set_stops(stops)
         return infile_stop_to_domain(new_stop)
 
-    def update(self, stop_id: str, updated_stop: Stop):
+    async def update(self, stop_id: str, updated_stop: Stop):
         stops = self._get_stops()
         stops[stop_id] = updated_stop
         self._set_stops(stops)
 
-    def get(self, stop_id: str) -> Stop:
+    async def get(self, stop_id: str) -> Stop:
         return infile_stop_to_domain(self._get_stops()[stop_id])
 
-    def get_all(self) -> Set[Stop]:
+    async def get_all(self) -> Set[Stop]:
         return {infile_stop_to_domain(stop) for stop in self._get_stops().values()}
 
-    def get_many(self, stop_ids: set[str]) -> Set[Stop]:
+    async def get_many(self, stop_ids: set[str]) -> Set[Stop]:
         return {infile_stop_to_domain(value) for value in self._get_stops().values() if value.id in stop_ids}
 
-    def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
+    async def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
         stops = self._get_stops()
         start_stop = stops.get(start_stop_id)
         start_stop.time_to_other_stops_in_seconds[end_stop_id] = time.seconds

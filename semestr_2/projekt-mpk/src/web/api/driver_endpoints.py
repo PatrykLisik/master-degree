@@ -18,9 +18,9 @@ driver_blueprint = Blueprint(name="driver", url_prefix="backoffice/")
 async def add_driver(request, driver_repository: AbstractDriverRepository) -> HTTPResponse:
     request_data = request.json
     driver = await add_driver_usecase(driver_repository=driver_repository, name=request_data.get("name", ""),
-                                pesel=request_data.get("pesel", ""),
-                                phone=request_data.get("phone", ""),
-                                surname=request_data.get("surname", ""))
+                                      pesel=request_data.get("pesel", ""),
+                                      phone=request_data.get("phone", ""),
+                                      surname=request_data.get("surname", ""))
     return json(asdict(driver))
 
 
@@ -35,11 +35,11 @@ async def get_driver(request, driver_id, driver_repository: AbstractDriverReposi
 async def update_driver(request, driver_id, driver_repository: AbstractDriverRepository) -> HTTPResponse:
     request_data = request.json
     driver = await update_driver_use_case(driver_repository=driver_repository, name=request_data.get("name", None),
-                                    pesel=request_data.get("pesel", None),
-                                    phone=request_data.get("phone", None),
-                                    surname=request_data.get("surname", None),
-                                    driver_id=driver_id
-                                    )
+                                          pesel=request_data.get("pesel", None),
+                                          phone=request_data.get("phone", None),
+                                          surname=request_data.get("surname", None),
+                                          driver_id=driver_id
+                                          )
     return json(asdict(driver))
 
 

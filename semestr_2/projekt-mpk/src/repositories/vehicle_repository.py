@@ -16,18 +16,18 @@ class InMemoryVehicleRepository(AbstractVehicleRepository):
     def __int__(self):
         self._data = {}
 
-    def add(self, capacity: int) -> DomainVehicle:
+    async def add(self, capacity: int) -> DomainVehicle:
         new_vehicle = Vehicle(capacity=capacity, id=str(uuid.uuid4()))
         self._data[new_vehicle.id] = new_vehicle
         return infile_vehicle_to_domain(new_vehicle)
 
-    def update(self, vehicle_id: str, updated_vehicle: DomainVehicle):
+    async def update(self, vehicle_id: str, updated_vehicle: DomainVehicle):
         self._data[vehicle_id] = Vehicle(capacity=updated_vehicle.capacity, id=updated_vehicle.id)
 
-    def get(self, vehicle_id: str) -> DomainVehicle:
+    async def get(self, vehicle_id: str) -> DomainVehicle:
         return infile_vehicle_to_domain(self._data[vehicle_id])
 
-    def get_all(self) -> Set[DomainVehicle]:
+    async def get_all(self) -> Set[DomainVehicle]:
         return {infile_vehicle_to_domain(vehicle) for vehicle in self._data.values()}
 
 
@@ -54,21 +54,21 @@ class InFileVehicleRepository(AbstractVehicleRepository):
         with open(self._file_name, "w+") as outfile:
             outfile.write(json_to_save)
 
-    def add(self, capacity: int) -> DomainVehicle:
+    async def add(self, capacity: int) -> DomainVehicle:
         new_vehicle = Vehicle(capacity=capacity, id=str(uuid.uuid4()))
         vehicles = self._get()
         vehicles[new_vehicle.id] = new_vehicle
         self._set(vehicles)
         return new_vehicle
 
-    def update(self, vehicle_id: str, updated_vehicle: DomainVehicle):
+    async def update(self, vehicle_id: str, updated_vehicle: DomainVehicle):
         vehicles = self._get()
         vehicles[updated_vehicle.id] = Vehicle(id=updated_vehicle.id, capacity=updated_vehicle.capacity)
         self._set(vehicles)
 
-    def get(self, vehicle_id: str) -> Optional[DomainVehicle]:
+    async def get(self, vehicle_id: str) -> Optional[DomainVehicle]:
         vehicle = self._get()[vehicle_id]
         return infile_vehicle_to_domain(vehicle)
 
-    def get_all(self) -> set[DomainVehicle]:
+    async def get_all(self) -> set[DomainVehicle]:
         return {infile_vehicle_to_domain(vehicle) for vehicle in self._get().values()}

@@ -24,7 +24,7 @@ async def add_route(request: Request, route_repository: AbstractRouteRepository)
 @route_blueprint.get("/route/<route_id>")
 async def get_route(request: Request, route_id, route_repository: AbstractRouteRepository) -> HTTPResponse:
     route = await get_route_usecase(route_repository=route_repository,
-                              route_id=route_id)
+                                    route_id=route_id)
     logger.info(f"route: {route}")
     return json(asdict(route), dumps=jjson.dumps, default=str)
 

@@ -83,10 +83,10 @@ class AbstractTransitRepository(ABC):
 
     @abstractmethod
     async def add(self,
-            route_id: str,
-            start_time: datetime,
-            vehicle_id: str,
-            driver_id: str) -> DomainTransit:
+                  route_id: str,
+                  start_time: datetime,
+                  vehicle_id: str,
+                  driver_id: str) -> DomainTransit:
         raise NotImplementedError
 
     @abstractmethod

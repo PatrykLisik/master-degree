@@ -6,11 +6,11 @@ from typing import Dict, Optional, Set
 from sanic.log import logger
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
+from src.model.database.model import Driver as DBDriver
 from src.model.domain_model import Driver as DomainDriver
 from src.model.infile_mappers import infile_driver_to_domain
 from src.model.infile_model import Driver as InFileDriver
 from src.repositories.abstract import AbstractDriverRepository
-from src.model.database.model import Driver as DBDriver
 
 
 class InMemoryDriverRepository(AbstractDriverRepository):
@@ -59,7 +59,8 @@ class InFileDriverRepository(AbstractDriverRepository):
             outfile.write(json_to_save)
 
     async def add(self, first_name: str, last_name: str, pesel: str, phone: str) -> DomainDriver:
-        new_driver = InFileDriver(first_name=first_name, last_name=last_name, PESEL=pesel, phone=phone, id=str(uuid.uuid4()))
+        new_driver = InFileDriver(first_name=first_name, last_name=last_name, PESEL=pesel, phone=phone,
+                                  id=str(uuid.uuid4()))
         drivers = self._get()
         drivers[new_driver.id] = new_driver
         self._set(drivers)
