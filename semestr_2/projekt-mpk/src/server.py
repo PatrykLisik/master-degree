@@ -9,7 +9,7 @@ from src.repositories.abstract import (
     AbstractUserRepository,
     AbstractVehicleRepository
 )
-from src.repositories.driver_repository import InFileDriverRepository
+from src.repositories.driver_repository import DatabaseDriverRepository
 from src.repositories.route_repository import InFileRouteRepository
 from src.repositories.stop_repository import InFileStopRepository
 from src.repositories.transit_repository import InFileTransitRepository
@@ -39,7 +39,7 @@ app.blueprint(user_blueprint)
 
 app.ext.add_dependency(AbstractUserRepository, lambda: DatabaseUserRepository(session_maker=async_session_maker))
 
-app.ext.add_dependency(AbstractDriverRepository, InFileDriverRepository, None)
+app.ext.add_dependency(AbstractDriverRepository, lambda: DatabaseDriverRepository(session_maker=async_session_maker))
 app.ext.add_dependency(AbstractStopRepository, InFileStopRepository, None)
 app.ext.add_dependency(AbstractVehicleRepository, InFileVehicleRepository, None)
 app.ext.add_dependency(AbstractRouteRepository, InFileRouteRepository, None)

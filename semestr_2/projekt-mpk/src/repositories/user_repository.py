@@ -22,13 +22,15 @@ class DatabaseUserRepository(AbstractUserRepository):
                 )
                 session.add(new_user)
                 await session.flush()
-                return User(
+                domain_user = User(
                     id=new_user.id,
                     name=new_user.name,
                     password_hash=new_user.password_hash,
                     user_type=user_type,
                     email=new_user.email_address
                 )
+            await session.commit()
+        return domain_user
 
     async def login(self, email: str, password_hash: str) -> User:
         async with self.session_maker() as session:

@@ -1,7 +1,6 @@
 from typing import List, Optional
 
 from src.model.domain_model import Driver
-from src.model.infile_model import Driver as InternalDriver
 from src.repositories.abstract import AbstractDriverRepository
 
 
@@ -25,11 +24,11 @@ async def update_driver_use_case(driver_repository: AbstractDriverRepository, na
                                  phone: Optional[str]
                                  ) -> Driver:
     old_driver = await driver_repository.get(driver_id)
-    new_driver = InternalDriver(
+    new_driver = Driver(
         first_name=name or old_driver.first_name,
         last_name=surname or old_driver.last_name,
         phone=phone or old_driver.phone,
-        PESEL=pesel or old_driver.pesel,
+        pesel=pesel or old_driver.pesel,
         id=driver_id
     )
     await driver_repository.update(driver_id, new_driver)

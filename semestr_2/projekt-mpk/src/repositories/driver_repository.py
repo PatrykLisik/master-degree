@@ -4,6 +4,7 @@ from dataclasses import asdict
 from typing import Dict, Optional, Set
 
 from sanic.log import logger
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from src.model.database.model import Driver as DBDriver
@@ -95,19 +96,49 @@ class DatabaseDriverRepository(AbstractDriverRepository):
                 )
                 session.add(new_driver)
                 await session.flush()
-                return DomainDriver(
+                domain_driver = DomainDriver(
                     id=new_driver.id,
                     first_name=first_name,
                     last_name=last_name,
                     pesel=pesel,
                     phone=phone
                 )
+            await session.commit()
+        return domain_driver
 
     async def update(self, driver_id: str, updated_driver: DomainDriver):
-        pass
+        async with self.session_maker() as session:
+            async with session.begin():
+                driver = await session.get(DBDriver, int(driver_id))
+                driver.pesel = updated_driver.pesel
+                driver.phone = updated_driver.phone
+                driver.last_name = updated_driver.last_name
+                driver.first_name = updated_driver.first_name
+            await session.commit()
 
     async def get(self, driver_id: str) -> DomainDriver:
-        pass
+        async with self.session_maker() as session:
+            async with session.begin():
+                driver = await session.get(DBDriver, int(driver_id))
+                domain_driver = DomainDriver(
+                    id=driver.id,
+                    first_name=driver.first_name,
+                    last_name=driver.last_name,
+                    pesel=driver.pesel,
+                    phone=driver.phone
+                )
+            await session.commit()
+        return domain_driver
 
     async def get_all(self) -> Set[DomainDriver]:
-        pass
+        async with self.session_maker() as session:
+            statement = select(DBDriver)
+            drivers = await session.scalars(statement)
+
+            return {DomainDriver(
+                id=driver.id,
+                first_name=driver.first_name,
+                last_name=driver.last_name,
+                pesel=driver.pesel,
+                phone=driver.phone
+            ) for driver in drivers}
