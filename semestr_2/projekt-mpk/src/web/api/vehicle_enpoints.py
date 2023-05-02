@@ -17,16 +17,16 @@ vehicle_blueprint = Blueprint(name="vehicle")
 @vehicle_blueprint.post("/vehicle")
 async def add_vehicle(request: Request, vehicle_repository: AbstractVehicleRepository) -> HTTPResponse:
     request_data = request.json
-    vehicle = add_vehicle_usecase(vehicle_repository=vehicle_repository,
-                                  capacity=request_data.get("capacity", ""),
-                                  )
+    vehicle = await add_vehicle_usecase(vehicle_repository=vehicle_repository,
+                                        capacity=request_data.get("capacity", ""),
+                                        )
     return json(asdict(vehicle))
 
 
 @vehicle_blueprint.get("/vehicle/<vehicle_id>")
 async def get_vehicle(request: Request, vehicle_id: str,
                       vehicle_repository: AbstractVehicleRepository) -> HTTPResponse:
-    vehicle = get_vehicle_usecase(vehicle_repository, vehicle_id)
+    vehicle = await get_vehicle_usecase(vehicle_repository, vehicle_id)
     logger.info(f"vehicle id: {vehicle_id}")
     return json(asdict(vehicle))
 
@@ -36,16 +36,16 @@ async def update_vehicle(request: Request,
                          vehicle_id: str,
                          vehicle_repository: AbstractVehicleRepository) -> HTTPResponse:
     request_data = request.json
-    vehicle = update_vehicle_use_case(vehicle_repository=vehicle_repository,
-                                      capacity=request_data.get("capacity", None),
-                                      vehicle_id=vehicle_id
-                                      )
+    vehicle = await update_vehicle_use_case(vehicle_repository=vehicle_repository,
+                                            capacity=request_data.get("capacity", None),
+                                            vehicle_id=vehicle_id
+                                            )
     return json(asdict(vehicle))
 
 
 @vehicle_blueprint.get("/vehicles")
 async def get_all_vehicles(request: Request, vehicle_repository: AbstractVehicleRepository) -> HTTPResponse:
-    vehicles = get_all_vehicles_usecase(vehicle_repository)
+    vehicles = await get_all_vehicles_usecase(vehicle_repository)
     logger.info(f"Vehicles {vehicles}")
     return json([asdict(vehicle) for vehicle in vehicles]
                 )

@@ -17,7 +17,7 @@ driver_blueprint = Blueprint(name="driver", url_prefix="backoffice/")
 @driver_blueprint.post("/driver")
 async def add_driver(request, driver_repository: AbstractDriverRepository) -> HTTPResponse:
     request_data = request.json
-    driver = add_driver_usecase(driver_repository=driver_repository, name=request_data.get("name", ""),
+    driver = await add_driver_usecase(driver_repository=driver_repository, name=request_data.get("name", ""),
                                 pesel=request_data.get("pesel", ""),
                                 phone=request_data.get("phone", ""),
                                 surname=request_data.get("surname", ""))
@@ -26,7 +26,7 @@ async def add_driver(request, driver_repository: AbstractDriverRepository) -> HT
 
 @driver_blueprint.get("/driver/<driver_id>")
 async def get_driver(request, driver_id, driver_repository: AbstractDriverRepository) -> HTTPResponse:
-    driver = get_driver_usecase(driver_repository, driver_id)
+    driver = await get_driver_usecase(driver_repository, driver_id)
     logger.info(f"driver id: {driver_id}")
     return json(asdict(driver))
 
@@ -34,7 +34,7 @@ async def get_driver(request, driver_id, driver_repository: AbstractDriverReposi
 @driver_blueprint.put("/driver/<driver_id>")
 async def update_driver(request, driver_id, driver_repository: AbstractDriverRepository) -> HTTPResponse:
     request_data = request.json
-    driver = update_driver_use_case(driver_repository=driver_repository, name=request_data.get("name", None),
+    driver = await update_driver_use_case(driver_repository=driver_repository, name=request_data.get("name", None),
                                     pesel=request_data.get("pesel", None),
                                     phone=request_data.get("phone", None),
                                     surname=request_data.get("surname", None),
@@ -45,7 +45,7 @@ async def update_driver(request, driver_id, driver_repository: AbstractDriverRep
 
 @driver_blueprint.get("/drivers")
 async def get_all_drivers(request, driver_repository: AbstractDriverRepository) -> HTTPResponse:
-    drivers = get_all_drivers_usecase(driver_repository)
+    drivers = await get_all_drivers_usecase(driver_repository)
     logger.info(f"Drivers {drivers}")
     return json([asdict(driver) for driver in drivers]
                 )

@@ -17,72 +17,72 @@ from src.model.domain_model import (
 class AbstractDriverRepository(ABC):
 
     @abstractmethod
-    def add(self, first_name: str, last_name: str, pesel: str, phone: str) -> DomainDriver:
+    async def add(self, first_name: str, last_name: str, pesel: str, phone: str) -> DomainDriver:
         raise NotImplementedError
 
     @abstractmethod
-    def update(self, driver_id: str, updated_driver: DomainDriver):
+    async def update(self, driver_id: str, updated_driver: DomainDriver):
         raise NotImplementedError
 
     @abstractmethod
-    def get(self, driver_id: str) -> DomainDriver:
+    async def get(self, driver_id: str) -> DomainDriver:
         raise NotImplementedError
 
     @abstractmethod
-    def get_all(self) -> Set[DomainDriver]:
+    async def get_all(self) -> Set[DomainDriver]:
         raise NotImplementedError
 
 
 class AbstractRouteRepository(ABC):
 
     @abstractmethod
-    def add(self, name: str, stops: list[str]) -> DomainRoute:
+    async def add(self, name: str, stops: list[str]) -> DomainRoute:
         raise NotImplementedError
 
     @abstractmethod
-    def update(self, route_id: str, updated_route: DomainRoute):
+    async def update(self, route_id: str, updated_route: DomainRoute):
         raise NotImplementedError
 
     @abstractmethod
-    def get(self, route_id: str) -> DomainRoute:
+    async def get(self, route_id: str) -> DomainRoute:
         raise NotImplementedError
 
     @abstractmethod
-    def get_all(self) -> Set[DomainRoute]:
+    async def get_all(self) -> Set[DomainRoute]:
         raise NotImplementedError
 
 
 class AbstractStopRepository(ABC):
 
     @abstractmethod
-    def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> DomainStop:
+    async def add(self, name: str, geolocation_x: decimal, geolocation_y: decimal) -> DomainStop:
         raise NotImplementedError
 
     @abstractmethod
-    def update(self, stop_id: str, updated_stop: DomainStop):
+    async def update(self, stop_id: str, updated_stop: DomainStop):
         raise NotImplementedError
 
     @abstractmethod
-    def get(self, stop_id: str) -> DomainStop:
+    async def get(self, stop_id: str) -> DomainStop:
         raise NotImplementedError
 
     @abstractmethod
-    def get_all(self) -> Set[DomainStop]:
+    async def get_all(self) -> Set[DomainStop]:
         raise NotImplementedError
 
     @abstractmethod
-    def get_many(self, stop_ids: set[str]) -> Set[DomainStop]:
+    async def get_many(self, stop_ids: set[str]) -> Set[DomainStop]:
         raise NotImplementedError
 
     @abstractmethod
-    def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
+    async def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
         raise NotImplementedError
 
 
 class AbstractTransitRepository(ABC):
 
     @abstractmethod
-    def add(self,
+    async def add(self,
             route_id: str,
             start_time: datetime,
             vehicle_id: str,
@@ -90,19 +90,19 @@ class AbstractTransitRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def update(self, transit_id: str, updated_transit: DomainTransit):
+    async def update(self, transit_id: str, updated_transit: DomainTransit):
         raise NotImplementedError
 
     @abstractmethod
-    def get(self, transit_id: str) -> DomainTransit:
+    async def get(self, transit_id: str) -> DomainTransit:
         raise NotImplementedError
 
     @abstractmethod
-    def get_all(self) -> Set[DomainTransit]:
+    async def get_all(self) -> Set[DomainTransit]:
         raise NotImplementedError
 
     @abstractmethod
-    def get_by_route(self, route_id: str) -> Set[DomainTransit]:
+    async def get_by_route(self, route_id: str) -> Set[DomainTransit]:
         raise NotImplementedError
 
 
@@ -120,17 +120,17 @@ class AbstractUserRepository(ABC):
 class AbstractVehicleRepository(ABC):
 
     @abstractmethod
-    def add(self, capacity: int) -> DomainVehicle:
+    async def add(self, capacity: int) -> DomainVehicle:
         raise NotImplementedError
 
     @abstractmethod
-    def update(self, vehicle_id: str, updated_vehicle: DomainVehicle):
+    async def update(self, vehicle_id: str, updated_vehicle: DomainVehicle):
         raise NotImplementedError
 
     @abstractmethod
-    def get(self, vehicle_id: str) -> DomainVehicle:
+    async def get(self, vehicle_id: str) -> DomainVehicle:
         raise NotImplementedError
 
     @abstractmethod
-    def get_all(self) -> Set[DomainVehicle]:
+    async def get_all(self) -> Set[DomainVehicle]:
         raise NotImplementedError

@@ -5,25 +5,25 @@ from src.model.infile_model import Vehicle as InternalVehicle
 from src.repositories.abstract import AbstractVehicleRepository
 
 
-def add_vehicle_usecase(vehicle_repository: AbstractVehicleRepository, capacity: int) -> Vehicle:
-    vehicle = vehicle_repository.add(capacity=capacity)
+async def add_vehicle_usecase(vehicle_repository: AbstractVehicleRepository, capacity: int) -> Vehicle:
+    vehicle = await vehicle_repository.add(capacity=capacity)
     return vehicle
 
 
-def get_vehicle_usecase(vehicle_repository: AbstractVehicleRepository, vehicle_id) -> Vehicle:
-    return vehicle_repository.get(vehicle_id)
+async def get_vehicle_usecase(vehicle_repository: AbstractVehicleRepository, vehicle_id) -> Vehicle:
+    return await vehicle_repository.get(vehicle_id)
 
 
-def get_all_vehicles_usecase(vehicle_repository: AbstractVehicleRepository) -> List[Vehicle]:
-    return [vehicle for vehicle in vehicle_repository.get_all()]
+async def get_all_vehicles_usecase(vehicle_repository: AbstractVehicleRepository) -> List[Vehicle]:
+    return [vehicle for vehicle in await vehicle_repository.get_all()]
 
 
-def update_vehicle_use_case(vehicle_repository: AbstractVehicleRepository, vehicle_id: str,
+async def update_vehicle_use_case(vehicle_repository: AbstractVehicleRepository, vehicle_id: str,
                             capacity: int
                             ) -> Vehicle:
     new_vehicle = InternalVehicle(
         capacity=capacity,
         id=vehicle_id
     )
-    vehicle_repository.update(vehicle_id, new_vehicle)
+    await vehicle_repository.update(vehicle_id, new_vehicle)
     return new_vehicle

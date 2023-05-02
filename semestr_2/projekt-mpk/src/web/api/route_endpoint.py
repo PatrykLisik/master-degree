@@ -13,7 +13,7 @@ route_blueprint = Blueprint(name="routes")
 @route_blueprint.post("/route")
 async def add_route(request: Request, route_repository: AbstractRouteRepository) -> HTTPResponse:
     request_data = request.json
-    route = add_route_usecase(
+    route = await add_route_usecase(
         route_repository=route_repository,
         name=request_data.get("name"),
         stops=request_data.get("stops", ""),
@@ -23,7 +23,7 @@ async def add_route(request: Request, route_repository: AbstractRouteRepository)
 
 @route_blueprint.get("/route/<route_id>")
 async def get_route(request: Request, route_id, route_repository: AbstractRouteRepository) -> HTTPResponse:
-    route = get_route_usecase(route_repository=route_repository,
+    route = await get_route_usecase(route_repository=route_repository,
                               route_id=route_id)
     logger.info(f"route: {route}")
     return json(asdict(route), dumps=jjson.dumps, default=str)
@@ -31,5 +31,5 @@ async def get_route(request: Request, route_id, route_repository: AbstractRouteR
 
 @route_blueprint.get("/routes")
 async def get_all_routes(request: Request, route_repository: AbstractRouteRepository) -> HTTPResponse:
-    routes = get_all_routes_usecase(route_repository=route_repository)
+    routes = await get_all_routes_usecase(route_repository=route_repository)
     return json([asdict(route) for route in routes])
