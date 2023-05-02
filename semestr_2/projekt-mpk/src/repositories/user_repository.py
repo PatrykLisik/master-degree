@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
-from src.model.database.user import User as DBUser, UserType as DBUserType
+from src.model.database.model import User as DBUser, UserType as DBUserType
 from src.model.domain_model import User, UserType
 from src.repositories.abstract import AbstractUserRepository
 
