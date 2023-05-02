@@ -39,11 +39,11 @@ app.blueprint(user_blueprint)
 
 app.ext.add_dependency(AbstractUserRepository, lambda: DatabaseUserRepository(session_maker=async_session_maker))
 
-app.ext.add_dependency(AbstractDriverRepository, InFileDriverRepository)
-app.ext.add_dependency(AbstractStopRepository, InFileStopRepository)
-app.ext.add_dependency(AbstractVehicleRepository, InFileVehicleRepository)
-app.ext.add_dependency(AbstractTransitRepository, InFileTransitRepository )
-app.ext.add_dependency(AbstractRouteRepository, InFileRouteRepository)
+app.ext.add_dependency(AbstractDriverRepository, InFileDriverRepository, None)
+app.ext.add_dependency(AbstractStopRepository, InFileStopRepository, None)
+app.ext.add_dependency(AbstractVehicleRepository, InFileVehicleRepository, None)
+app.ext.add_dependency(AbstractRouteRepository, InFileRouteRepository, None)
+app.ext.add_dependency(AbstractTransitRepository, InFileTransitRepository, None)
 
 if __name__ == '__main__':
     app.run(port=8080, dev=True)

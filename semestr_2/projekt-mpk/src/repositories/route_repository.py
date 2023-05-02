@@ -15,7 +15,7 @@ class InFileRouteRepository(AbstractRouteRepository):
     _file_name = "data/routes.json"
 
     def __init__(self, stops_repository: AbstractStopRepository):
-
+        super()
         self.stops_repository = stops_repository
 
     def _get(self) -> Dict[str, Route]:

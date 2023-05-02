@@ -4,7 +4,7 @@
     "name": "INFLANCKA - GIBALSKIEGO",
     "x": 43.12,
     "y": 21.11,
-    "time_to_other_stops": [
+    "time_to_other_stops_in_seconds": [
       {
         "stop_id": "4baef2fe-def8-4ef6-ac2d-69e5b720a04d",
         "time_in_sec": 60
@@ -16,14 +16,14 @@
     "name": "INFLANCKA - MARYSI\u0143SKA",
     "x": 43.12,
     "y": 21.11,
-    "time_to_other_stops": []
+    "time_to_other_stops_in_seconds": []
   },
   {
     "id": "4baef2fe-def8-4ef6-ac2d-69e5b720a04d",
     "name": "ZAGAJNIKOWA - INFLANCKA",
     "x": 12.12,
     "y": 11.11,
-    "time_to_other_stops": [
+    "time_to_other_stops_in_seconds": [
       {
         "stop_id": "d0ec2ff1-f3ef-4409-b3f5-c246267f3bd4",
         "time_in_sec": 630
@@ -39,7 +39,7 @@
     "name": "ZAGAJNIKOWA - OKOPOWA",
     "x": 12.12,
     "y": 11.11,
-    "time_to_other_stops": [
+    "time_to_other_stops_in_seconds": [
       {
         "stop_id": "22a6d331-16ad-46bf-b599-d7fe66b56d3a7",
         "time_in_sec": 60
@@ -51,7 +51,7 @@
     "name": "SPORNA - BRACKA",
     "x": 12.12,
     "y": 11.11,
-    "time_to_other_stops": [
+    "time_to_other_stops_in_seconds": [
       {
         "stop_id": "ae7f982e-2919-4f54-8f81-60b2777dcc4c",
         "time_in_sec": 60
@@ -63,7 +63,7 @@
     "name": "SPORNA - WOJSKA POLSKIEGO",
     "x": 12.12,
     "y": 11.11,
-    "time_to_other_stops": [
+    "time_to_other_stops_in_seconds": [
       {
         "stop_id": "cf8c1ee9-a04d-4dee-937f-a9b2333aa990",
         "time_in_sec": 180
@@ -75,7 +75,7 @@
     "name": "PALKI - \u0179R\u00d3D\u0141OWA",
     "x": 12.12,
     "y": 11.11,
-    "time_to_other_stops": [
+    "time_to_other_stops_in_seconds": [
       {
         "stop_id": "3b0bf02f-6951-42a0-9bf5-ac3f14cb7e41",
         "time_in_sec": 120
@@ -87,7 +87,7 @@
     "name": "MARYSIN STADION",
     "x": 43.12,
     "y": 21.11,
-    "time_to_other_stops": [
+    "time_to_other_stops_in_seconds": [
       {
         "stop_id": "3d434e95-92b6-4682-890a-38c963f51213",
         "time_in_sec": 60
@@ -99,7 +99,7 @@
     "name": "MARYSI\u0143SKA - OKOPOWA",
     "x": 43.12,
     "y": 21.11,
-    "time_to_other_stops": [
+    "time_to_other_stops_in_seconds": [
       {
         "stop_id": "d0ec2ff1-f3ef-4409-b3f5-c246267f3bd4",
         "time_in_sec": 120
@@ -111,7 +111,7 @@
     "name": "P\u00d3\u0141NOCNA - KAMI\u0143SKIEGO",
     "x": 12.12,
     "y": 11.11,
-    "time_to_other_stops": [
+    "time_to_other_stops_in_seconds": [
       {
         "stop_id": "87733de2-cb1d-4114-aeb9-f5c2e1378d9d1",
         "time_in_sec": 120
@@ -123,6 +123,6 @@
     "name": "STERLINGA - POMORSKA",
     "x": 12.12,
     "y": 11.11,
-    "time_to_other_stops": []
+    "time_to_other_stops_in_seconds": []
   }
 ]

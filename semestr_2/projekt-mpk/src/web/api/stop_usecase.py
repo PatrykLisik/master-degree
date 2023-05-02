@@ -13,7 +13,7 @@ async def get_stop_usecase(stop_repository: AbstractStopRepository, stop_id: str
 
 
 async def get_all_stop_usecase(stop_repository: AbstractStopRepository) -> list[Stop]:
-    return [Stop.form_internal(stop) for stop in stop_repository.get_all()]
+    return [stop for stop in stop_repository.get_all()]
 
 
 async def get_many_stop_usecase(stop_repository: AbstractStopRepository, stops_ids: set[str]) -> list[Stop]:

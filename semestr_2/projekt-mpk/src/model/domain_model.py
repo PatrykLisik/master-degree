@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Dict, List
 
 
 @dataclass(frozen=True)
@@ -10,38 +9,38 @@ class Stop:
     name: str = field(hash=False)
     loc_x: str = field(hash=False)
     loc_y: str = field(hash=False)
-    time_to_other_stops: Dict[str, timedelta] = field(hash=False, default_factory=dict)
+    time_to_other_stops: dict[str, timedelta] = field(hash=False, default_factory=dict)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Driver:
-    first_name: str
-    last_name: str
-    pesel: str
-    phone: str
-    id: str
+    first_name: str = field(hash=False)
+    last_name: str = field(hash=False)
+    pesel: str = field(hash=False)
+    phone: str = field(hash=False)
+    id: str = field(hash=True)
 
 
 @dataclass(frozen=True)
 class Route:
     id: str = field(hash=True)
     name: str = field(hash=True)
-    stops: List[Stop] = field(hash=False)
+    stops: list[Stop] = field(hash=False)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Vehicle:
-    id: str
-    capacity: int
+    id: str = field(hash=True)
+    capacity: int = field(hash=False)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Transit:
-    id:str
-    route: Route
-    start_time: datetime
-    vehicle: Vehicle
-    driver: Driver
+    id: str = field(hash=True)
+    route: Route = field(hash=False)
+    start_time: datetime = field(hash=False)
+    vehicle: Vehicle = field(hash=False)
+    driver: Driver = field(hash=False)
 
 
 class UserType(Enum):
@@ -51,8 +50,8 @@ class UserType(Enum):
 
 @dataclass(frozen=True)
 class User:
-    id: str
-    name: str
-    email: str
-    password_hash: str
-    user_type: UserType
+    id: str = field(hash=True)
+    name: str = field(hash=False)
+    email: str = field(hash=False)
+    password_hash: str = field(hash=False)
+    user_type: UserType = field(hash=False)

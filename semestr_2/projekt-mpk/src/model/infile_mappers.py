@@ -23,7 +23,7 @@ from src.repositories.abstract import (
 
 def infile_route_to_domain(route: InfileRoute, stops_repository: AbstractStopRepository) -> DomainRoute:
     stop_ids = set(route.stops)
-    stops = {stop.id: infile_stop_to_domain(stop) for stop in stops_repository.get_many(stop_ids)}
+    stops = {stop.id: stop for stop in stops_repository.get_many(stop_ids)}
     return DomainRoute(
         id=route.id,
         name=route.name,
@@ -79,15 +79,15 @@ def infile_vehicle_to_domain(vehicle: InFileVehicle) -> DomainVehicle:
 
 
 def infile_transit_to_domain(transit: InFileTransit,
-                             stops_repo: AbstractStopRepository,
                              route_repo: AbstractRouteRepository,
                              driver_repo: AbstractDriverRepository,
                              vehicle_repo: AbstractVehicleRepository
                              ) -> DomainTransit:
-    route = infile_route_to_domain(route=route_repo.get(transit.route_id), stops_repository=stops_repo)
+    route = route_repo.get(transit.route_id)
     return DomainTransit(
+        id=transit.id,
         route=route,
         start_time=datetime.fromisoformat(transit.start_time),
-        vehicle=infile_vehicle_to_domain(vehicle=vehicle_repo.get(transit.vehicle_id)),
-        driver=infile_driver_to_domain(driver_repo.get(transit.driver_id))
+        vehicle=vehicle_repo.get(transit.vehicle_id),
+        driver=driver_repo.get(transit.driver_id)
     )

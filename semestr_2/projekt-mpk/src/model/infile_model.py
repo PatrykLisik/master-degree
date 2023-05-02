@@ -7,7 +7,7 @@ class Stop:
     id: str = field(hash=True)
     name: str = field(hash=False)
     geolocation: [float] = field(hash=False)
-    time_to_other_stops_in_seconds: Dict[str, int] = field(hash=False, default_factory=dict)
+    time_to_other_stops_in_seconds: dict[str, int] = field(hash=False, default_factory=dict)
 
 
 @dataclass(frozen=True)

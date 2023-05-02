@@ -1,7 +1,7 @@
 from typing import List, Set
 
 from src.model.domain_model import Route
-from src.repositories.abstract import AbstractRouteRepository, AbstractStopRepository
+from src.repositories.abstract import AbstractRouteRepository
 
 
 def add_route_usecase(route_repository: AbstractRouteRepository, name: str,
@@ -10,8 +10,7 @@ def add_route_usecase(route_repository: AbstractRouteRepository, name: str,
     return route
 
 
-def get_all_routes_usecase(route_repository: AbstractRouteRepository, stop_repository: AbstractStopRepository) -> Set[
-    Route]:
+def get_all_routes_usecase(route_repository: AbstractRouteRepository) -> Set[Route]:
     return route_repository.get_all()
 
 

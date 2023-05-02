@@ -12,7 +12,6 @@ from src.model.infile_model import Transit
 from src.repositories.abstract import (
     AbstractDriverRepository,
     AbstractRouteRepository,
-    AbstractStopRepository,
     AbstractTransitRepository, AbstractVehicleRepository
 )
 
@@ -20,14 +19,12 @@ from src.repositories.abstract import (
 class InFileTransitRepository(AbstractTransitRepository):
     _file_name = "data/transits.json"
 
-    def __int__(self, stops_repo: AbstractStopRepository,
-                route_repo: AbstractRouteRepository,
-                driver_repo: AbstractDriverRepository,
-                vehicle_repo: AbstractVehicleRepository):
-        self.stops_repo = stops_repo
-        self.route_repo = route_repo
-        self.driver_repo = driver_repo
-        self.vehicle_repo = vehicle_repo
+    def __init__(self, route_repo: AbstractRouteRepository, driver_repo: AbstractDriverRepository, vehicle_repo:
+    AbstractVehicleRepository):
+        super(InFileTransitRepository)
+        self._route_repo = route_repo
+        self._driver_repo = driver_repo
+        self._vehicle_repo = vehicle_repo
 
     def _get(self) -> Dict[str, Transit]:
         try:
@@ -64,8 +61,8 @@ class InFileTransitRepository(AbstractTransitRepository):
         transits = self._get()
         transits[new_transit.id] = new_transit
         self._set(transits)
-        return infile_transit_to_domain(new_transit, stops_repo=self.stops_repo, route_repo=self.route_repo,
-                                        driver_repo=self.driver_repo, vehicle_repo=self.vehicle_repo)
+        return infile_transit_to_domain(new_transit, route_repo=self._route_repo,
+                                        driver_repo=self._driver_repo, vehicle_repo=self._vehicle_repo)
 
     def update(self, transit_id: str, updated_transit: DomainTransit):
         transits = self._get()
@@ -79,14 +76,17 @@ class InFileTransitRepository(AbstractTransitRepository):
     def get(self, transit_id: str) -> Optional[DomainTransit]:
         transit = self._get().get(transit_id, None)
         if transit is None:
-            return None
-        return infile_transit_to_domain(transit, stops_repo=self.stops_repo, route_repo=self.route_repo,
-                                        driver_repo=self.driver_repo, vehicle_repo=self.vehicle_repo)
+            raise Exception("Transit not found")
+        return infile_transit_to_domain(transit, route_repo=self._route_repo,
+                                        driver_repo=self._driver_repo, vehicle_repo=self._vehicle_repo)
 
     def get_all(self) -> Set[DomainTransit]:
-        return {infile_transit_to_domain(transit,
-                                         stops_repo=self.stops_repo,
-                                         route_repo=self.route_repo,
-                                         driver_repo=self.driver_repo,
-                                         vehicle_repo=self.vehicle_repo)
+        logger.debug(f"self._route_repo {type(self)}")
+        return {infile_transit_to_domain(transit=transit,
+                                         route_repo=self._route_repo,
+                                         driver_repo=self._driver_repo,
+                                         vehicle_repo=self._vehicle_repo)
                 for transit in self._get().values()}
+
+    def get_by_route(self, route_id: str) -> Set[DomainTransit]:
+        return {transit for transit in self.get_all() if transit.route.id == route_id}

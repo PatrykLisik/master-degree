@@ -101,6 +101,10 @@ class AbstractTransitRepository(ABC):
     def get_all(self) -> Set[DomainTransit]:
         raise NotImplementedError
 
+    @abstractmethod
+    def get_by_route(self, route_id: str) -> Set[DomainTransit]:
+        raise NotImplementedError
+
 
 class AbstractUserRepository(ABC):
 

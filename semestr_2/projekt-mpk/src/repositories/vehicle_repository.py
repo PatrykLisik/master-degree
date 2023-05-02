@@ -67,8 +67,8 @@ class InFileVehicleRepository(AbstractVehicleRepository):
         self._set(vehicles)
 
     def get(self, vehicle_id: str) -> Optional[DomainVehicle]:
-        vehicles = self._get()
-        return infile_vehicle_to_domain(vehicles.get(vehicle_id, None))
+        vehicle = self._get()[vehicle_id]
+        return infile_vehicle_to_domain(vehicle)
 
     def get_all(self) -> set[DomainVehicle]:
         return {infile_vehicle_to_domain(vehicle) for vehicle in self._get().values()}
