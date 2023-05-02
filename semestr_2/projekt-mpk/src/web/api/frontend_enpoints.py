@@ -15,7 +15,9 @@ async def index(request: Request) -> HTTPResponse:
     if user_data:
         user_data = json.loads(user_data)
     logger.debug(f"Cookie {user_data}")
-    return await render("browse_lines.html", status=200, context={"user_data": user_data})
+    return await render(
+        "browse_lines.html", status=200, context={"user_data": user_data}
+    )
 
 
 @html_blueprint.get("/login")

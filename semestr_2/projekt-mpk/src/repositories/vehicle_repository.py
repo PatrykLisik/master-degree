@@ -12,23 +12,26 @@ from src.repositories.abstract import AbstractVehicleRepository
 
 
 class InMemoryVehicleRepository(AbstractVehicleRepository):
-
     def __int__(self):
         self._data = {}
 
     async def add(self, capacity: int) -> DomainVehicle:
         new_vehicle = Vehicle(capacity=capacity, id=str(uuid.uuid4()))
         self._data[new_vehicle.id] = new_vehicle
-        return infile_vehicle_to_domain(new_vehicle)
+        return await infile_vehicle_to_domain(new_vehicle)
 
     async def update(self, vehicle_id: str, updated_vehicle: DomainVehicle):
-        self._data[vehicle_id] = Vehicle(capacity=updated_vehicle.capacity, id=updated_vehicle.id)
+        self._data[vehicle_id] = Vehicle(
+            capacity=updated_vehicle.capacity, id=updated_vehicle.id
+        )
 
     async def get(self, vehicle_id: str) -> DomainVehicle:
-        return infile_vehicle_to_domain(self._data[vehicle_id])
+        return await infile_vehicle_to_domain(self._data[vehicle_id])
 
     async def get_all(self) -> Set[DomainVehicle]:
-        return {infile_vehicle_to_domain(vehicle) for vehicle in self._data.values()}
+        return {
+            await infile_vehicle_to_domain(vehicle) for vehicle in self._data.values()
+        }
 
 
 class InFileVehicleRepository(AbstractVehicleRepository):
@@ -36,13 +39,15 @@ class InFileVehicleRepository(AbstractVehicleRepository):
 
     def _get(self) -> Dict[str, Vehicle]:
         try:
-            with open(self._file_name, "r+", ) as infile:
+            with open(
+                self._file_name,
+                "r+",
+            ) as infile:
                 logger.info("load vehicles")
                 data = json.load(infile)
-                return {vehicle_data["id"]: Vehicle(
-                    **vehicle_data
-                )
-                    for vehicle_data in data}
+                return {
+                    vehicle_data["id"]: Vehicle(**vehicle_data) for vehicle_data in data
+                }
         except FileNotFoundError:
             logger.info("load vehicle file doest not exist")
             return {}
@@ -63,7 +68,9 @@ class InFileVehicleRepository(AbstractVehicleRepository):
 
     async def update(self, vehicle_id: str, updated_vehicle: DomainVehicle):
         vehicles = self._get()
-        vehicles[updated_vehicle.id] = Vehicle(id=updated_vehicle.id, capacity=updated_vehicle.capacity)
+        vehicles[updated_vehicle.id] = Vehicle(
+            id=updated_vehicle.id, capacity=updated_vehicle.capacity
+        )
         self._set(vehicles)
 
     async def get(self, vehicle_id: str) -> Optional[DomainVehicle]:

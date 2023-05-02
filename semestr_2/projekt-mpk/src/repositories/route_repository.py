@@ -1,11 +1,19 @@
 import json
 import uuid
 from dataclasses import asdict
+from datetime import timedelta
 from typing import Dict, Optional, Set
 
 from sanic.log import logger
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
-from src.model.domain_model import Route as DomainRoute
+from src.model.database.model import (
+    Route as DBRoute,
+    RouteStop as DBRouteStop,
+    StopTimes as DBStopTimes,
+)
+from src.model.domain_model import Route as DomainRoute, Stop as DomainStop
 from src.model.infile_mappers import domain_route_to_infile, infile_route_to_domain
 from src.model.infile_model import Route
 from src.repositories.abstract import AbstractRouteRepository, AbstractStopRepository
@@ -20,13 +28,13 @@ class InFileRouteRepository(AbstractRouteRepository):
 
     def _get(self) -> Dict[str, Route]:
         try:
-            with open(self._file_name, "r+", ) as infile:
+            with open(
+                self._file_name,
+                "r+",
+            ) as infile:
                 logger.info("load routes")
                 data = json.load(infile)
-                return {route_data["id"]: Route(
-                    **route_data
-                )
-                    for route_data in data}
+                return {route_data["id"]: Route(**route_data) for route_data in data}
         except FileNotFoundError:
             logger.info("file doest not exist")
             return {}
@@ -38,21 +46,94 @@ class InFileRouteRepository(AbstractRouteRepository):
         with open(self._file_name, "w+") as outfile:
             outfile.write(json_to_save)
 
-    def add(self, name: str, stops: list[str]) -> DomainRoute:
+    async def add(self, name: str, stops: list[str]) -> DomainRoute:
         new_route = Route(name=name, stops=stops, id=str(uuid.uuid4()))
         routes = self._get()
         routes[new_route.id] = new_route
         self._set(routes)
-        return infile_route_to_domain(new_route, self.stops_repository)
+        return await infile_route_to_domain(new_route, self.stops_repository)
 
     async def update(self, route_id: str, updated_route: DomainRoute):
-        self._get()[route_id] = domain_route_to_infile(updated_route)
+        self._get()[route_id] = await domain_route_to_infile(updated_route)
 
     async def get(self, route_id: str) -> Optional[DomainRoute]:
         route = self._get().get(route_id, None)
         if route is None:
             return None
-        return infile_route_to_domain(route, self.stops_repository)
+        return await infile_route_to_domain(route, self.stops_repository)
 
     async def get_all(self) -> Set[DomainRoute]:
-        return {infile_route_to_domain(route, self.stops_repository) for route in self._get().values()}
+        return {
+            infile_route_to_domain(route, self.stops_repository)
+            for route in self._get().values()
+        }
+
+
+class DatabaseRouteRepository(AbstractRouteRepository):
+    def __init__(self, session_maker: async_sessionmaker[AsyncSession]):
+        self.session_maker = session_maker
+
+    async def add(self, name: str, stops: list[str]) -> DomainRoute:
+        async with self.session_maker() as session:
+            async with session.begin():
+                new_route = DBRoute(name=name, stops=[])  # assume no stops
+                session.add(new_route)
+                await session.flush()
+                domain_route = DomainRoute(
+                    stops=[], id=str(new_route.id), name=new_route.name
+                )
+            await session.commit()
+        return domain_route
+
+    async def update(self, route_id: str, updated_route: DomainRoute):
+        async with self.session_maker() as session:
+            async with session.begin():
+                route = await session.get(DBRoute, int(route_id))
+                route.name = updated_route.name
+                route.stops = [
+                    DBRouteStop(id=stop.id, order=index)
+                    for index, stop in enumerate(updated_route.stops)
+                ]
+            await session.commit()
+
+    async def get(self, route_id: str) -> DomainRoute:
+        async with self.session_maker() as session:
+            async with session.begin():
+                route = await session.get(
+                    DBRoute, int(route_id), populate_existing=True
+                )
+                route_stops_ids = {stop.id for stop in route.stops}
+
+                stops_statement = select(DBRouteStop).where(
+                    DBRoute.id.in_(route_stops_ids)
+                )
+                stops = await session.scalars(stops_statement)
+                id_to_stop = {stop.id: stop for stop in stops}
+
+                stops_times_statement = select(DBStopTimes).where(
+                    DBStopTimes.start_stop_id.in_(route_stops_ids)
+                )
+                stops_times = await session.scalars(stops_times_statement)
+
+                id_to_domain_stops = {
+                    stop.id: DomainStop(
+                        id=stop.id,
+                        name=stop.name,
+                        loc_y=stop.loc_y,
+                        loc_x=stop.loc_x,
+                        time_to_other_stops={
+                            str(stop_time.end_stop_id): timedelta(
+                                seconds=stop_time.time_in_seconds
+                            )
+                            for stop_time in stops_times
+                            if stop_time.start_stop_id == stop.id
+                        },
+                    )
+                    for stop in stops
+                }
+
+                stops = [id_to_domain_stops[stop.id] for stop in route.stops]
+                return DomainRoute(name=route.name, id=route.id, stops=stops)
+
+    async def get_all(self) -> Set[DomainRoute]:
+        pass

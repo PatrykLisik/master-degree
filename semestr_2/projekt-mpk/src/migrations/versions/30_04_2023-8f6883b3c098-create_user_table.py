@@ -6,25 +6,24 @@ Create Date: 2023-04-30 13:51:36.709126
 
 """
 from alembic import op
-from sqlalchemy import PrimaryKeyConstraint, Column, VARCHAR, String, Integer
-
+from sqlalchemy import Column, Integer, PrimaryKeyConstraint, String, VARCHAR
 
 # revision identifiers, used by Alembic.
-revision = '8f6883b3c098'
-down_revision = '2db662ac6b72'
+revision = "8f6883b3c098"
+down_revision = "2db662ac6b72"
 branch_labels = None
 depends_on = None
 
 
 def upgrade() -> None:
     op.create_table(
-        'app_user',
+        "app_user",
         Column("id", Integer, primary_key=True, autoincrement=True),
-        Column('name', String(length=50), nullable=False),
-        Column('password_hash', VARCHAR(256), nullable=False),
+        Column("name", String(length=50), nullable=False),
+        Column("password_hash", VARCHAR(256), nullable=False),
         Column("email_address", String(60)),
         Column("user_type", String(60)),
-        PrimaryKeyConstraint('id')
+        PrimaryKeyConstraint("id"),
     )
 
 

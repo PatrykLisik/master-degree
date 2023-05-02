@@ -4,24 +4,28 @@ from typing import Iterable, List, TypeVar
 from sanic.log import logger
 
 from src.model.domain_model import Stop
-from src.repositories.abstract import (
-    AbstractRouteRepository,
-    AbstractTransitRepository
-)
+from src.repositories.abstract import AbstractRouteRepository, AbstractTransitRepository
 
 
-async def get_all_routes_usecase(route_repository: AbstractRouteRepository) -> dict[str, str]:
+async def get_all_routes_usecase(
+    route_repository: AbstractRouteRepository,
+) -> dict[str, str]:
     return {route.name: route.id for route in await route_repository.get_all()}
 
 
-async def get_route_stops_usecase(route_repository: AbstractRouteRepository, route_id: str) -> list[(str, str)]:
+async def get_route_stops_usecase(
+    route_repository: AbstractRouteRepository, route_id: str
+) -> list[(str, str)]:
     route = await route_repository.get(route_id=route_id)
     return [(stop.name, stop.id) for stop in route.stops]
 
 
-async def get_stop_timetable_usecase(route_repository: AbstractRouteRepository,
-                                     transit_repository: AbstractTransitRepository,
-                                     route_id: str, stop_id: str) -> List[datetime]:
+async def get_stop_timetable_usecase(
+    route_repository: AbstractRouteRepository,
+    transit_repository: AbstractTransitRepository,
+    route_id: str,
+    stop_id: str,
+) -> List[datetime]:
     route = await route_repository.get(route_id=route_id)
     time_offset = _time_to_stop_on_list(stop_list=route.stops, target_stop_id=stop_id)
     logger.info(f"time_offset: {time_offset}")

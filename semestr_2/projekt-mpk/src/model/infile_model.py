@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict
+from typing import List
 
 
 @dataclass(frozen=True)
@@ -7,7 +7,9 @@ class Stop:
     id: str = field(hash=True)
     name: str = field(hash=False)
     geolocation: [float] = field(hash=False)
-    time_to_other_stops_in_seconds: dict[str, int] = field(hash=False, default_factory=dict)
+    time_to_other_stops_in_seconds: dict[str, int] = field(
+        hash=False, default_factory=dict
+    )
 
 
 @dataclass(frozen=True)
@@ -39,5 +41,3 @@ class Driver:
     last_name: str = field(hash=False)
     PESEL: str = field(hash=False)
     phone: str = field(hash=False)
-
-

@@ -31,12 +31,15 @@ class Stop(Base):
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     loc_x: Mapped[int] = mapped_column(Integer, nullable=False)
     loc_y: Mapped[int] = mapped_column(Integer, nullable=False)
+    route_stops: Mapped[list["RouteStop"]] = relationship(back_populates="stop")
+    stop_times: Mapped[list["StopTimes"]] = relationship(back_populates="start_stop")
 
 
 class StopTimes(Base):
     __tablename__ = "stop_times"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     start_stop_id: Mapped[int] = mapped_column(ForeignKey(Stop.id))
+    start_stop: Mapped[Stop] = relationship(back_populates="stop_times")
     end_stop_id: Mapped[int] = mapped_column(ForeignKey(Stop.id))
     time_in_seconds: Mapped[int] = mapped_column(Integer, nullable=False)
 
@@ -57,6 +60,7 @@ class RouteStop(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     stop_id: Mapped[int] = mapped_column(Integer, ForeignKey(Stop.id))
+    stop: Mapped[Stop] = relationship(back_populates="route_stops")
     route_id: Mapped[int] = mapped_column(Integer, ForeignKey("route.id"))
     route: Mapped["Route"] = relationship(back_populates="stops")
     order: Mapped[int] = mapped_column(Integer)
@@ -67,7 +71,9 @@ class Route(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
-    stops: Mapped[list[RouteStop]] = relationship( order_by=RouteStop.order, back_populates="route")
+    stops: Mapped[list[RouteStop]] = relationship(
+        order_by=RouteStop.order, back_populates="route"
+    )
     transits: Mapped[list["Transit"]] = relationship(back_populates="route")
 
 
@@ -76,21 +82,22 @@ class Vehicle(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     capacity: Mapped[int] = mapped_column(Integer)
-    transits: Mapped[list["Transit"]] = relationship( back_populates="vehicle")
+    transits: Mapped[list["Transit"]] = relationship(back_populates="vehicle")
 
 
 class Transit(Base):
-    '''
+    """
     Reason to use many to one
     https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#many-to-one
-    '''
+    """
+
     __tablename__ = "transit"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     route_id: Mapped[int] = mapped_column(ForeignKey(Route.id))
-    route: Mapped[Route] = relationship( back_populates="transits")
+    route: Mapped[Route] = relationship(back_populates="transits")
     start_time: Mapped[datetime] = mapped_column(DateTime)
     vehicle_id: Mapped[int] = mapped_column(ForeignKey(Vehicle.id))
-    vehicle: Mapped[Vehicle] = relationship( back_populates="transits")
+    vehicle: Mapped[Vehicle] = relationship(back_populates="transits")
     driver_id: Mapped[int] = mapped_column(ForeignKey(Driver.id))
     driver: Mapped[Driver] = relationship(back_populates="transits")

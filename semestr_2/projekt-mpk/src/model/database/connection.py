@@ -15,4 +15,6 @@ engine = create_async_engine(
 
 # async_sessionmaker: a factory for new AsyncSession objects.
 # expire_on_commit - don't expire objects after transaction commit
-async_session_maker: async_sessionmaker[AsyncSession] = async_sessionmaker(engine, expire_on_commit=True)
+async_session_maker: async_sessionmaker[AsyncSession] = async_sessionmaker(
+    engine, expire_on_commit=True
+)
