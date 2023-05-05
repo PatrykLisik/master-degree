@@ -5,7 +5,9 @@ from datetime import timedelta
 from typing import Dict, Set
 
 from sanic.log import logger
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
+from src.model.database.model import Stop as StopDB
 from src.model.domain_model import Stop as DomainStop
 from src.model.infile_mappers import infile_stop_to_domain
 from src.model.infile_model import Stop
@@ -138,3 +140,52 @@ class InFileStopRepository(AbstractStopRepository):
         start_stop.time_to_other_stops_in_seconds[end_stop_id] = time.seconds
         stops[start_stop_id] = start_stop
         self._set_stops(stops)
+
+
+class DatabaseStopRepository(AbstractStopRepository):
+
+    def __init__(self, session_maker: async_sessionmaker[AsyncSession]):
+        self.session_maker = session_maker
+
+    async def add(self, name: str, geolocation_x: decimal.Decimal, geolocation_y: decimal.Decimal) -> DomainStop:
+        async with self.session_maker() as session:
+            async with session.begin():
+                new_stop = StopDB(name=name, loc_x=geolocation_x, loc_y=geolocation_y)
+                session.add(new_stop)
+                await session.flush()
+                domain_stop = DomainStop(
+                    id=new_stop.id,
+                    name=new_stop.name,
+                    loc_x=new_stop.loc_x,
+                    loc_y=new_stop.loc_y
+                )
+            await session.commit()
+        return domain_stop
+
+    async def update(self, stop_id: str, updated_stop: DomainStop):
+        async with self.session_maker() as session:
+            async with session.begin():
+                stop = await session.get(StopDB, stop_id)
+                stop.name = updated_stop.name
+                stop.loc_y = updated_stop.loc_y
+                stop.loc_x = updated_stop.loc_x
+            await session.commit()
+
+    async def get(self, stop_id: str) -> DomainStop:
+        async with self.session_maker() as session:
+            stop = await session.get(StopDB, stop_id)
+            return DomainStop(
+                id=stop_id,
+                name=stop.name,
+                loc_y=stop.loc_y,
+                loc_x=stop.loc_x
+            )
+
+    async def get_all(self) -> Set[DomainStop]:
+        pass
+
+    async def get_many(self, stop_ids: set[str]) -> Set[DomainStop]:
+        pass
+
+    async def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
+        pass

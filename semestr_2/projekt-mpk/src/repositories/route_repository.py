@@ -70,6 +70,7 @@ class InFileRouteRepository(AbstractRouteRepository):
 
 
 class DatabaseRouteRepository(AbstractRouteRepository):
+
     def __init__(self, session_maker: async_sessionmaker[AsyncSession]):
         self.session_maker = session_maker
 
@@ -98,23 +99,53 @@ class DatabaseRouteRepository(AbstractRouteRepository):
 
     async def get(self, route_id: str) -> DomainRoute:
         async with self.session_maker() as session:
-            async with session.begin():
-                route = await session.get(
-                    DBRoute, int(route_id), populate_existing=True
-                )
-                route_stops_ids = {stop.id for stop in route.stops}
+            route = await session.get(
+                DBRoute, int(route_id), populate_existing=True
+            )
+            route_stops_ids = {stop.id for stop in route.stops}
 
-                stops_statement = select(DBRouteStop).where(
-                    DBRoute.id.in_(route_stops_ids)
-                )
-                stops = await session.scalars(stops_statement)
-                id_to_stop = {stop.id: stop for stop in stops}
+            stops_statement = select(DBRouteStop).where(
+                DBRoute.id.in_(route_stops_ids)
+            )
+            stops = await session.scalars(stops_statement)
 
-                stops_times_statement = select(DBStopTimes).where(
-                    DBStopTimes.start_stop_id.in_(route_stops_ids)
-                )
-                stops_times = await session.scalars(stops_times_statement)
+            stops_times_statement = select(DBStopTimes).where(
+                DBStopTimes.start_stop_id.in_(route_stops_ids)
+            )
+            stops_times = await session.scalars(stops_times_statement)
 
+            id_to_domain_stops = {
+                stop.id: DomainStop(
+                    id=stop.id,
+                    name=stop.name,
+                    loc_y=str(stop.loc_y),
+                    loc_x=str(stop.loc_x),
+                    time_to_other_stops={
+                        str(stop_time.end_stop_id): timedelta(
+                            seconds=stop_time.time_in_seconds
+                        )
+                        for stop_time in stops_times
+                        if stop_time.start_stop_id == stop.id
+                    },
+                )
+                for stop in stops
+            }
+
+            stops = [id_to_domain_stops[stop.id] for stop in route.stops]
+            return DomainRoute(name=route.name, id=route.id, stops=stops)
+
+    async def get_all(self) -> Set[DomainRoute]:
+        async with self.session_maker() as session:
+            routes_statement = select(DBRoute)
+            routes = await session.scalars(routes_statement)
+
+            stops_statement = select(DBRouteStop)
+            stops = await session.scalars(stops_statement)
+
+            stops_times_statement = select(DBStopTimes)
+            stops_times = await session.scalars(stops_times_statement)
+            domain_routes = set()
+            for route in routes:
                 id_to_domain_stops = {
                     stop.id: DomainStop(
                         id=stop.id,
@@ -133,7 +164,6 @@ class DatabaseRouteRepository(AbstractRouteRepository):
                 }
 
                 stops = [id_to_domain_stops[stop.id] for stop in route.stops]
-                return DomainRoute(name=route.name, id=route.id, stops=stops)
-
-    async def get_all(self) -> Set[DomainRoute]:
-        pass
+                domain_route = DomainRoute(name=route.name, id=route.id, stops=stops)
+                domain_routes.add(domain_route)
+            return domain_routes
