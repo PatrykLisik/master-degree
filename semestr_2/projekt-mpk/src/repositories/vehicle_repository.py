@@ -9,9 +9,13 @@ from src.model.domain_model import Vehicle as DomainVehicle
 from src.model.infile_mappers import infile_vehicle_to_domain
 from src.model.infile_model import Vehicle
 from src.repositories.abstract import AbstractVehicleRepository
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+from src.model.database.model import Vehicle as DBVehicle
 
 
 class InMemoryVehicleRepository(AbstractVehicleRepository):
+
     def __int__(self):
         self._data = {}
 
@@ -75,7 +79,59 @@ class InFileVehicleRepository(AbstractVehicleRepository):
 
     async def get(self, vehicle_id: str) -> Optional[DomainVehicle]:
         vehicle = self._get()[vehicle_id]
-        return infile_vehicle_to_domain(vehicle)
+        return await infile_vehicle_to_domain(vehicle)
 
     async def get_all(self) -> set[DomainVehicle]:
         return {infile_vehicle_to_domain(vehicle) for vehicle in self._get().values()}
+
+
+class DatabaseVehicleRepository(AbstractVehicleRepository):
+
+    def __init__(self, session_maker: async_sessionmaker[AsyncSession]):
+        self.session_maker = session_maker
+
+    async def add(self, capacity: int) -> DomainVehicle:
+        async with self.session_maker() as session:
+            async with session.begin():
+                new_vehicle = DBVehicle(capacity=capacity)
+                session.add(new_vehicle)
+                await session.flush()
+                domain_vehicle = DomainVehicle(
+                    id=new_vehicle.id,
+                    capacity=new_vehicle.capacity
+                )
+                await session.commit()
+                return domain_vehicle
+
+    async def update(self, vehicle_id: str, updated_vehicle: DomainVehicle):
+        async with self.session_maker() as session:
+            async with session.begin():
+                vehicle = await session.get(DBVehicle, vehicle_id)
+                vehicle.capacity = updated_vehicle.capacity
+                await session.commit()
+
+    async def get(self, vehicle_id: str) -> DomainVehicle:
+        async with self.session_maker() as session:
+            async with session.begin():
+                vehicle = await session.get(DBVehicle, vehicle_id)
+                await session.flush()
+                domain_vehicle = DomainVehicle(
+                    id=vehicle.id,
+                    capacity=vehicle.capacity
+                )
+                await session.commit()
+                return domain_vehicle
+
+    async def get_all(self) -> Set[DomainVehicle]:
+        async with self.session_maker() as session:
+            select_all_vehicles_statement = select(DBVehicle)
+            db_vehicles = await session.scalars(select_all_vehicles_statement)
+
+            domain_vehicles = set()
+            for vehicle in db_vehicles:
+                domain_stop = DomainVehicle(
+                    id=vehicle.id,
+                    capacity=vehicle.capacity
+                )
+                domain_vehicles.add(domain_stop)
+            return domain_vehicles

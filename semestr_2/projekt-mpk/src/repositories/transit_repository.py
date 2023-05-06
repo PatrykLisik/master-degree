@@ -6,7 +6,11 @@ from typing import Dict, Optional, Set
 
 from sanic.log import logger
 
-from src.model.domain_model import Transit as DomainTransit
+from src.model.database.to_domain_mappers import db_transit_to_domain
+from src.model.domain_model import (
+    Transit as DomainTransit
+)
+from src.model.database.model import Transit as DBTransit
 from src.model.infile_mappers import infile_transit_to_domain
 from src.model.infile_model import Transit
 from src.repositories.abstract import (
@@ -15,6 +19,8 @@ from src.repositories.abstract import (
     AbstractTransitRepository,
     AbstractVehicleRepository,
 )
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+from sqlalchemy import select
 
 
 class InFileTransitRepository(AbstractTransitRepository):
@@ -118,3 +124,58 @@ class InFileTransitRepository(AbstractTransitRepository):
         return {
             transit for transit in await self.get_all() if transit.route.id == route_id
         }
+
+
+class DatabaseTransitRepository(AbstractTransitRepository):
+
+    def __init__(self, session_maker: async_sessionmaker[AsyncSession]):
+        self.session_maker = session_maker
+
+    async def add(self, route_id: str, start_time: datetime, vehicle_id: str, driver_id: str) -> DomainTransit:
+        async with self.session_maker() as session:
+            async with session.begin():
+                new_transit = DBTransit(
+                    start_time=start_time,
+                    route_id=route_id,
+                    vehicle_id=vehicle_id,
+                    driver_id=driver_id
+                )
+                await session.flush()
+                domain_transit = await db_transit_to_domain(new_transit)
+                await session.commit()
+                return domain_transit
+
+    async def update(self, transit_id: str, updated_transit: DomainTransit):
+        async with self.session_maker() as session:
+            async with session.begin():
+                new_transit = DBTransit(
+                    start_time=updated_transit.start_time,
+                    route_id=updated_transit.route.id,
+                    vehicle_id=updated_transit.vehicle.id,
+                    driver_id=updated_transit.driver.id
+                )
+
+            await session.commit()
+
+    async def get(self, transit_id: str) -> DomainTransit:
+        async with self.session_maker() as session:
+            db_transit = session.get(DBTransit, transit_id)
+            return await db_transit_to_domain(db_transit)
+
+    async def get_all(self) -> Set[DomainTransit]:
+        async with self.session_maker() as session:
+            get_all_transit_statement = select(DBTransit)
+            transits = await session.scalars(get_all_transit_statement)
+            domain_transits = set()
+            for db_transit in transits:
+                domain_transits.add(await db_transit_to_domain(db_transit))
+            return domain_transits
+
+    async def get_by_route(self, route_id: str) -> Set[DomainTransit]:
+        async with self.session_maker() as session:
+            get_all_transit_statement = select(DBTransit).where(DBTransit.route_id == route_id)
+            transits = await session.scalars(get_all_transit_statement)
+            domain_transits = set()
+            for db_transit in transits:
+                domain_transits.add(await db_transit_to_domain(db_transit))
+            return domain_transits
