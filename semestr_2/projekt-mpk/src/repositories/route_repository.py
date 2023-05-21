@@ -64,7 +64,7 @@ class InFileRouteRepository(AbstractRouteRepository):
 
     async def get_all(self) -> Set[DomainRoute]:
         return {
-            infile_route_to_domain(route, self.stops_repository)
+            await infile_route_to_domain(route, self.stops_repository)
             for route in self._get().values()
         }
 

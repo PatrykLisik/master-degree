@@ -10,14 +10,15 @@ from src.repositories.abstract import AbstractRouteRepository, AbstractTransitRe
 async def get_all_routes_usecase(
     route_repository: AbstractRouteRepository,
 ) -> dict[str, str]:
-    return {route.name: route.id for route in await route_repository.get_all()}
+    routes = await route_repository.get_all()
+    return {route.name: route.id for route in routes}
 
 
 async def get_route_stops_usecase(
     route_repository: AbstractRouteRepository, route_id: str
-) -> list[(str, str)]:
+) -> dict[str, str]:
     route = await route_repository.get(route_id=route_id)
-    return [(stop.name, stop.id) for stop in route.stops]
+    return {stop.name: stop.id for stop in route.stops}
 
 
 async def get_stop_timetable_usecase(

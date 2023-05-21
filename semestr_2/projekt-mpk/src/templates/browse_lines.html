@@ -13,13 +13,18 @@
                                 <h5 class="card-title">Lines</h5>
                                 <div class="row justify-content-center">
                                     <div class="list-group">
-                                        <a href="#" class="list-group-item list-group-item-action active"
-                                           aria-current="true">
-                                            The current link item
-                                        </a>
-                                        <a href="" class="list-group-item list-group-item-action">57</a>
-                                        <a href="#" class="list-group-item list-group-item-action">86/a>
-                                            <a href="#" class="list-group-item list-group-item-action">53</a>
+                                        {% for route in routes %}
+                                            <a href="/{{ routes[route] }}"
+
+                                                    {% if current_route and current_route == routes[route] %}
+                                               class="list-group-item list-group-item-action active" aria-current="true"
+                                                    {% else %}
+                                               class="list-group-item list-group-item-action" aria-current="true"
+                                                    {% endif %}
+                                            >
+                                                {{ route }}
+                                            </a>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
@@ -31,16 +36,19 @@
                                 <h5 class="card-title">Stops</h5>
                                 <div class="row justify-content-center">
                                     <div class="list-group">
-                                        <a href="#" class="list-group-item list-group-item-action active"
-                                           aria-current="true">
-                                            ZAGAJNIKOWA - INFLANCKA
-                                        </a>
-                                        <a href="" class="list-group-item list-group-item-action">ZAGAJNIKOWA -
-                                            INFLANCKA</a>
-                                        <a href="#" class="list-group-item list-group-item-action">ZAGAJNIKOWA -
-                                            INFLANCKA </a>
-                                        <a href="#" class="list-group-item list-group-item-action">ZAGAJNIKOWA -
-                                            INFLANCKA</a>
+
+                                        {% for stop in stops %}
+                                            <a href="#"
+
+                                                    {% if current_stop and current_stop == stops[stop] %}
+                                               class="list-group-item list-group-item-action active" aria-current="true"
+                                                    {% else %}
+                                               class="list-group-item list-group-item-action" aria-current="true"
+                                                    {% endif %}
+                                            >
+                                                {{ stop }}
+                                            </a>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
