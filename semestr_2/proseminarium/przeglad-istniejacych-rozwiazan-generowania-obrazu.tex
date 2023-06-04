@@ -1,0 +1,91 @@
+\usepackage{wrapfig}
+
+\section{Rozwiązania 'text to image'}
+\input{rozwiazania_text_to_image}
+
+\section{Rozwiązania oparte o generatywne sieci współzawodniczące -- GAN}
+
+
+GAN (Generative Adversarial Network) to rodzaj architektury sieci neuronowych, który składa się z dwóch głównych komponentów: generatora i dyskryminatora.
+GAN-y są wykorzystywane do generowania nowych danych, takich jak obrazy, dźwięki czy tekst, które są podobne do danych treningowych.
+
+Generator w GAN-ie jest odpowiedzialny za generowanie nowych próbek danych na podstawie losowych wejść, zwanych wektorami szumowymi.
+    Początkowo generator generuje losowe próbki, które nie są podobne do danych treningowych.
+    Wraz z postępem uczenia, generator stara się tworzyć coraz bardziej realistyczne próbki, które przypominają rzeczywiste dane treningowe.
+
+Dyskryminator w GANie ma za zadanie rozróżnianie między rzeczywistymi danymi treningowymi a próbkami generowanymi przez generator.
+Jest to sieć neuronowa binarnego klasyfikatora, który stara się określić, czy dana próbka pochodzi z danych treningowych czy została wygenerowana przez generator.
+Dyskryminator jest trenowany w procesie uczenia maszynowego w celu poprawnego klasyfikowania próbek.
+
+Podstawową ideą GAN-a jest trening zarówno generatora, jak i dyskryminatora w równoległych procesach, które konkurują ze sobą.
+Generator stara się generować jak najbardziej realistyczne próbki, aby oszukać dyskryminatora, podczas gdy dyskryminator stara się coraz lepiej rozróżniać prawdziwe dane od próbek wygenerowanych przez generator.
+Proces ten jest iteracyjny i odbywa się poprzez optymalizację wag sieci neuronowych generatora i dyskryminatora w celu osiągnięcia równowagi między nimi.
+
+Jednym z największych osiągnięć GAN-ów jest możliwość generowania wysokiej jakości i realistycznych danych, które trudno odróżnić od rzeczywistych.
+GANy znalazły szerokie zastosowanie w dziedzinach takich jak generowanie obrazów, syntezowanie dźwięków, generowanie tekstów czy tworzenie grafiki komputerowej.
+Stanowią one również podstawę dla zaawansowanych technologii takich jak DeepFake.
+
+W kontekście generowania obrazów na podstawie tekstu wcześniej wspomniany CLIP znalazł swoje pierwsze znaczące zastosowanie w systemach generowania obrazów opartych na GAN~\cite{creativity_of_text_to_image}.
+CLIP był używany jako składnik dyskryminatora w GAN\@.
+CLIP może kierować komponentem generatora w celu stworzenia cyfrowych obrazów najlepiej odpowiadających danemu tekstowemu poleceniu.
+Wkrótce po wydaniu przez OpenAI CLIP w styczniu 2021 roku, entuzjaści sztucznej inteligencji stworzyli systemy oparte na GAN+CLIP, które miały na celu generowanie sztuki cyfrowej.\     Ryan Murdoch stworzył `Big Sleep', kombinację GAN o nazwie BigGAN i CLIP. To zainspirowało Katherine Crowson do połączenia jeszcze potężniejszej sieci neuronowej (VQGAN) z CLIP. Kombinacja VQGAN i CLIP była bardzo popularna w 2021 roku i stała się jedną z standardowych technik generowania dzieł sztuki, dopóki nie została zastąpiona przez systemy oparte na stabilnej dyfuzji.
+Można argumentować, że VQGAN–CLIP odegrał kluczową rolę w rozwoju powstającej dziedziny sztuki tekstowo-obrazowej.
+
+
+\section{Zamiana twarzy}
+\input{zamiana-twarzy}
+
+\section{Artefakty generowanych obrazów}
+\label{sec:section-artifacts}
+
+Obrazy generowane przez modele oparte na Stable Diffusion i GAN-ach mogą czasami wykazywać pewne artefakty, które wynikają z charakterystyki tych metod.
+Oto kilka powszechnych artefaktów, które można zaobserwować w tego rodzaju obrazach:
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \includegraphics[width=\linewidth]{img/falied-image-restoration}
+    \centering
+    \caption{ Błędna regeneracja obrazu przez Stable Diffusion. Jest to przykład tzw. halucynowania}
+    \label{img:falied-restoration}
+\end{wrapfigure}
+
+
+\begin{description}
+
+    \item[Szumy lub zniekształcenia] Obrazy generowane przez modele mogą wykazywać różne rodzaje szumów lub zniekształceń, takich jak piksele o nietypowych kolorach, nieostry obraz lub nieprawidłowe tekstury.
+    Te artefakty mogą być wynikiem niedoskonałości modelu i trudności w perfekcyjnym odwzorowaniu złożonych wzorców obrazów rzeczywistych.
+
+    \item[Nieprawidłowe proporcje] Czasami modele mogą generować obrazy o nieprawidłowych proporcjach, na przykład deformacje twarzy lub nietypowe kształty obiektów.
+    Może to wynikać z ograniczeń modelu w odwzorowaniu precyzyjnych proporcji i proporcji obiektów.
+
+    \item[Artefakty tekstury] Generowanie realistycznej i spójnej tekstury może być wyzwaniem dla modeli opartych na Stable Diffusion i GAN-ach.
+    Mogą występować nieprawidłowe tekstury lub nieciągłości w generowanych obrazach, co prowadzi do artefaktów teksturalnych, takich jak niewłaściwe wzory, rozmazane krawędzie lub nieprawidłowe detale.
+
+    \item[Nadmierne dopasowanie danych treningowych] Modele GAN, szczególnie w przypadku niedostatecznej różnorodności w zbiorze treningowym, mogą czasami nadmiernie dopasować się do danych treningowych.
+    Może to prowadzić do powtarzających się wzorców lub `klonowania' obiektów, gdzie generowane obrazy wyglądają podobnie lub są zbyt podobne do obrazów treningowych.
+
+    \item[Niewłaściwe kontekstowe informacje] Modele są oparte na danych treningowych, które mogą mieć ograniczenia w zakresie reprezentacji różnorodnych kontekstów.
+    W rezultacie generowane obrazy mogą zawierać niewłaściwe kontekstowe informacje, co prowadzi do nieprawidłowych lub niedopasowanych elementów w obrazach.
+    Popularna nazwa tego zawiaska to halucynowanie.
+    Tego typu sytuację pokazano na obrazie~[\ref{img:falied-restoration}]
+
+\end{description}
+
+\begin{wrapfigure}{l}{0.4\textwidth}
+    \includegraphics[width=\linewidth]{img/Pope-annotation}
+    \centering
+    \caption{ Typowe artefakty które można odnaleźć na obrazach generowanych przez metody sztucznej inteligencji. Źródło:~\cite{howToSpotBalenciagaPope} }
+    \label{img:pope_annotation}
+\end{wrapfigure}
+
+Gdy przyjrzeć się uważnie obrazowi `Balenciaga Pope'(rysunek~\ref{img:pope-balenciaga}, można dostrzec kilka wyraźnych oznak jego powstania za pomocą sztucznej inteligencji.
+Krzyż wiszący na jego piersi jest niepokojąco uniesiony, zaledwie biała puchowa kurtka zamiast drugiej połowy łańcucha.
+W jego prawej ręce znajduje się coś, co wydaje się zamazanym kubkiem z kawą, ale palce, zamiast trzymać kubek, zamykają się wokół powietrza.
+Powieka niezrozumiale łączy się z okularami, które z kolei przechodzą w swój własny cień.
+Przybliżenia na te artefakty obrazu pokazano na rysunku~\ref{img:pope_annotation}.
+
+
+Aby rozpoznać obraz generowany przez sztuczną inteligencję, często warto przyjrzeć się tym skomplikowanym detalom.
+Jak palce, włosy czy w tym przypadku krzyż.
+Krzyż nie powinien unosić się w powietrzu bez łańcucha go podtrzymującego.
+Okulary i cień za nimi nie są jednym obiektem.
+Obecność tego typu artefaktów pozwala wykrywać obrazy wygenerowane przez sztuczną inteligencję.

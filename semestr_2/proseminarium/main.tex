@@ -1,0 +1,96 @@
+\documentclass[11pt,a4paper,twoside,openright]{bookest}
+% \usepackage[margin=1.2in,nomarginpar]{geometry}
+
+\setlength{\textwidth}{455pt}
+% \setlength{\oddsidemargin}{22pt}
+% \setlength{\evensidemargin}{22pt}
+% \setlength{\marginparwidth}{35pt}
+% \setlength{\voffset}{0pt}
+% \setlength{\hoffset}{0pt}
+
+% \typeout{tw: \the\textwidth}
+% \typeout{os: \the\oddsidemargin}
+% \typeout{es: \the\evensidemargin}
+% \typeout{mw: \the\marginparwidth}
+
+
+\usepackage[table]{xcolor}
+\usepackage[utf8]{inputenc}
+%brackets 
+\usepackage{amssymb}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{graphicx}
+\usepackage{pdfpages}
+\usepackage{fancyhdr}
+\usepackage{import}
+\usepackage{wrapfig}
+
+\author{Patryk Lisik}
+
+\definecolor{tab1}{gray}{0.94}
+\definecolor{tab2}{rgb}{1, 1, 1}
+
+%bigger frac
+\newcommand\ddfrac[2]{\frac{\displaystyle #1}{\displaystyle #2}}
+
+
+\setlength{\headheight}{15pt}
+
+
+\begin{document}
+    \includepdf[pages={1}]{AnalizaObrazowStronaTytulowa.pdf}
+    \delimitershortfall=-1pt
+
+    \tableofcontents
+
+
+
+    \chapter{Wstęp}\label{ch:wstep}
+    \input{wstep}
+
+    \chapter{Przegląd istniejących rozwiązań generowania obrazu}\label{ch:przeglad-istniejacych-rozwiazan-generowania-obrazu}
+    \input{przeglad-istniejacych-rozwiazan-generowania-obrazu}
+
+    \chapter{Istniejące rozwiązania wykrywania obrazów niewytworzonych przez człowieka}\label{ch:istniejace-rozwiazania-wykrywania-obrazow-niewytworzonych-przez-czowieka}
+    \input{wykrywanie_zmian}
+
+    \chapter{Podsumowanie}\label{ch:podsumowanie}
+
+    W niniejszej pracy proseminaryjnej skoncentrowano się na rozpoznawaniu obrazów generowanych przez sztuczną inteligencję oraz ich wpływie na różne dziedziny życia.
+    Przeprowadzono dogłębną analizę technik i algorytmów wykorzystywanych do generowania obrazów, a następnie opisano metody rozpoznawania tych obrazów.
+
+    Pierwszym etapem pracy było zapoznanie się z najważniejszymi technikami generowania obrazów przez AI, takimi jak generatywne modele współzawodniczące (GAN), głębokie sieci neuronowe czy autokodery.
+    W oparciu o te techniki przeprowadzono szereg eksperymentów, które wykazały ogromne postępy w generowaniu realistycznych obrazów przez sztuczną inteligencję.
+    Jednak równocześnie pojawiły się też obawy dotyczące możliwości manipulacji i wprowadzania dezinformacji za pomocą generowanych przez AI obrazów.
+
+    Następnie przystąpiono do badania metod rozpoznawania obrazów wygenerowanych przez AI. Przeanalizowano różne podejścia, w tym ekstrakcję cech, uczenie maszynowe oraz analizę statystyczną.
+    Wykazano, że rozpoznawanie obrazów generowanych przez AI stanowi niezwykle trudne wyzwanie ze względu na ich wysoką jakość i podobieństwo do rzeczywistych obrazów.
+    Wskazano również na konieczność ciągłego doskonalenia technik rozpoznawania, aby nadążyć za postępującym rozwojem generatywnych modeli.
+
+    Następnie omówiono różne dziedziny, w których obrazy generowane przez AI mają wpływ.
+    Przeanalizowano ich zastosowanie w medycynie, sztuce, tworzeniu treści multimedialnych oraz reklamie.
+    W każdej z tych dziedzin zidentyfikowano zarówno korzyści, jak i potencjalne zagrożenia.
+    Obrazy generowane przez AI mają ogromny potencjał do poprawy jakości życia i rozwoju nauki, ale jednocześnie stanowią wyzwanie dla rzetelności informacji i prywatności.
+
+    Wnioski z przeprowadzonych badań wskazują na to, że rozpoznawanie obrazów generowanych przez AI jest niezwykle ważnym zagadnieniem.
+    Pomimo postępów w dziedzinie generowania obrazów przez AI, istnieje nadal wiele wyzwań związanych z rozpoznawaniem i weryfikacją ich autentyczności.
+    Dlatego niezbędne jest rozwijanie bardziej zaawansowanych technik i narzędzi, które będą w stanie skutecznie rozpoznawać generowane przez AI obrazy.
+
+    W związku z tym dalsze badania i prace w tej dziedzinie są niezwykle istotne.
+    Konieczne jest opracowanie bardziej zaawansowanych algorytmów i metod rozpoznawania, które będą w stanie skutecznie odróżniać obrazy generowane przez AI od rzeczywistych obrazów.
+    Ponadto rozwój systemów opartych na sztucznej inteligencji, które będą mogły wykrywać manipulacje i fałszerstwa w obrazach generowanych przez AI, będzie kluczowy dla zachowania rzetelności informacji oraz ochrony przed dezinformacją.
+
+    Wraz z postępem technologii AI i generowania obrazów, z pewnością pojawią się nowe wyzwania i możliwości.
+    Praca magisterska stanowi jedynie wstęp do tej fascynującej dziedziny i może stanowić punkt wyjścia do dalszych badań i eksploracji.
+    Rozpoznawanie obrazów generowanych przez AI jest jednym z najważniejszych tematów w dziedzinie sztucznej inteligencji, które będzie miało ogromny wpływ na nasze społeczeństwo i codzienne życie.
+
+    Ostatecznie, postęp w rozpoznawaniu obrazów generowanych przez AI jest kluczowy dla zbudowania zaufania do sztucznej inteligencji oraz zapewnienia bezpiecznego i odpowiedzialnego wykorzystania tych technologii.
+    Tylko poprzez dalsze badania, innowacje i współpracę między naukowcami, instytucjami i społecznościami możemy osiągnąć postęp w tej dziedzinie i maksymalnie wykorzystać potencjał obrazów generowanych przez AI dla dobra ludzkości.
+% \cite{LatentDiffusionModels, zhang2023adding,nguyen2023new,hamid2023improvised,uloli2022survey, birunda2022fake, liao2021imperceptible, nguyen2019use} 
+% \cite{hsu2020deep,marra2018detection}
+
+    \bibliographystyle{ieeetr}
+    \bibliography{refs}
+
+\end{document}

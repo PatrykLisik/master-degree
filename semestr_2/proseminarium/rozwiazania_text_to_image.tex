@@ -1,0 +1,73 @@
+    Metody przekształcania tekstu na obraz, znane również jako `text-to-image', są obszarem badań związanych z generowaniem obrazów na podstawie opisów tekstowych~\cite{creativity_of_text_to_image}. Ta dziedzina łączy w sobie technologie z zakresu uczenia maszynowego, przetwarzania języka naturalnego i sztucznej inteligencji w celu tworzenia realistycznych wizualizacji na podstawie tekstu opisującego sceny, przedmioty lub koncepty.
+
+    Głównym celem metod text-to-image jest zrozumienie semantyki zawartej w opisie tekstowym i przekształcenie go w obraz, który jest zgodny z opisem.
+    Metody te mają szerokie zastosowanie w dziedzinach takich jak grafika komputerowa, projektowanie gier, reklama, tworzenie treści wizualnych i wiele innych.
+
+    W ostatnich latach zanotowano znaczny postęp w dziedzinie text-to-image, dzięki rozwojowi zaawansowanych modeli generatywnych, takich jak CLIP i sieci generatywne przeciwstawne (GAN). Te modele uczą się na ogromnych zbiorach danych obrazów i tekstów, a następnie są w stanie generować realistyczne obrazy na podstawie nowych opisów tekstowych.
+
+    Metody text-to-image mają wiele praktycznych zastosowań.
+    Mogą być wykorzystywane do generowania ilustracji do książek, tworzenia grafik reklamowych, tworzenia wirtualnych światów w grach komputerowych czy wspomagania procesów projektowania i tworzenia wizualizacji. Mają również potencjał do tworzenia barwnych i wciągających treści wizualnych na podstawie prostych opisów tekstowych.
+
+    Niemniej jednak generowanie obrazów na podstawie tekstu jest wciąż wyzwaniem, zwłaszcza jeśli chodzi o zachowanie spójności i realizm generowanych obrazów. Istnieją różne podejścia i techniki, takie jak wykorzystanie architektur sieci neuronowych, uwzględnienie kontekstu semantycznego, zastosowanie mechanizmów uwagi czy wykorzystanie danych treningowych do uczenia modeli. Badacze nadal pracują nad doskonaleniem tych metod, aby osiągnąć lepsze wyniki i generować jeszcze bardziej realistyczne obrazy na podstawie opisów tekstowych.
+
+    \subsection{CLIP (ang.  \textit{Contrastive Language–Image Pre-training})}
+    CLIP (Contrastive Language–Image Pre-training) to technologia opracowana przez OpenAI i przedstawiona w pracy badawczej opublikowanej w styczniu 2021 roku~\cite{CLIP}.
+    Jej podejście polega na wykorzystaniu języka naturalnego w celu poprawy ogólności i odporności modeli uczenia głębokiego do zadań klasyfikacji obrazów. Badacze są w stanie osiągnąć wyniki na najwyższym poziomie w wielu testach, korzystając z ustawienia zero-shot, co jest niezwykle imponujące.
+
+    Główna idea stojąca za CLIP polega na wspólnym wstępnym uczeniu modelu języka neuronowego i modelu klasyfikacji obrazów za pomocą ogromnej ilości danych obrazowych pobranych z Internetu wraz z odpowiednimi podpisami.
+
+% Na poniższym obrazie „Koder tekstu” reprezentuje model języka, a „Koder obrazu” model klasyfikacji obrazów.
+% Obrazek pochodzi z oryginalnego blogu OpenAI.
+
+
+    Celem uczenia jest skonstruowanie macierzy, w której każda wartość reprezentuje miarę podobieństwa między każdą parą podpowiedzi i obrazów - obliczaną jako $I\cdot T$ na obrazku - i wykorzystanie jej do uczenia modelu językowego i wizualnego, tak aby maksymalizować wartości w pozycjach odpowiadających poprawnym param. Na przykład, jeśli tekst na pozycji 0 brzmi „pepper the aussie pup”, a obraz na pozycji 0 reprezentuje konkretną treść, CLIP nauczy oba modele tworzyć reprezentacje, które maksymalizują ich podobieństwo.
+
+    Po zakończeniu tego procesu wstępnego szkolenia można użyć wstępnie nauczonych modeli wizualnych do wygenerowania reprezentacji dla dowolnego obrazu wejściowego i porównać je z kilkoma osadzeniami tekstowymi uzyskanymi z różnych podpowiedzi za pomocą modelu językowego.
+    Wybierana jest reprezentacja tekstowa o maksymalnej wartości podobieństwa, która najlepiej reprezentuje treść na obrazie.
+    Dzięki tej technice można użyć tysiąca klas ImageNet jako zdań i rozwiązać zadanie klasyfikacji w ustawieniu zero-shot.
+    Zero-shot to test rozpoznawania klas, których nie ma bezpośrednio w zbiorze treningowym, a wiedza o nich jest pozyskiwana pośrednio przez naukę przypadków które znajdują się w zbiorze treningowym.
+    CLIP opiera się na dużej liczbie prac dotyczących transferu zero-shot i uczeniu z nadzorem językA naturalnego.
+    Pomysł na uczenie bez danych sięga ponad dekadę, ale do niedawna był głównie badany w zakresie widzenia komputerowego jako sposób na uogólnianie na niewidoczne kategorie obiektów.
+    Kluczowym spostrzeżeniem było wykorzystanie języka naturalnego jako elastycznego przestrzeni predykcyjnej umożliwiającej uogólnianie i transfer.
+
+    CLIP może być stosowany do niemal dowolnych zadań klasyfikacji wizualnej.
+    Na przykład, jeśli zadaniem zbioru danych jest klasyfikacja zdjęć psów i kotów, sprawdzamy dla każdego obrazu, czy model CLIP przewiduje, że tekstowa opis „zdjęcie psa” lub „zdjęcie kota” jest bardziej prawdopodobnie z nim skojarzony.
+
+    CLIP wstępnie szkoli koder obrazu i koder tekstu w celu przewidzenia, które obrazy zostały skojarzone z którymi tekstami zbiorze danych.
+    Następnie wykorzystujemy to zachowanie, aby przekształcić CLIP w klasyfikator zero-shot.
+    Zamieniamy wszystkie klasy zbioru danych na podpisy, takie jak „zdjęcie psa”, a następnie przewidujemy klasę podpisu, który CLIP uważa za najlepiej dopasowany do danego obrazu.
+
+    CLIP został zaprojektowany w celu rozwiązania kilku głównych problemów w standardowym podejściu głębokiemu uczeniu w zakresie widzenia komputerowego:
+
+    \begin{description}
+
+        \item[Kosztowne zbiory danych] Głębokie uczenie wymaga dużej ilości danych, a modele wizyjne tradycyjnie były szkolone na ręcznie oznakowanych zbiorach danych, które są kosztowne w tworzeniu i dostarczają nadzoru tylko dla ograniczonej liczby ustalonych koncepcji wizualnych. Zestaw danych ImageNet, będący jednym z największych wysiłków w tej dziedzinie, wymagał zatrudnienia ponad 25 000 pracowników do oznakowania 14 milionów obrazów dla 22 000 kategorii obiektów. W przeciwieństwie do tego CLIP uczy się na podstawie par tekst-obraz dostępnych publicznie w Internecie. Redukcja potrzeby drogich, dużej skali oznaczonych zbiorów danych była szeroko badana w poprzednich pracach, zwłaszcza uczeniu bez nadzoru, metodach kontrastowych, podejściach samoszkolnych i modelowaniu generatywnym.
+
+        \item[Wąskie zakresy] Modele oparte o uczenie głębokie jak ImageNet są skuteczne w przewidywaniu stosunkowo małej ilości kategorii(około 1000).
+        Jeśli chcemy wykonać jakiekolwiek inne zadanie, osoba zajmująca się uczeniem maszynowym musi zbudować nowy zestaw danych, dodać warstwę wyjściową i dostrajać model.
+        W przeciwieństwie do tego CLIP może być dostosowany do wykonywania różnorodnych zadań klasyfikacji wizualnej bez konieczności dodatkowego szkolenia.
+        Aby zastosować CLIP do nowego zadania, wystarczy zamienić klasy zbioru danych na podpisy tekstowe i wybrać najbardziej prawdopodobny podpis dla danego obrazu.
+        CLIP jest elastycznym klasyfikatorem zero-shot, który potrafi generalizować do nieznanych klas bez ponownego szkolenia.
+
+        \item[Przenoszenie wiedzy między domenami] CLIP został wstępnie szkolony na różnorodnych zestawach danych obrazowych i tekstowych, co umożliwia przenoszenie wiedzy między różnymi domenami.
+        Na przykład, jeśli model jest wstępnie szkolony na dużej ilości obrazów architektonicznych i tekstów opisujących architekturę, można go przenieść na nowe zadania związane z architekturą, takie jak klasyfikacja stylów architektonicznych lub rozpoznawanie budynków.
+
+    \end{description}~\subsection{Stabilna dyfuzja)}
+
+    Stabilna dyfuzja (ang. \textit{Stable diffusion} w kontekście generowania obrazów odnosi się do zastosowania procesów dyfuzji stabilnych do generowania nowych obrazów o wysokiej jakości i różnorodności~\cite{ramesh2022hierarchical, seneviratne2022dalle}.
+    Metoda ta wykorzystuje własności dyfuzji stabilnej do stopniowego wprowadzania losowych zmian w początkowym obrazie, prowadząc do ewolucji i generowania nowych wariantów.
+
+    Proces generowania obrazów przy użyciu Stable Diffusion zwykle rozpoczyna się od początkowego obrazu, który może być losowo wygenerowany lub wybrany spośród istniejących obrazów treningowych.
+    Następnie, poprzez kolejne kroki dyfuzji, wprowadzane są losowe zmiany w pikselach obrazu.
+
+    Kluczowym aspektem Stable Diffusion jest wykorzystanie ogólnych rozkładów stabilnych, które mają właściwość `ciągłości skalowej'.
+    Oznacza to, że zmiany wprowadzane w pikselach mają charakter skalowalny, co pozwala na kontrolowane generowanie różnorodnych obrazów.
+    Proces dyfuzji stabilnej umożliwia stopniowe wprowadzanie tych zmian, prowadząc do wytworzenia nowych tekstur, kształtów i struktur obrazów.
+
+    Przy generowaniu obrazów za pomocą Stable Diffusion istotne jest również wprowadzenie mechanizmu sterowania procesem.
+    Może to obejmować kontrolowanie tempo dyfuzji, aby określać tempo zmian i ewolucję obrazu.
+    Może również obejmować sterowanie parametrami rozkładów stabilnych, takich jak indeks stabilności czy skala, co pozwala na dostosowanie charakterystyk generowanych obrazów.
+
+    Metoda Stable Diffusion w generowaniu obrazów oferuje wiele możliwości, zarówno w zakresie tworzenia realistycznych tekstur i detali, jak i eksplorowania kreatywnych wariantów.
+    Wykorzystanie dyfuzji stabilnej pozwala na generowanie wysokiej jakości obrazów, które są zarazem zróżnicowane i nieprzewidywalne.
+    To podejście znajduje zastosowanie w dziedzinach takich jak generowanie grafiki komputerowej, sztuka generatywna, czy projektowanie graficzne.
