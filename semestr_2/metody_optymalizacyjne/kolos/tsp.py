@@ -13,7 +13,7 @@ if __name__ == '__main__':
     best_order = None
     best_length = np.infty
     # print(f"System file buffer size {io.DEFAULT_BUFFER_SIZE}")
-    with open("./tsp_all.txt", "w", buffering=io.DEFAULT_BUFFER_SIZE * 2) as tsp_file:
+    with open("./tsp_all.txt", "a") as tsp_file:
         for order in tqdm(permutations(range(length), length)):
             order = [*order, order[0]]
             road_length = 0
