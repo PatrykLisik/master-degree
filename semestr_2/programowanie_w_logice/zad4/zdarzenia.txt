@@ -1,0 +1,2 @@
+zdarzenie(753 ,['Założenie Rzymu']).
+zdarzenie(1944 ,['Powstanie Warszawskie','bitwa o Ardeny']).

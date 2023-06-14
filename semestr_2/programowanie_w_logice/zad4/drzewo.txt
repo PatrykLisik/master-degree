@@ -1,0 +1,11 @@
+rodzic(a,b).
+rodzic(a,c).
+rodzic(a,d).
+rodzic(b,e).
+rodzic(b,f).
+rodzic(c,g).
+rodzic(c,h).
+rodzic(c,i).
+rodzic(d,j).
+rodzic(f,k).
+rodzic(f,l).
