@@ -1,3 +1,4 @@
+import argparse
 import logging
 
 import numpy as np
@@ -11,14 +12,19 @@ def get_plane_equation(start_point, normal_vector):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        prog='Zadanie 4',
+        description='Training set editing for linear separability.',
+    )
+    parser.add_argument('-trn', '--train_file', required=True, help='Training set file')
+    parser.add_argument('-cls', '--classes', required=True, nargs="+", type=int)
+    parser.add_argument('-o', '--output_file', default="zad4_out.txt", help='Output file')
 
-    train_file_path = "../data/iris_trn.txt"
-
-    output_file = "zad4_iris_2_3.txt"
+    args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO,
                         format='%(message)s',
-                        filename=output_file,
+                        filename=args.output_file,
                         filemode='w')
     console = logging.StreamHandler()
     console.setLevel(logging.DEBUG)
@@ -28,10 +34,9 @@ if __name__ == '__main__':
 
     logging.info("Training set editing for linear separability.\n")
 
-    train_data = np.genfromtxt(train_file_path, skip_header=1, dtype=np.float64)
+    train_data = np.genfromtxt(args.train_file, skip_header=1, dtype=np.float64)
 
-    class_1 = 2
-    class_2 = 3
+    class_1, class_2 = args.classes
 
     class_1_data = train_data[train_data[:, 0] == class_1][:, 1:]
     class_2_data = train_data[train_data[:, 0] == class_2][:, 1:]
