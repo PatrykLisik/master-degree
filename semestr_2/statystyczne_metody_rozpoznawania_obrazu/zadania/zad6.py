@@ -1,150 +1,104 @@
-num_classes = 10
-num_features = 600
-max_objects = 10000
+import argparse
+import logging
 
-training_set_file_path = "../data/epj_trn.txt"
-testing_set_file_path = "../data/epj_tst.txt"
-output_file_path = "zad6.txt"
+import numpy as np
 
-training_file = open(training_set_file_path, 'r')
-testing_file = open(testing_set_file_path, 'r')
-output_file = open(output_file_path, 'w')
 
-training_data = [[0.0] * num_features for _ in range(max_objects)]
-testing_data = [0.0] * num_features
-training_labels = [0] * max_objects
-true_labels = [0] * num_features
-assigned_labels = [0] * num_features
-mean_values = [0.0] * num_features
-sd = [0.0] * num_features
-prior_probabilities = [[0.0] * num_classes for _ in range(num_classes)]
-posterior_probabilities = [[0.0] * num_classes for _ in range(num_classes)]
-confusion_matrix = [[0] * num_classes for _ in range(num_classes)]
-class_counts = [0] * num_classes
-class_totals = [0] * num_classes
-incorrectly_assigned = 0
+def euclidean_distance(a, b):
+    return np.sum((a - b) ** 2)
 
-line = training_file.readline()
-training_class_count, feature_vector_len, training_file_len = map(int, line.split())
 
-for i in range(training_file_len):
-    line = training_file.readline()
-    tokens = list(map(float, line.split()))
-    training_labels[i] = int(tokens[0])
-    training_data[i][:feature_vector_len] = tokens[1:feature_vector_len + 1]
+if __name__ == '__main__':
 
-training_file.close()
+    parser = argparse.ArgumentParser(
+        prog='Zadanie 6',
+        description='Nearest neighbor classifier',
+    )
+    parser.add_argument('-trn', '--train_file', required=True)
+    parser.add_argument('-tst', '--test_file', required=True)
+    parser.add_argument('-o', '--output_file', default="zad2_out.txt")
 
-for j in range(feature_vector_len):
-    mean_values[j] = sum(training_data[i][j] for i in range(training_file_len)) / training_file_len
-    sd[j] = sum((training_data[i][j] - mean_values[j]) ** 2 for i in range(training_file_len))
-    sd[j] = sd[j] ** 0.5
+    args = parser.parse_args()
 
-for i in range(training_file_len):
-    for j in range(feature_vector_len):
-        if sd[j] > 0.0001:
-            training_data[i][j] = (training_data[i][j] - mean_values[j]) / sd[j]
+    training_set_file_path = args.train_file
+    testing_set_file_path = args.test_file
+    output_file_path = args.output_file
 
-for i in range(training_class_count):
-    for j in range(training_class_count):
-        confusion_matrix[i][j] = 0
-incorrectly_assigned = 0
+    training_data = np.genfromtxt(training_set_file_path, skip_header=1, dtype=np.float64)
 
-line = testing_file.readline()
-training_class_count, feature_vector_len, mt = map(int, line.split())
+    training_labels = training_data[:, 0].copy().astype(int)
+    training_data = np.delete(training_data, 0, 1)
 
-output_file.write('\n')
-output_file.write(' Results of classification:\n')
-output_file.write(' Nr obj, Klasa faktyczna, Klasa przypisana\n')
-output_file.write(' Object,      True class,   Assigned class\n')
+    feature_vector_len = training_data.shape[1] - 1
+    training_file_len = training_data.shape[0]
+    training_class_count = len(np.unique(training_labels))
 
-for i in range(mt):
-    line = testing_file.readline()
-    tokens = list(map(float, line.split()))
-    true_labels[i] = int(tokens[0])
-    testing_data[:feature_vector_len] = tokens[1:feature_vector_len + 1]
+    sd = np.std(training_data, axis=0) * np.sqrt(training_data.shape[0])
+    mean = np.mean(training_data, axis=0)
 
-    for j in range(feature_vector_len):
-        if sd[j] > 0.001:
-            testing_data[j] = (testing_data[j] - mean_values[j]) / sd[j]
+    # standardize
+    training_data -= mean
+    training_data /= sd
 
-    min_distance = 1e10
-    for k in range(training_file_len):
-        distance = sum((training_data[k][j] - testing_data[j]) ** 2 for j in range(feature_vector_len))
-        if distance <= min_distance:
-            min_distance = distance
-            assigned_labels[i] = training_labels[k]
+    testing_data = np.genfromtxt(testing_set_file_path, skip_header=1, dtype=np.float64)
 
-    if true_labels[i] != assigned_labels[i]:
-        incorrectly_assigned += 1
-    i1 = true_labels[i]
-    i2 = assigned_labels[i]
-    confusion_matrix[i1][i2] += 1
+    # standardize with training params
+    testing_labels = testing_data[:, 0].copy().astype(int)
+    testing_data = np.delete(testing_data, 0, 1)
+    testing_data -= mean
+    testing_data /= sd
 
-    output_file.write('{:7}{:16}{:18}\n'.format(i + 1, true_labels[i], assigned_labels[i]))
+    confusion_matrix = np.zeros((training_class_count, training_class_count), dtype=int)
 
-a = 100.0 * incorrectly_assigned / mt
-output_file.write('\n')
-output_file.write(' Error rate: {:4.1f}%\n'.format(a))
+    assigned_labels = np.zeros(testing_data.shape[0], dtype=int)
 
-output_file.write('\n')
-output_file.write(' OError rate: {:4.1f}%\n'.format(a))
+    for testing_index, testing_data_entry in enumerate(testing_data):
+        min_distance = np.infty
+        assigned_label = None
 
-output_file.write('\n')
-output_file.write(' Confusion matrix:\n')
-output_file.write('       ')
+        for training_index, training_data_entry in enumerate(training_data):
+            distance = euclidean_distance(testing_data_entry, training_data_entry)
+            if distance <= min_distance:
+                min_distance = distance
+                assigned_label = training_labels[training_index]
 
-for j in range(1, training_class_count + 1):
-    output_file.write('{:7}'.format(j))
-output_file.write('\n')
+        assigned_labels[testing_index] = assigned_label
+        confusion_matrix[testing_labels[testing_index] - 1][assigned_label - 1] += 1
 
-for i in range(1, training_class_count + 1):
-    output_file.write('{:7}'.format(i))
-    for j in range(1, training_class_count + 1):
-        output_file.write('{:7}'.format(confusion_matrix[i][j]))
-    output_file.write('\n')
+    error_rate = 100 * np.sum(assigned_labels != testing_labels) / len(testing_labels)
 
-for i in range(1, training_class_count + 1):
-    class_counts[i] = sum(confusion_matrix[i])
-    class_totals[i] = sum(confusion_matrix[j][i] for j in range(0, training_class_count + 1))
+    class_counts = np.sum(confusion_matrix, axis=1)
+    class_totals = np.sum(confusion_matrix, axis=0)
 
-for i in range(0, training_class_count):
-    for j in range(0, training_class_count):
-        prior_probabilities[i][j] = confusion_matrix[i + 1][j + 1] / class_counts[i + 1] if class_counts[
-                                                                                                i + 1] != 0 else 0
+    prior_probabilities = confusion_matrix / class_counts
 
-output_file.write('\n')
-output_file.write(' Probabilities a priori:\n')
-output_file.write('        ')
+    posterior_probabilities = confusion_matrix.T / class_totals
 
-for j in range(1, training_class_count + 1):
-    output_file.write('{:7}'.format(j))
-output_file.write('\n')
+    logging.basicConfig(level=logging.INFO,
+                        format='%(message)s',
+                        filename=output_file_path,
+                        filemode='w')
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(message)s')
+    console.setFormatter(formatter)
+    logging.getLogger('').addHandler(console)
 
-for i in range(0, training_class_count):
-    output_file.write('{:7}'.format(i))
-    for j in range(0, training_class_count):
-        output_file.write('{:7.4f}'.format(prior_probabilities[i][j]))
-    output_file.write('\n')
+    logging.info(" Results of classification:")
 
-for i in range(0, training_class_count):
-    for j in range(0, training_class_count):
-        posterior_probabilities[i][j] = confusion_matrix[j + 1][i + 1] / class_totals[i + 1] if class_totals[i + 1] != 0 else 0
+    classification_template = "{:>10} {:>10} {:>10}"
+    logging.info(classification_template.format("Nr obj", "Klasa faktyczna", "Klasa przypisana"))
+    logging.info(classification_template.format("Object", "True class", "Assigned class"))
+    for index, (true_class, assigned_class) in enumerate(zip(testing_labels, assigned_labels)):
+        logging.info(classification_template.format(index + 1, true_class, assigned_class))
 
-output_file.write('\n')
-output_file.write(' Probabilities a posteriori:\n')
-output_file.write('        ')
+    logging.info(f"\nError rate {error_rate:.2f}%")
 
-for j in range(1, training_class_count + 1):
-    output_file.write('{:7}'.format(j))
-output_file.write('\n')
+    logging.info("\nConfusion matrix")
+    logging.info(np.array2string(confusion_matrix, max_line_width=None))
 
-for i in range(0, training_class_count):
-    output_file.write('{:7}'.format(i + 1))
-    for j in range(0, training_class_count):
-        output_file.write('{:7.4f}'.format(posterior_probabilities[i][j]))
-    output_file.write('\n')
+    logging.info("\nProbabilities a priori: ")
+    logging.info(np.array2string(prior_probabilities, max_line_width=None))
 
-output_file.write(' Press ENT to finish. Look into the file ' + output_file_path + '.')
-testing_file.close()
-output_file.close()
+    logging.info("\nProbabilities a posteriori:")
+    logging.info(np.array2string(posterior_probabilities, max_line_width=None))
