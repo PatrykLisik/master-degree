@@ -19,7 +19,7 @@ async def get_stop_usecase(
 
 
 async def get_all_stop_usecase(stop_repository: AbstractStopRepository) -> list[Stop]:
-    return await [stop for stop in stop_repository.get_all()]
+    return [stop for stop in await stop_repository.get_all()]
 
 
 async def get_many_stop_usecase(

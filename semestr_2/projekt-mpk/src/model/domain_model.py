@@ -13,15 +13,6 @@ class Stop:
 
 
 @dataclass(frozen=True)
-class Driver:
-    first_name: str = field(hash=False)
-    last_name: str = field(hash=False)
-    pesel: str = field(hash=False)
-    phone: str = field(hash=False)
-    id: str = field(hash=True)
-
-
-@dataclass(frozen=True)
 class Route:
     id: str = field(hash=True)
     name: str = field(hash=True)
@@ -29,18 +20,10 @@ class Route:
 
 
 @dataclass(frozen=True)
-class Vehicle:
-    id: str = field(hash=True)
-    capacity: int = field(hash=False)
-
-
-@dataclass(frozen=True)
 class Transit:
     id: str = field(hash=True)
     route: Route = field(hash=False)
     start_time: datetime = field(hash=False)
-    vehicle: Vehicle = field(hash=False)
-    driver: Driver = field(hash=False)
 
 
 class UserType(Enum):

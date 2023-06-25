@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from src.model.database.model import Stop as StopDB
-from src.model.domain_model import Driver, Route, Stop as DomainStop, Transit, Vehicle
+from src.model.domain_model import Stop as DomainStop, Transit as DomainTransit
 
 
 async def db_stop_to_domain(stop: StopDB) -> DomainStop:
@@ -30,17 +30,7 @@ async def db_transit_to_domain(new_transit):
             stops=[await db_stop_to_domain(stop) for stop in new_transit.route.stops]
         ),
         start_time=new_transit.start_time,
-        vehicle=DomainVehicle(
-            id=new_transit.vehicle.id,
-            capacity=new_transit.vehicle.capacity,
-        ),
-        driver=DomainDriver(
-            id=new_transit.driver.id,
-            first_name=new_transit.driver.first_name,
-            last_name=new_transit.driver.last_name,
-            pesel=new_transit.driver.pesel,
-            phone=new_transit.driver.phone
-        )
+
 
     )
     return domain_transit

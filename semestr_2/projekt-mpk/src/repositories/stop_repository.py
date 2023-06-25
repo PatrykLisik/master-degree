@@ -5,14 +5,14 @@ from datetime import timedelta
 from typing import Dict, Set
 
 from sanic.log import logger
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+from src.model.infile.infile_mappers import infile_stop_to_domain
+from src.model.infile.infile_model import Stop
 
 from src.model.database.model import Stop as StopDB, StopTimes as StopTimesDB
 from src.model.database.to_domain_mappers import db_stop_to_domain
 from src.model.domain_model import Stop as DomainStop
-from src.model.infile_mappers import infile_stop_to_domain
-from src.model.infile_model import Stop
 from src.repositories.abstract import AbstractStopRepository
 
 

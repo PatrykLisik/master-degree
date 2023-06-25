@@ -21,8 +21,6 @@ class User(Base):
     email_address: Mapped[str] = mapped_column(String(60), nullable=False)
     password_hash: Mapped[str] = mapped_column(String(256), nullable=False)
     user_type: Mapped[UserType] = mapped_column(String(60))
-    # created_at = mapped_column(DateTime, default=datetime.now)
-    # updated_at = mapped_column(DateTime, default=datetime.now, onupdate=datetime.now)
 
 
 class Stop(Base):
@@ -33,27 +31,18 @@ class Stop(Base):
     loc_x: Mapped[decimal.Decimal] = mapped_column(DECIMAL(3, 5), nullable=False)
     loc_y: Mapped[decimal.Decimal] = mapped_column(DECIMAL(3, 5), nullable=False)
     route_stops: Mapped[list["RouteStop"]] = relationship(back_populates="stop")
-    stop_times: Mapped[list["StopTimes"]] = relationship(back_populates="start_stop")
+    stop_times: Mapped[list["StopTimes"]] = relationship(back_populates="start_stop",foreign_keys="StopTimes.start_stop_id" )
 
+
+# primaryjoin="StopTimes.start_stop_id==Stop.id"
 
 class StopTimes(Base):
     __tablename__ = "stop_times"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    start_stop_id: Mapped[int] = mapped_column(ForeignKey(Stop.id))
-    start_stop: Mapped[Stop] = relationship(back_populates="stop_times", foreign_keys="start_stop_id")
+    start_stop_id: Mapped[int] = mapped_column(ForeignKey(Stop.id), )
+    start_stop: Mapped["Stop"] = relationship(back_populates="stop_times", foreign_keys="StopTimes.start_stop_id")
     end_stop_id: Mapped[int] = mapped_column(ForeignKey(Stop.id))
     time_in_seconds: Mapped[int] = mapped_column(Integer, nullable=False)
-
-
-class Driver(Base):
-    __tablename__ = "driver"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    first_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    last_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    pesel: Mapped[str] = mapped_column(String(11), nullable=False)
-    phone: Mapped[str] = mapped_column(String(11), nullable=False)
-    transits: Mapped[list["Transit"]] = relationship(back_populates="driver")
 
 
 class RouteStop(Base):
@@ -78,14 +67,6 @@ class Route(Base):
     transits: Mapped[list["Transit"]] = relationship(back_populates="route")
 
 
-class Vehicle(Base):
-    __tablename__ = "vehicle"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    capacity: Mapped[int] = mapped_column(Integer)
-    transits: Mapped[list["Transit"]] = relationship(back_populates="vehicle")
-
-
 class Transit(Base):
     """
     Reason to use many to one
@@ -98,7 +79,3 @@ class Transit(Base):
     route_id: Mapped[int] = mapped_column(ForeignKey(Route.id))
     route: Mapped[Route] = relationship(back_populates="transits")
     start_time: Mapped[datetime] = mapped_column(DateTime)
-    vehicle_id: Mapped[int] = mapped_column(ForeignKey(Vehicle.id))
-    vehicle: Mapped[Vehicle] = relationship(back_populates="transits")
-    driver_id: Mapped[int] = mapped_column(ForeignKey(Driver.id))
-    driver: Mapped[Driver] = relationship(back_populates="transits")

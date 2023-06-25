@@ -14,8 +14,8 @@ from src.model.database.model import (
     StopTimes as DBStopTimes,
 )
 from src.model.domain_model import Route as DomainRoute, Stop as DomainStop
-from src.model.infile_mappers import domain_route_to_infile, infile_route_to_domain
-from src.model.infile_model import Route
+from src.model.infile.infile_mappers import domain_route_to_infile, infile_route_to_domain
+from src.model.infile.infile_model import Route
 from src.repositories.abstract import AbstractRouteRepository, AbstractStopRepository
 
 

@@ -18,6 +18,8 @@ async def get_route_stops_usecase(
     route_repository: AbstractRouteRepository, route_id: str
 ) -> dict[str, str]:
     route = await route_repository.get(route_id=route_id)
+    if not route:
+        return {}
     return {stop.name: stop.id for stop in route.stops}
 
 

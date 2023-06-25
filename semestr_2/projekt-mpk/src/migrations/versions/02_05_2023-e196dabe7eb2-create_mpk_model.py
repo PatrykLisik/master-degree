@@ -42,15 +42,6 @@ def upgrade() -> None:
         Column("time_in_seconds", Integer),
         PrimaryKeyConstraint("id"),
     )
-    op.create_table(
-        "driver",
-        Column("id", Integer, primary_key=True, autoincrement=True),
-        Column("first_name", String(length=50), nullable=False),
-        Column("last_name", String(length=50), nullable=False),
-        Column("pesel", String(length=11), nullable=False),
-        Column("phone", String(length=11), nullable=False),
-        PrimaryKeyConstraint("id"),
-    )
 
     op.create_table(
         "route",
@@ -58,12 +49,7 @@ def upgrade() -> None:
         Column("name", String(length=50), nullable=False),
         PrimaryKeyConstraint("id"),
     )
-    op.create_table(
-        "vehicle",
-        Column("id", Integer, primary_key=True, autoincrement=True),
-        Column("capacity", Integer, nullable=False),
-        PrimaryKeyConstraint("id"),
-    )
+
     op.create_table(
         "route_stop",
         Column("id", Integer, primary_key=True, autoincrement=True),
@@ -76,8 +62,6 @@ def upgrade() -> None:
         "transit",
         Column("id", Integer, primary_key=True, autoincrement=True),
         Column("route_id", Integer, ForeignKey("route.id")),
-        Column("vehicle_id", Integer, ForeignKey("vehicle.id")),
-        Column("driver_id", Integer, ForeignKey("driver.id")),
         Column("start_time", DateTime, nullable=False),
         PrimaryKeyConstraint("id"),
     )
