@@ -1,10 +1,7 @@
 version: '3'
 services:
   pgadmin:
-    image: dpage/pgadmin4:7.0
-    restart: always
-    build:
-      context: .
+    image: dpage/pgadmin4:7.3
     environment:
       - MASTER_PASSWORD_REQUIRED=False
       - PGADMIN_DEFAULT_EMAIL=admin@dev.com
