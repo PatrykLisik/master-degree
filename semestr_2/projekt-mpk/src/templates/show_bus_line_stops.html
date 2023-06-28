@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block title %}Bus Line Stops{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Bus Line Stops</h1>
+
+        <div class="form-group">
+            <input type="text" id="bus-stop-search-input" class="form-control" placeholder="Search...">
+        </div>
+
+        <table class="table table-bordered" id="bus-stop-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Location X</th>
+                <th>Location Y</th>
+                <th>Bus Line Count</th>
+                <th>Other Stop Connections Count</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for stop in bus_stops %}
+                <tr
+                        {% if selected_stop_id== stop.id %} class="table-active" {% endif %}
+                                                            data-stop-id="{{ stop.id }}">
+                    <td contenteditable="true">{{ stop.name }}</td>
+                    <td contenteditable="true">{{ stop.location_x }}</td>
+                    <td contenteditable="true">{{ stop.location_y }}</td>
+                    <td>{{ stop.bus_line_count }}</td>
+                    <td>{{ stop.other_stop_connections_count }}</td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button class="btn btn-primary save-btn" disabled>Save</button>
+                            <button class="btn btn-danger delete-btn">Delete</button>
+                            <a href="/bus-stops?selected_stop={{ stop.id }}" class="btn btn-primary">Select</a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% if selected_stop_id %}
+            <div id="distance-table-container">
+                <h3>Distance to Other Stops</h3>
+                <div class="form-group">
+                    <input type="text" id="distance-search-input" class="form-control" placeholder="Search...">
+                </div>
+                <table id="distance-table" class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Stop ID</th>
+                        <th>Stop Name</th>
+                        <th>Time (minutes)</th>
+                        <th>Edit/Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for distance in distances %}
+                        <tr>
+                            <td>{{ distance.stop_id }}</td>
+                            <td>{{ distance.stop_name }}</td>
+                            <td contenteditable="true">{{ distance.time }}</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button class="btn btn-primary save-distance-btn">Save</button>
+                                    <button class="btn btn-danger delete-distance-btn">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        // Function to enable the Save button when a row is changed
+        $("table").on("input", "td[contenteditable='true']:not(:nth-child(4)):not(:nth-child(5))", function() {
+            $(this).closest("tr").find(".save-btn").prop("disabled", false);
+        });
+
+        // Function to handle the Delete button click
+        $("table").on("click", ".delete-btn", function() {
+            var row = $(this).closest("tr");
+            var stopId = row.data("stop-id");
+
+            // Call the API to delete the bus stop
+            $.ajax({
+                url: "/api/bus-stops/" + stopId,
+                method: "DELETE",
+                success: function() {
+                    // Refresh the table after successful deletion
+                    row.remove();
+                },
+                error: function() {
+                    alert("Failed to delete the bus stop.");
+                }
+            });
+        });
+
+        // Function to handle the search input for bus stops
+        $("#bus-stop-search-input").on("input", function() {
+            var searchQuery = $(this).val();
+
+            // Make an API call to search for bus stops
+            $.ajax({
+                url: "/api/bus-stops/search",
+                method: "GET",
+                data: { query: searchQuery },
+                success: function(response) {
+                    // Handle the success response
+                    var stopEntries = "";
+                    response.stops.forEach(function(stop) {
+                        stopEntries += `
+
+                            <tr>
+                                <td>${stop.name}</td>
+                                <td>${stop.location_x}</td>
+                                <td>${stop.location_y}</td>
+                                <td>${stop.bus_line_count}</td>
+                                <td>${stop.other_stop_connections_count}</td>
+                                <td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button class="btn btn-primary save-btn" disabled>Save</button>
+                            <button class="btn btn-danger delete-btn">Delete</button>
+                            <a href="/bus-stops?selected_stop=${stop.id}" class="btn btn-primary">Select</a>
+                        </div>
+                    </td>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    $("#bus-stop-table tbody").html(stopEntries);
+                },
+                error: function(error) {
+                    // Handle the error response
+                    console.log(error);
+                }
+            });
+        });
+
+        // Function to handle submission of the distance form
+        $("#distance-form").submit(function(e) {
+            e.preventDefault();
+
+            var searchStop = $("#new-distance-search-input").val();
+            var timeToStop = $("#new-distance-time-input").val();
+
+            // Make an API call to add the new distance
+            $.ajax({
+                url: "/add-distance",
+                method: "POST",
+                data: {
+                    selected_stop_id: selectedStopId,
+                    searched_stop_id: searchStop,
+                    selected_time: timeToStop
+                },
+                success: function(response) {
+                    // Handle the success response
+                    console.log(response);
+                    // Refresh the distance table
+                    refreshDistanceTable(selectedStopId);
+                    // Reset the form inputs
+                    $("#new-distance-search-input").val("");
+                    $("#new-distance-time-input").val("");
+                },
+                error: function(error) {
+                    // Handle the error response
+                    console.log(error);
+                }
+            });
+        });
+
+        // Function to handle the Save button click
+        $("table").on("click", ".save-btn", function() {
+            var row = $(this).closest("tr");
+            var stopId = row.data("stop-id");
+            var stopData = {
+                name: row.find("td:nth-child(1)").text(),
+                location_x: row.find("td:nth-child(2)").text(),
+                location_y: row.find("td:nth-child(3)").text()
+            };
+
+            // Call the API to update the bus stop
+            $.ajax({
+                url: "/api/bus-stops/" + stopId,
+                method: "PUT",
+                data: JSON.stringify(stopData),
+                contentType: "application/json",
+                success: function() {
+                    // Disable the Save button after successful update
+                    row.find(".save-btn").prop("disabled", true);
+                },
+                error: function() {
+                    alert("Failed to update the bus stop.");
+                }
+            });
+        });
+
+              // Function to handle search input for distance table
+            $("#distance-search-input").on("input", function() {
+                var value = $(this).val().toLowerCase();
+
+                $("#distance-table tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+    });
+
+
+
+    </script>
+{% endblock %}
