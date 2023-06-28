@@ -62,6 +62,8 @@ async def index_with_route_and_stop_selected(request: Request,
                                              route_repository: AbstractRouteRepository,
                                              transit_repository: AbstractTransitRepository,
                                              ) -> HTTPResponse:
+    if not route_id or not stop_id:
+        return HTTPResponse(status=418)
     user_data = request.cookies.get(COOKIE_KEY, {})
     if user_data:
         user_data = json.loads(user_data)
@@ -95,3 +97,40 @@ async def login(request: Request) -> HTTPResponse:
 @html_blueprint.get("/signup")
 async def signup(request: Request) -> HTTPResponse:
     return await render("signup.html", status=200)
+
+
+@html_blueprint.get("/stop_crud")
+async def stop_crud(request: Request) -> HTTPResponse:
+    return await render("manage_stops.html", status=200)
+
+
+@html_blueprint.get("/edit-line/<line_id>")
+async def line_editor(request: Request, line_id: str) -> HTTPResponse:
+    return await render("edit_bus_line.html", status=200)
+
+
+bus_lines_data = [
+    {
+        'id': 1,
+        'name': 'Bus Line 1',
+        'stop_count': 10,
+        'transits_count': 5
+    },
+    {
+        'id': 2,
+        'name': 'Bus Line 2',
+        'stop_count': 8,
+        'transits_count': 3
+    },
+    {
+        'id': 3,
+        'name': 'Bus Line 3',
+        'stop_count': 12,
+        'transits_count': 7
+    }
+]
+
+
+@html_blueprint.route('/bus-lines')
+async def bus_lines(request):
+    return await render("show_bus_lines.html", status=200, context={"bus_lines": bus_lines_data})

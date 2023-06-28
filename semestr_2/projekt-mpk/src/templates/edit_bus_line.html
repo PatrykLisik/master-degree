@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block title %}Bus Line Editor{% endblock %}
+
+{% block content %}
+
+<body>
+
+  <div class="container">
+    <h1>Bus Line Editor</h1>
+
+    <!-- Existing Line Stops List -->
+    <h3>Existing Line Stops</h3>
+    <ul id="existing-line-stops" class="list-group">
+      <!-- Stops will be displayed here -->
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        Stop 1
+        <div>
+          <button class="btn btn-danger btn-sm delete-stop-btn">Delete</button>
+          <button class="btn btn-secondary btn-sm move-up-stop-btn">Move Up</button>
+          <button class="btn btn-secondary btn-sm move-down-stop-btn">Move Down</button>
+        </div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        Stop 2
+        <div>
+          <button class="btn btn-danger btn-sm delete-stop-btn">Delete</button>
+          <button class="btn btn-secondary btn-sm move-up-stop-btn">Move Up</button>
+          <button class="btn btn-secondary btn-sm move-down-stop-btn">Move Down</button>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Bus Stop Search -->
+    <h3>Bus Stop Search</h3>
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" id="search-stop-input" placeholder="Search for a stop" aria-label="Search for a stop" aria-describedby="search-stop-btn">
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="button" id="search-stop-btn">Search</button>
+      </div>
+    </div>
+
+    <div id="search-stop-results" class="mt-3">
+      <!-- Search results will be displayed here -->
+    </div>
+
+    <!-- Save Button -->
+    <button class="btn btn-success mt-3" id="save-btn">Save Changes</button>
+
+  </div>
+
+  <!-- Include Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // Mock existing line stops
+    var existingLineStops = [
+      { name: 'Stop 1' },
+      { name: 'Stop 2' }
+    ];
+
+    // Attach event listeners to existing stop buttons
+    attachStopButtonListeners();
+
+    // Function to attach event listeners to stop buttons
+    function attachStopButtonListeners() {
+      // Delete Stop Button Click Event Listener
+      var deleteStopBtns = document.getElementsByClassName('delete-stop-btn');
+      Array.from(deleteStopBtns).forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var stopItem = btn.closest('.list-group-item');
+          stopItem.remove();
+        });
+      });
+
+      // Move Up Stop Button Click Event Listener
+      var moveUpStopBtns = document.getElementsByClassName('move-up-stop-btn');
+      Array.from(moveUpStopBtns).forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var stopItem = btn.closest('.list-group-item');
+          var previousItem = stopItem.previousElementSibling;
+          if (previousItem) {
+            stopItem.parentNode.insertBefore(stopItem, previousItem);
+          }
+        });
+      });
+
+      // Move Down Stop Button Click Event Listener
+      var moveDownStopBtns = document.getElementsByClassName('move-down-stop-btn');
+      Array.from(moveDownStopBtns).forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var stopItem = btn.closest('.list-group-item');
+          var nextItem = stopItem.nextElementSibling;
+          if (nextItem) {
+            stopItem.parentNode.insertBefore(nextItem, stopItem);
+          }
+        });
+      });
+    }
+
+    // Search Stop Button Click Event Listener
+    var searchStopInput = document.getElementById('search-stop-input');
+    searchStopInput.addEventListener('input', function() {
+      var searchTerm = searchStopInput.value;
+
+      if (searchTerm.length >= 2) {
+        // Perform search stop API call and handle the results
+        // Replace with your actual implementation
+        var searchResults = [
+          { id: 1, name: 'Stop 3' },
+          { id: 2, name: 'Stop 4' },
+          { id: 3, name: 'Stop 5' }
+        ];
+
+        var searchStopResults = document.getElementById('search-stop-results');
+        searchStopResults.innerHTML = '';
+
+        if (searchResults.length > 0) {
+         var resultList = document.createElement('ul');
+        resultList.className = 'list-group';
+          searchResults.forEach(function(result) {
+            var resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            resultItem.innerHTML = result.name;
+            resultItem.addEventListener('click', function() {
+              searchStopInput.value = result.name;
+              searchStopResults.innerHTML = '';
+              addStopToList(result);
+            });
+            searchStopResults.appendChild(resultItem);
+          });
+        } else {
+          var noResultsMessage = document.createElement('div');
+          noResultsMessage.className = 'no-results-message';
+          noResultsMessage.innerHTML = 'No results found.';
+          searchStopResults.appendChild(noResultsMessage);
+        }
+      }
+    });
+
+    // Add Stop to List
+    function addStopToList(stop) {
+      var stopList = document.getElementById('existing-line-stops');
+
+      var stopItem = document.createElement('li');
+      stopItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+      stopItem.textContent = stop.name;
+
+      var actionsDiv = document.createElement('div');
+      actionsDiv.innerHTML = `
+        <button class="btn btn-danger btn-sm delete-stop-btn">Delete</button>
+        <button class="btn btn-secondary btn-sm move-up-stop-btn">Move Up</button>
+        <button class="btn btn-secondary btn-sm move-down-stop-btn">Move Down</button>
+      `;
+
+      stopItem.appendChild(actionsDiv);
+      stopList.appendChild(stopItem);
+
+      // Attach event listeners to the newly added stop buttons
+      attachStopButtonListeners();
+    }
+
+    // Save Button Click Event Listener
+    var saveBtn = document.getElementById('save-btn');
+    saveBtn.addEventListener('click', function() {
+      // Get the updated stop list
+      var updatedStopItems = document.querySelectorAll('#existing-line-stops .list-group-item');
+
+      var updatedStops = [];
+      updatedStopItems.forEach(function(item) {
+        updatedStops.push({ name: item.textContent.trim() });
+      });
+
+      // Perform save changes API call and handle the response
+      // Replace with your actual implementation
+      console.log('Saving changes:', updatedStops);
+    });
+  </script>
+</body>
+{% endblock %}

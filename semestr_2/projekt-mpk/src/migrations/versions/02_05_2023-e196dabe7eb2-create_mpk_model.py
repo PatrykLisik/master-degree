@@ -53,7 +53,7 @@ def upgrade() -> None:
     op.create_table(
         "route_stop",
         Column("id", Integer, primary_key=True, autoincrement=True),
-        Column("start_stop_id", Integer, ForeignKey("stop.id")),
+        Column("stop_id", Integer, ForeignKey("stop.id")),
         Column("route_id", Integer, ForeignKey("route.id")),
         Column("order", Integer, nullable=False),
         PrimaryKeyConstraint("id"),
