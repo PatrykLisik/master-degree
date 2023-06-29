@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Manage Transits{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Manage Transits</h1>
+  <h3>Bus Line: {{ line.name }}</h3>
+  <br>
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Transits</h4>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for transit in line.transits %}
+          <tr>
+            <td>{{ transit.start_time }}</td>
+            <td>{{ transit.end_time }}</td>
+            <td>
+              <button class="btn btn-danger delete-btn" data-transit-id="{{ transit.id }}">Delete</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-6">
+      <h4>Add Transit</h4>
+      <form id="add-transit-form">
+        <div class="form-group">
+          <label for="start-time">Start Time:</label>
+          <div class="input-group date" id="start-time-picker" data-target-input="nearest">
+            <input type="time" class="form-control timepicker-input" data-target="#start-time-picker" id="start-time" placeholder="Select start time" required>
+            <div class="input-group-append" data-target="#start-time-picker" data-toggle="timepicker">
+              <div class="input-group-text"><i class="fa fa-clock"></i></div>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Transit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("add-transit-form");
+    const startTimeInput = document.getElementById("start-time");
+
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const startTime = startTimeInput.value;
+
+      // Make AJAX call to add transit
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/api/transit-add", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          // Transit added successfully, update the transits table
+          const newTransit = JSON.parse(xhr.responseText);
+          updateTransitsTable(newTransit);
+          startTimeInput.value = "";
+        }
+      };
+      xhr.send(JSON.stringify({ line_id: {{ line.id }}, start_time: startTime }));
+    });
+
+    const table = document.querySelector("table");
+    table.addEventListener("click", function(e) {
+      if (e.target.classList.contains("delete-btn")) {
+        const transitId = e.target.dataset.transitId;
+        deleteTransit(transitId);
+      }
+    });
+
+    function updateTransitsTable(newTransit) {
+      const tableBody = document.querySelector("table tbody");
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${newTransit.start_time}</td>
+        <td>${newTransit.end_time}</td>
+        <td>
+          <button class="btn btn-danger delete-btn" data-transit-id="${newTransit.id}">Delete</button>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    }
+
+    function deleteTransit(transitId) {
+      // Make AJAX call to delete transit
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/api/transit-delete", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          // Transit deleted successfully, remove the corresponding row from the transits table
+          const row = document.querySelector(`[data-transit-id="${transitId}"]`).closest("tr");
+          row.parentNode.removeChild(row);
+        }
+      };
+      xhr.send(JSON.stringify({ transit_id: transitId }));
+    }
+  });
+</script>
+{% endblock %}

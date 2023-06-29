@@ -3,79 +3,100 @@
 {% block title %}Bus Lines{% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="card mb-3">
-    <div class="card-body">
-      <h5 class="card-title">Add New Line</h5>
-      <form action="/add-line" method="post">
-        <div class="form-group">
-          <label for="line-name">Bus Line Name</label>
-          <input type="text" class="form-control" id="line-name" name="line_name" placeholder="Enter bus line name" required>
+    <div class="container">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Add New Line</h5>
+                <form action="/add-line" method="post">
+                    <div class="form-group">
+                        <label for="line-name">Bus Line Name</label>
+                        <input type="text" class="form-control" id="line-name" name="line_name"
+                               placeholder="Enter bus line name" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Line</button>
+                </form>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Add Line</button>
-      </form>
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">Search Bus Lines</h5>
-      <div class="form-group">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Search Bus Lines</h5>
+                <div class="form-group">
         <input type="text" id="search-input" class="form-control" placeholder="Search by bus line name" onkeyup="filterTable()">
-      </div>
+                </div>
 
-      <table id="bus-lines-table" class="table table-striped mt-4">
-        <thead>
-          <tr>
-            <th>Bus Line</th>
-            <th>Stop Count</th>
-            <th>Transits Count</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+                <table id="bus-lines-table" class="table table-striped mt-4">
+                    <thead>
+                    <tr>
+                        <th>Bus Line</th>
+                        <th>Stop Count</th>
+                        <th>Transits Count</th>
+                        <th>Combined Time</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
 
-        <tbody>
-          {% for line in bus_lines %}
-          <tr>
-            <td>{{ line.name }}</td>
-            <td>{{ line.stop_count }}</td>
-            <td>{{ line.transits_count }}</td>
-            <td>
-              <div class="btn-container">
-                <a href="/edit-line/{{ line.id }}" class="btn btn-primary">Edit</a>
-                <button class="btn btn-danger" onclick="deleteLine('{{ line.id }}')">Delete</button>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+                    <tbody>
+                    {% for line in bus_lines %}
+                        <tr>
+                            <td>{{ line.name }}</td>
+                            <td>{{ line.stop_count }}</td>
+                            <td>{{ line.transits_count }}</td>
+                            <td>{{ line.combined_time }}</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <a href="/edit-line/{{ line.id }}" class="btn btn-primary">Edit stops</a>
+                                    <a href="/edit-line-transits/{{ line.id }}" class="btn btn-primary">Edit
+                                        transits</a>
+                                    <button class="btn btn-danger" onclick="deleteLine('{{ line.id }}')">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
   function filterTable() {
     const input = document.getElementById('search-input');
     const filter = input.value.toUpperCase();
     const table = document.getElementById('bus-lines-table');
     const rows = table.getElementsByTagName('tr');
 
-    for (let i = 1; i < rows.length; i++) {
-      const td = rows[i].getElementsByTagName('td')[0];
-      if (td) {
-        const txtValue = td.textContent || td.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          rows[i].style.display = '';
-        } else {
-          rows[i].style.display = 'none';
-        }
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'api/lines-search?search=' + encodeURIComponent(filter), true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        var searchResults = JSON.parse(xhr.responseText);
+        // Update the table with the search results
+        updateTable(searchResults);
       }
+    };
+    xhr.send();
+
+
+   function updateTable(searchResults) {
+    var tbody = document.getElementById('bus-lines-table').getElementsByTagName('tbody')[0];
+    tbody.innerHTML = '';
+
+    searchResults.forEach(function(result) {
+      var row = document.createElement('tr');
+      row.innerHTML = '<td>' + result.name + '</td>' +
+                       '<td>' + result.stop_count + '</td>' +
+                      '<td>' + result.transits_count + '</td>' +
+                      '<td>' + result.combined_time + '</td>' +
+                      '<td><div class="btn-group" role="group" aria-label="Basic example"><a href="/edit-line/'+result.id+'" class="btn btn-primary">Edit stops</a><a href="/edit-line-transits/'+result.id+'" class="btn btn-primary">Edit transits</a>  <button class="btn btn-danger" onclick="deleteLine("'+result.id+'")>Delete</button> </div></td>';
+      tbody.appendChild(row);
+    });
     }
-  }
+    }
 
   function deleteLine(lineId) {
     // Call the API to delete the bus line using lineId
@@ -83,5 +104,5 @@
     // Refresh the table after successful deletion
     location.reload();
   }
-</script>
+    </script>
 {% endblock %}

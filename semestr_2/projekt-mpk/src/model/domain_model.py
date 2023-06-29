@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from enum import Enum
 
 
@@ -23,7 +23,7 @@ class Route:
 class Transit:
     id: str = field(hash=True)
     route: Route = field(hash=False)
-    start_time: datetime = field(hash=False)
+    start_time: time = field(hash=False)
 
 
 class UserType(Enum):
