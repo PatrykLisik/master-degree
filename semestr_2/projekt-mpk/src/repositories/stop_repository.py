@@ -5,14 +5,14 @@ from datetime import timedelta
 from typing import Dict, Set
 
 from sanic.log import logger
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
-from src.model.infile.infile_mappers import infile_stop_to_domain
-from src.model.infile.infile_model import Stop
 
 from src.model.database.model import Stop as StopDB, StopTimes as StopTimesDB
 from src.model.database.to_domain_mappers import db_stop_to_domain
 from src.model.domain_model import Stop as DomainStop
+from src.model.infile.infile_mappers import infile_stop_to_domain
+from src.model.infile.infile_model import Stop
 from src.repositories.abstract import AbstractStopRepository
 
 
@@ -145,11 +145,12 @@ class InFileStopRepository(AbstractStopRepository):
 
 
 class DatabaseStopRepository(AbstractStopRepository):
-
     def __init__(self, session_maker: async_sessionmaker[AsyncSession]):
         self.session_maker = session_maker
 
-    async def add(self, name: str, geolocation_x: decimal.Decimal, geolocation_y: decimal.Decimal) -> DomainStop:
+    async def add(
+        self, name: str, geolocation_x: decimal.Decimal, geolocation_y: decimal.Decimal
+    ) -> DomainStop:
         async with self.session_maker() as session:
             async with session.begin():
                 new_stop = StopDB(name=name, loc_x=geolocation_x, loc_y=geolocation_y)
@@ -159,46 +160,36 @@ class DatabaseStopRepository(AbstractStopRepository):
                     id=new_stop.id,
                     name=new_stop.name,
                     loc_x=new_stop.loc_x,
-                    loc_y=new_stop.loc_y
+                    loc_y=new_stop.loc_y,
                 )
             await session.commit()
         return domain_stop
 
     async def update(self, stop_id: str, updated_stop: DomainStop):
         async with self.session_maker() as session:
-            async with session.begin():
-                stop = await session.get(StopDB, stop_id)
-                stop.name = updated_stop.name
-                stop.loc_y = updated_stop.loc_y
-                stop.loc_x = updated_stop.loc_x
-            await session.commit()
+            stop = await session.get(StopDB, stop_id)
+            stop.name = updated_stop.name
+            stop.loc_y = updated_stop.loc_y
+            stop.loc_x = updated_stop.loc_x
 
     async def get(self, stop_id: str) -> DomainStop:
         async with self.session_maker() as session:
-            stop = await session.get(StopDB, stop_id)
-            return DomainStop(
-                id=stop.id,
-                name=stop.name,
-                loc_y=stop.loc_y,
-                loc_x=stop.loc_x,
-                time_to_other_stops={
-                    str(stop_time.end_stop_id): timedelta(
-                        seconds=stop_time.time_in_seconds
-                    )
-                    for stop_time in stop.stop_times
-                    if stop_time.start_stop_id == stop.id
-                },
-            )
+            stop = await session.get(StopDB, int(stop_id))
+            if stop is None:
+                raise ValueError("Stop not found")
+            return db_stop_to_domain(stop)
 
     async def get_all(self) -> Set[DomainStop]:
         async with self.session_maker() as session:
-            select_all_stops_statement = select(StopDB)
+            select_all_stops_statement = select(StopDB).limit(8)
+            print(f"XXXX select_all_stops_statement {str(select_all_stops_statement)}")
             db_stops = await session.scalars(select_all_stops_statement)
 
             domain_stops = set()
-            for stop in db_stops:
-                domain_stop = await db_stop_to_domain(stop)
+            for stop in db_stops.unique():
+                domain_stop = db_stop_to_domain(stop)
                 domain_stops.add(domain_stop)
+            print(f"XXX domain_stops {domain_stops}")
             return domain_stops
 
     async def get_many(self, stop_ids: set[str]) -> Set[DomainStop]:
@@ -207,19 +198,43 @@ class DatabaseStopRepository(AbstractStopRepository):
             db_stops = await session.scalars(select_all_stops_statement)
 
             domain_stops = set()
-            for stop in db_stops:
-                domain_stop = await db_stop_to_domain(stop)
+            for stop in db_stops.unique():
+                domain_stop = db_stop_to_domain(stop)
                 domain_stops.add(domain_stop)
             return domain_stops
 
-    async def set_time_between_stops(self, start_stop_id: str, end_stop_id: str, time: timedelta):
+    async def set_time_between_stops(
+        self, start_stop_id: str, end_stop_id: str, time: timedelta
+    ):
         async with self.session_maker() as session:
             stop_time = StopTimesDB(
-                start_stop_id=start_stop_id,
-                end_stop_id=end_stop_id,
-                time_in_seconds=time.total_seconds()
+                start_stop_id=int(start_stop_id),
+                end_stop_id=int(end_stop_id),
+                time_in_seconds=int(time.total_seconds()),
             )
             session.add(stop_time)
-        await session.commit()
+            await session.commit()
 
+    async def delete_time_between_stops(self, start_stop_id: str, end_stop_id: str):
+        async with self.session_maker() as session:
+            delete_times_between_stops_statement = delete(StopTimesDB).where(
+                StopTimesDB.start_stop_id == int(start_stop_id)
+                and StopTimesDB.end_stop_id == int(end_stop_id)
+            )
+            await session.execute(delete_times_between_stops_statement)
 
+    async def delete(self, stop_id: str):
+        async with self.session_maker() as session:
+            delete_stop_statement = delete(StopDB).where(StopDB.id == int(stop_id))
+            await session.execute(delete_stop_statement)
+
+    async def search_by_name(self, query) -> Set[DomainStop]:
+        async with self.session_maker() as session:
+            select_all_stops_statement = select(StopDB).where(StopDB.name.like(query))
+            db_stops = await session.scalars(select_all_stops_statement)
+
+            domain_stops = set()
+            for stop in db_stops.unique():
+                domain_stop = db_stop_to_domain(stop)
+                domain_stops.add(domain_stop)
+            return domain_stops

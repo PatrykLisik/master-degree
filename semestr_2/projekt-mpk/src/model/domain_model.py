@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, time
+from datetime import timedelta, time
 from enum import Enum
+from typing import Self
 
 
 @dataclass(frozen=True)
@@ -9,7 +10,7 @@ class Stop:
     name: str = field(hash=False)
     loc_x: str = field(hash=False)
     loc_y: str = field(hash=False)
-    time_to_other_stops: dict[str, timedelta] = field(hash=False, default_factory=dict)
+    time_to_other_stops: dict[Self, timedelta] = field(hash=False, default_factory=dict)
 
 
 @dataclass(frozen=True)

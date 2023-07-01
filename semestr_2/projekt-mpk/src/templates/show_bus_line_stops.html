@@ -3,7 +3,7 @@
 
 {% block content %}
     <div class="container">
-        <h1>Bus Line Stops</h1>
+        <h1>Stops</h1>
 
         <div class="card">
             <div class="card-header">Add New Stop</div>
@@ -16,12 +16,12 @@
                     </div>
                     <div class="form-group">
                         <label for="x_position">X Position:</label>
-                        <input type="number" class="form-control" id="x_position" name="x_position"
+                        <input type="number" step="any" class="form-control" id="x_position" name="x_position"
                                placeholder="Enter X position">
                     </div>
                     <div class="form-group">
                         <label for="y_position">Y Position:</label>
-                        <input type="number" class="form-control" id="y_position" name="y_position"
+                        <input type="number" step="any" class="form-control" id="y_position" name="y_position"
                                placeholder="Enter Y position">
                     </div>
                     <button type="submit" class="btn btn-primary">Add Stop</button>
@@ -62,59 +62,117 @@
                                     <button class="btn btn-primary save-btn" disabled>Save</button>
                                     <button class="btn btn-danger delete-btn">Delete</button>
                                     <a href="/bus-stops?selected_stop={{ stop.id }}" class="btn btn-primary">Select</a>
+                                    {% if selected_stop_id != stop.id %}
+                                        <a href="/bus-stops?selected_stop={{ selected_stop_id }}&target_stop={{ stop.id }}"
+                                           class="btn btn-primary">Set dist</a>{% endif %}
                                 </div>
                             </td>
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
+            </div>
+            {% if selected_stop_id and target_stop_id %}
+                <div class="card">
+                    <div class="card-header">Set time</div>
+                    <div class="card-body">
+                        <form id="set-time-form"  method="POST"
+                              data-selected-stop-id="{{ selected_stop_id }}"
+                              data-target-stop="{{ target_stop_id }}"
 
-                {% if selected_stop_id %}
-                    <div class="card" style="padding-bottom: 200px;">
-                        <div class="card-header">Distance Table Container</div>
-                        <div class="card-body">
-
-                            <div id="distance-table-container">
-                                <div class="form-group">
-                                    <input type="text" id="distance-search-input" class="form-control"
-                                           placeholder="Search...">
-                                </div>
-                                <table id="distance-table" class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th>Stop ID</th>
-                                        <th>Stop Name</th>
-                                        <th>Time (minutes)</th>
-                                        <th>Edit/Delete</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for distance in distances %}
-                                        <tr>
-                                            <td>{{ distance.stop_id }}</td>
-                                            <td>{{ distance.stop_name }}</td>
-                                            <td contenteditable="true">{{ distance.time }}</td>
-                                            <td>
-                                                <div class="btn-group" role="group" aria-label="Basic example">
-                                                    <button class="btn btn-primary save-distance-btn">Save</button>
-                                                    <button class="btn btn-danger delete-distance-btn">Delete</button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
+                        >
+                            <div class="form-group">
+                                <label for="set-time-to-other-stop">Time</label>
+                                <input type="number" class="form-control" id="set-time-to-other-stop" name="set-time"
+                                       placeholder="time in mnutes">
                             </div>
+                            <button type="submit" class="btn btn-primary">Set Distance</button>
+                        </form>
+                    </div>
+                </div>
+                </div>
+            {% endif %}
 
+        {% if selected_stop_id %}
+            <div class="card" style="padding-bottom: 200px;">
+                <div class="card-header">Distance Table</div>
+                <div class="card-body">
+
+                    <div id="distance-table-container">
+                        <div class="form-group">
+                            <input type="text" id="distance-search-input" class="form-control"
+                                   placeholder="Search...">
                         </div>
+                        <table id="distance-table" class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Stop ID</th>
+                                <th>Stop Name</th>
+                                <th>Time (minutes)</th>
+                                <th>Edit/Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for distance in distances %}
+                                <tr data-target-stop-id="{{ distance.stop_id }}">
+                                    <td>{{ distance.stop_id }}</td>
+                                    <td>{{ distance.stop_name }}</td>
+                                    <td contenteditable="true">{{ distance.time }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            <button class="btn btn-danger delete-distance-btn">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                    </div>
-                {% endif %}
-        </div>
-    </div>
+
+                </div>
+            </div>
+            </div>
+        {% endif %}
+    <div class="card" style="padding-bottom: 200px;">
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+    document.getElementById("set-time-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            // Function to handle submission of the distance form
+            var timeToStop = parseInt($("#set-time-to-other-stop").val());
+            var selectedStopId = "{{ selected_stop_id }}"
+            var otherStopId = "{{ target_stop_id }}"
+            // Make an API call to add the new distance
+
+            fetch("/api/set-times-between-stops", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify( {
+                    stop_id: selectedStopId,
+                    other_stop_id: otherStopId,
+                    time: timeToStop
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data as needed
+                console.log(data);
+                location.href = location.href;
+                // Optionally, perform additional actions such as updating the table or displaying a success message
+            })
+            .catch(error => {
+                // Handle any errors that occur during the AJAX request
+                console.error("Error:", error);
+
+                // Optionally, display an error message to the user
+            });
+
+        });
+    </script>
     <script>
         // Handle form submission using AJAX
         document.getElementById("add_stop_form").addEventListener("submit", function(event) {
@@ -138,7 +196,8 @@
             .then(response => response.json())
             .then(data => {
                 // Handle the response data as needed
-                console.log(data);
+                console.log(data);// Refresh the page by setting the URL to itself
+
 
                 // Optionally, perform additional actions such as updating the table or displaying a success message
             })
@@ -149,6 +208,7 @@
                 // Optionally, display an error message to the user
             });
         });
+
 
 
     </script>
@@ -193,7 +253,7 @@
                     response.stops.forEach(function(stop) {
                         stopEntries += `
 
-                            <tr>
+                            <tr data-stop-id="${stop.id}">
                                 <td>${stop.name}</td>
                                 <td>${stop.location_x}</td>
                                 <td>${stop.location_y}</td>
@@ -221,37 +281,7 @@
             });
         });
 
-        // Function to handle submission of the distance form
-        $("#distance-form").submit(function(e) {
-            e.preventDefault();
 
-            var searchStop = $("#new-distance-search-input").val();
-            var timeToStop = $("#new-distance-time-input").val();
-
-            // Make an API call to add the new distance
-            $.ajax({
-                url: "/add-distance",
-                method: "POST",
-                data: {
-                    selected_stop_id: selectedStopId,
-                    searched_stop_id: searchStop,
-                    selected_time: timeToStop
-                },
-                success: function(response) {
-                    // Handle the success response
-                    console.log(response);
-                    // Refresh the distance table
-                    refreshDistanceTable(selectedStopId);
-                    // Reset the form inputs
-                    $("#new-distance-search-input").val("");
-                    $("#new-distance-time-input").val("");
-                },
-                error: function(error) {
-                    // Handle the error response
-                    console.log(error);
-                }
-            });
-        });
 
         // Function to handle the Save button click
         $("table").on("click", ".save-btn", function() {
@@ -287,11 +317,26 @@
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                 });
             });
+
+
+          // Function to handle the Delete button in distance table
+        $("#distance-table tbody tr").on("click", ".delete-distance-btn", function() {
+            var row = $(this).closest("tr");
+            var targetStopId = row.data("target-stop-id");
+
+            // Call the API to delete the bus stop
+            $.ajax({
+                url: "/api/bus-stops/{{ selected_stop_id }}/distance/"+targetStopId,
+                method: "DELETE",
+                success: function() {
+                    // Refresh the table after successful deletion
+                    row.remove();
+                },
+                error: function() {
+                    alert("Failed to delete the bus stop.");
+                }
+            });
+        });
     });
-
-
-
-
-
     </script>
 {% endblock %}

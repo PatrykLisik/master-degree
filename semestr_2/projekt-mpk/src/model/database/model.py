@@ -28,19 +28,30 @@ class Stop(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
-    loc_x: Mapped[decimal.Decimal] = mapped_column(DECIMAL(3, 5), nullable=False)
-    loc_y: Mapped[decimal.Decimal] = mapped_column(DECIMAL(3, 5), nullable=False)
+    loc_x: Mapped[decimal.Decimal] = mapped_column(DECIMAL(10, 5), nullable=False)
+    loc_y: Mapped[decimal.Decimal] = mapped_column(DECIMAL(10, 5), nullable=False)
     route_stops: Mapped[list["RouteStop"]] = relationship(back_populates="stop")
-    stop_times: Mapped[list["StopTimes"]] = relationship(back_populates="start_stop",foreign_keys="StopTimes.start_stop_id" )
+    stop_times: Mapped[list["StopTimes"]] = relationship(
+        back_populates="start_stop",
+        foreign_keys="StopTimes.start_stop_id",
+        lazy="joined",
+        passive_deletes=True,
+    )
 
 
 # primaryjoin="StopTimes.start_stop_id==Stop.id"
 
+
 class StopTimes(Base):
     __tablename__ = "stop_times"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    start_stop_id: Mapped[int] = mapped_column(ForeignKey(Stop.id), )
-    start_stop: Mapped["Stop"] = relationship(back_populates="stop_times", foreign_keys="StopTimes.start_stop_id")
+    start_stop_id: Mapped[int] = mapped_column(
+        ForeignKey(Stop.id, ondelete="CASCADE", onupdate="CASCADE"),
+    )
+    start_stop: Mapped["Stop"] = relationship(
+        back_populates="stop_times",
+        foreign_keys="StopTimes.start_stop_id",
+    )
     end_stop_id: Mapped[int] = mapped_column(ForeignKey(Stop.id))
     time_in_seconds: Mapped[int] = mapped_column(Integer, nullable=False)
 

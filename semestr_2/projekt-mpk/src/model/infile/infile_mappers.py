@@ -17,7 +17,7 @@ from src.repositories.abstract import (
 
 
 async def infile_route_to_domain(
-        route: InfileRoute, stops_repository: AbstractStopRepository
+    route: InfileRoute, stops_repository: AbstractStopRepository
 ) -> DomainRoute:
     stop_ids = set(route.stops)
     stops = {stop.id: stop for stop in await stops_repository.get_many(stop_ids)}
@@ -57,8 +57,8 @@ async def domain_stop_to_infile(stop: DomainStop) -> InFileStop:
 
 
 async def infile_transit_to_domain(
-        transit: InFileTransit,
-        route_repo: AbstractRouteRepository,
+    transit: InFileTransit,
+    route_repo: AbstractRouteRepository,
 ) -> DomainTransit:
     route = await route_repo.get(transit.route_id)
     return DomainTransit(

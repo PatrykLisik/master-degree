@@ -33,12 +33,16 @@ class AbstractRouteRepository(ABC):
 class AbstractStopRepository(ABC):
     @abstractmethod
     async def add(
-            self, name: str, geolocation_x: decimal, geolocation_y: decimal
+        self, name: str, geolocation_x: decimal, geolocation_y: decimal
     ) -> DomainStop:
         raise NotImplementedError
 
     @abstractmethod
     async def update(self, stop_id: str, updated_stop: DomainStop):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def delete(self, stop_id: str):
         raise NotImplementedError
 
     @abstractmethod
@@ -55,15 +59,23 @@ class AbstractStopRepository(ABC):
 
     @abstractmethod
     async def set_time_between_stops(
-            self, start_stop_id: str, end_stop_id: str, time: timedelta
+        self, start_stop_id: str, end_stop_id: str, time: timedelta
     ):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def delete_time_between_stops(self, start_stop_id: str, end_stop_id: str):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def search_by_name(self, query) -> Set[DomainStop]:
         raise NotImplementedError
 
 
 class AbstractTransitRepository(ABC):
     @abstractmethod
     async def add(
-            self, route_id: str, start_time: datetime, vehicle_id: str, driver_id: str
+        self, route_id: str, start_time: datetime, vehicle_id: str, driver_id: str
     ) -> DomainTransit:
         raise NotImplementedError
 
@@ -87,14 +99,14 @@ class AbstractTransitRepository(ABC):
 class AbstractUserRepository(ABC):
     @abstractmethod
     async def add(
-            self, name: str, email: str, password_hash: str, user_type: UserType
+        self, name: str, email: str, password_hash: str, user_type: UserType
     ) -> User:
         raise NotImplementedError
 
     @abstractmethod
     async def login(
-            self,
-            email: str,
-            password_hash: str,
+        self,
+        email: str,
+        password_hash: str,
     ) -> User:
         raise NotImplementedError

@@ -14,63 +14,15 @@ from src.model.database.model import (
     StopTimes as DBStopTimes,
 )
 from src.model.domain_model import Route as DomainRoute, Stop as DomainStop
-from src.model.infile.infile_mappers import domain_route_to_infile, infile_route_to_domain
+from src.model.infile.infile_mappers import (
+    domain_route_to_infile,
+    infile_route_to_domain,
+)
 from src.model.infile.infile_model import Route
 from src.repositories.abstract import AbstractRouteRepository, AbstractStopRepository
 
 
-class InFileRouteRepository(AbstractRouteRepository):
-    _file_name = "data/routes.json"
-
-    def __init__(self, stops_repository: AbstractStopRepository):
-        super()
-        self.stops_repository = stops_repository
-
-    def _get(self) -> Dict[str, Route]:
-        try:
-            with open(
-                self._file_name,
-                "r+",
-            ) as infile:
-                logger.info("load routes")
-                data = json.load(infile)
-                return {route_data["id"]: Route(**route_data) for route_data in data}
-        except FileNotFoundError:
-            logger.info("file doest not exist")
-            return {}
-
-    def _set(self, routes: Dict[str, Route]):
-        logger.info("save routes")
-        drivers_to_save = [asdict(route) for route in routes.values()]
-        json_to_save = json.dumps(drivers_to_save, indent=4)
-        with open(self._file_name, "w+") as outfile:
-            outfile.write(json_to_save)
-
-    async def add(self, name: str, stops: list[str]) -> DomainRoute:
-        new_route = Route(name=name, stops=stops, id=str(uuid.uuid4()))
-        routes = self._get()
-        routes[new_route.id] = new_route
-        self._set(routes)
-        return await infile_route_to_domain(new_route, self.stops_repository)
-
-    async def update(self, route_id: str, updated_route: DomainRoute):
-        self._get()[route_id] = await domain_route_to_infile(updated_route)
-
-    async def get(self, route_id: str) -> Optional[DomainRoute]:
-        route = self._get().get(route_id, None)
-        if route is None:
-            return None
-        return await infile_route_to_domain(route, self.stops_repository)
-
-    async def get_all(self) -> Set[DomainRoute]:
-        return {
-            await infile_route_to_domain(route, self.stops_repository)
-            for route in self._get().values()
-        }
-
-
 class DatabaseRouteRepository(AbstractRouteRepository):
-
     def __init__(self, session_maker: async_sessionmaker[AsyncSession]):
         self.session_maker = session_maker
 
@@ -98,14 +50,10 @@ class DatabaseRouteRepository(AbstractRouteRepository):
 
     async def get(self, route_id: str) -> DomainRoute:
         async with self.session_maker() as session:
-            route = await session.get(
-                DBRoute, int(route_id), populate_existing=True
-            )
+            route = await session.get(DBRoute, int(route_id), populate_existing=True)
             route_stops_ids = {stop.id for stop in route.stops}
 
-            stops_statement = select(DBRouteStop).where(
-                DBRoute.id.in_(route_stops_ids)
-            )
+            stops_statement = select(DBRouteStop).where(DBRoute.id.in_(route_stops_ids))
             stops = await session.scalars(stops_statement)
 
             stops_times_statement = select(DBStopTimes).where(

@@ -9,10 +9,12 @@ from alembic import op
 from sqlalchemy import (
     Column,
     DateTime,
-    DECIMAL, ForeignKey,
+    DECIMAL,
+    ForeignKey,
     Integer,
     PrimaryKeyConstraint,
     String,
+    NUMERIC,
 )
 
 # revision identifiers, used by Alembic.
@@ -27,8 +29,8 @@ def upgrade() -> None:
         "stop",
         Column("id", Integer, primary_key=True, autoincrement=True),
         Column("name", String(length=50), nullable=False),
-        Column("loc_x", DECIMAL(3, 5), nullable=False),
-        Column("loc_y", DECIMAL(3, 5)),
+        Column("loc_x", NUMERIC(32, 5), nullable=False),
+        Column("loc_y", NUMERIC(32, 5)),
         PrimaryKeyConstraint("id"),
     )
 
@@ -38,7 +40,7 @@ def upgrade() -> None:
         Column(
             "start_stop_id", Integer, ForeignKey("stop.id", name="stop_times_start_id")
         ),
-        Column("end_stop_id", Integer, ForeignKey("stop.id", name="stop_times_end_id")),
+        Column("end_stop_id", Integer, ForeignKey("stop.id", name="stop_times_end_id",ondelete="CASCADE",onupdate="CASCADE")),
         Column("time_in_seconds", Integer),
         PrimaryKeyConstraint("id"),
     )
