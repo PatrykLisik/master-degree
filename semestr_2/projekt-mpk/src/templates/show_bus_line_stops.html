@@ -5,79 +5,153 @@
     <div class="container">
         <h1>Bus Line Stops</h1>
 
-        <div class="form-group">
-            <input type="text" id="bus-stop-search-input" class="form-control" placeholder="Search...">
+        <div class="card">
+            <div class="card-header">Add New Stop</div>
+            <div class="card-body">
+                <form id="add_stop_form" action="add_stop()" method="POST">
+                    <div class="form-group">
+                        <label for="stop_name">Name:</label>
+                        <input type="text" class="form-control" id="stop_name" name="stop_name"
+                               placeholder="Enter stop name">
+                    </div>
+                    <div class="form-group">
+                        <label for="x_position">X Position:</label>
+                        <input type="number" class="form-control" id="x_position" name="x_position"
+                               placeholder="Enter X position">
+                    </div>
+                    <div class="form-group">
+                        <label for="y_position">Y Position:</label>
+                        <input type="number" class="form-control" id="y_position" name="y_position"
+                               placeholder="Enter Y position">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Stop</button>
+                </form>
+            </div>
         </div>
 
-        <table class="table table-bordered" id="bus-stop-table">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Location X</th>
-                <th>Location Y</th>
-                <th>Bus Line Count</th>
-                <th>Other Stop Connections Count</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for stop in bus_stops %}
-                <tr
-                        {% if selected_stop_id== stop.id %} class="table-active" {% endif %}
-                                                            data-stop-id="{{ stop.id }}">
-                    <td contenteditable="true">{{ stop.name }}</td>
-                    <td contenteditable="true">{{ stop.location_x }}</td>
-                    <td contenteditable="true">{{ stop.location_y }}</td>
-                    <td>{{ stop.bus_line_count }}</td>
-                    <td>{{ stop.other_stop_connections_count }}</td>
-                    <td>
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <button class="btn btn-primary save-btn" disabled>Save</button>
-                            <button class="btn btn-danger delete-btn">Delete</button>
-                            <a href="/bus-stops?selected_stop={{ stop.id }}" class="btn btn-primary">Select</a>
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-        {% if selected_stop_id %}
-            <div id="distance-table-container">
-                <h3>Distance to Other Stops</h3>
+        <div class="card">
+            <div class="card-header">Stops</div>
+            <div class="card-body">
                 <div class="form-group">
-                    <input type="text" id="distance-search-input" class="form-control" placeholder="Search...">
+                    <input type="text" id="bus-stop-search-input" class="form-control" placeholder="Search...">
                 </div>
-                <table id="distance-table" class="table table-bordered">
+
+                <table class="table table-bordered" id="bus-stop-table">
                     <thead>
                     <tr>
-                        <th>Stop ID</th>
-                        <th>Stop Name</th>
-                        <th>Time (minutes)</th>
-                        <th>Edit/Delete</th>
+                        <th>Name</th>
+                        <th>Location X</th>
+                        <th>Location Y</th>
+                        <th>Bus Line Count</th>
+                        <th>Other Stop Connections Count</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for distance in distances %}
-                        <tr>
-                            <td>{{ distance.stop_id }}</td>
-                            <td>{{ distance.stop_name }}</td>
-                            <td contenteditable="true">{{ distance.time }}</td>
+                    {% for stop in bus_stops %}
+                        <tr
+                                {% if selected_stop_id== stop.id %} class="table-active" {% endif %}
+                                                                    data-stop-id="{{ stop.id }}">
+                            <td contenteditable="true">{{ stop.name }}</td>
+                            <td contenteditable="true">{{ stop.location_x }}</td>
+                            <td contenteditable="true">{{ stop.location_y }}</td>
+                            <td>{{ stop.bus_line_count }}</td>
+                            <td>{{ stop.other_stop_connections_count }}</td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                    <button class="btn btn-primary save-distance-btn">Save</button>
-                                    <button class="btn btn-danger delete-distance-btn">Delete</button>
+                                    <button class="btn btn-primary save-btn" disabled>Save</button>
+                                    <button class="btn btn-danger delete-btn">Delete</button>
+                                    <a href="/bus-stops?selected_stop={{ stop.id }}" class="btn btn-primary">Select</a>
                                 </div>
                             </td>
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
-            </div>
-        {% endif %}
+
+                {% if selected_stop_id %}
+                    <div class="card" style="padding-bottom: 200px;">
+                        <div class="card-header">Distance Table Container</div>
+                        <div class="card-body">
+
+                            <div id="distance-table-container">
+                                <div class="form-group">
+                                    <input type="text" id="distance-search-input" class="form-control"
+                                           placeholder="Search...">
+                                </div>
+                                <table id="distance-table" class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Stop ID</th>
+                                        <th>Stop Name</th>
+                                        <th>Time (minutes)</th>
+                                        <th>Edit/Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for distance in distances %}
+                                        <tr>
+                                            <td>{{ distance.stop_id }}</td>
+                                            <td>{{ distance.stop_name }}</td>
+                                            <td contenteditable="true">{{ distance.time }}</td>
+                                            <td>
+                                                <div class="btn-group" role="group" aria-label="Basic example">
+                                                    <button class="btn btn-primary save-distance-btn">Save</button>
+                                                    <button class="btn btn-danger delete-distance-btn">Delete</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                    </div>
+                {% endif %}
+        </div>
+    </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        // Handle form submission using AJAX
+        document.getElementById("add_stop_form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Create an object to store the form data
+            var formData = {
+                stop_name: document.getElementById("stop_name").value,
+                x_position: document.getElementById("x_position").value,
+                y_position: document.getElementById("y_position").value
+            };
+
+            // Make the AJAX POST request to the API endpoint
+            fetch("/api/add_stop", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data as needed
+                console.log(data);
+
+                // Optionally, perform additional actions such as updating the table or displaying a success message
+            })
+            .catch(error => {
+                // Handle any errors that occur during the AJAX request
+                console.error("Error:", error);
+
+                // Optionally, display an error message to the user
+            });
+        });
+
+
+    </script>
     <script>
     $(document).ready(function() {
         // Function to enable the Save button when a row is changed
@@ -214,6 +288,8 @@
                 });
             });
     });
+
+
 
 
 

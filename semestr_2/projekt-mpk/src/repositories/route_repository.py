@@ -95,7 +95,6 @@ class DatabaseRouteRepository(AbstractRouteRepository):
                     DBRouteStop(id=stop.id, order=index)
                     for index, stop in enumerate(updated_route.stops)
                 ]
-            await session.commit()
 
     async def get(self, route_id: str) -> DomainRoute:
         async with self.session_maker() as session:
