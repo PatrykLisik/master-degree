@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import time, datetime, timedelta
+from datetime import time, timedelta
 
 from pydantic import BaseModel, Field
 from sanic import Blueprint, json as json_response, response
@@ -8,7 +8,11 @@ from sanic.response import JSONResponse
 from sanic_ext import validate
 from sanic_ext.extensions.openapi import openapi
 
-from src.repositories.abstract import AbstractStopRepository, AbstractRouteRepository
+from src.repositories.abstract import (
+    AbstractStopRepository,
+    AbstractRouteRepository,
+    AbstractTransitRepository,
+)
 
 api_blueprint = Blueprint(name="api", url_prefix="/")
 bus_lines_data = [
@@ -50,6 +54,13 @@ async def delete_bus_line(
 ) -> JSONResponse:
     await route_repo.delete(stop_id)
     return json_response({"message": "Bus stop deleted successfully"})
+
+@api_blueprint.delete("/api/transit/<transit_id>")
+async def delete_transit(
+    request, transit_repo: AbstractTransitRepository, transit_id
+) -> JSONResponse:
+    await transit_repo.delete(transit_id)
+    return json_response({"message": "Transit deleted successfully"})
 
 
 @api_blueprint.route("/api/bus-stops/<stop_id>/distances")
@@ -129,26 +140,12 @@ class TransitData(BaseModel):
     body={"application/json": TransitData.model_json_schema()},
 )
 @validate(json=TransitData)
-async def add_transit(request, body) -> JSONResponse:
-    # Generate a unique ID for the new transit
-    new_transit_id = max(transit["id"] for transit in transit_data) + 1
+async def add_transit(
+    request, transit_repo: AbstractTransitRepository, body: TransitData
+) -> JSONResponse:
+    await transit_repo.add(route_id=str(body.line_id), start_time=body.start_time)
 
-    # Create a new transit object
-    new_transit = {
-        "id": new_transit_id,
-        "start_time": body.start_time.strftime("%H:%M"),
-        "end_time": (
-            datetime.combine(datetime.today(), body.start_time) + timedelta(minutes=50)
-        )
-        .time()
-        .strftime("%H:%M"),
-    }
-
-    # Add the new transit to the list
-    transit_data.append(new_transit)
-
-    # Return the new transit as the API response
-    return response.json(new_transit)
+    return response.json({"message": "Transit added"})
 
 
 @api_blueprint.route("/api/lines-search")

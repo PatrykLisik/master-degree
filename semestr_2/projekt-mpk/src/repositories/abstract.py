@@ -1,6 +1,6 @@
 import decimal
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
+from datetime import timedelta, time
 from typing import Set
 
 from src.model.domain_model import (
@@ -83,24 +83,14 @@ class AbstractStopRepository(ABC):
 class AbstractTransitRepository(ABC):
     @abstractmethod
     async def add(
-        self, route_id: str, start_time: datetime, vehicle_id: str, driver_id: str
+        self,
+        route_id: str,
+        start_time: time,
     ) -> DomainTransit:
         raise NotImplementedError
 
     @abstractmethod
-    async def update(self, transit_id: str, updated_transit: DomainTransit):
-        raise NotImplementedError
-
-    @abstractmethod
-    async def get(self, transit_id: str) -> DomainTransit:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def get_all(self) -> Set[DomainTransit]:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def get_by_route(self, route_id: str) -> Set[DomainTransit]:
+    async def delete(self, transit_id: str):
         raise NotImplementedError
 
 

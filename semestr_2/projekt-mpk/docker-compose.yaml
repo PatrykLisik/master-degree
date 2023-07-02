@@ -11,7 +11,7 @@ services:
     ports:
       - "8081:8081"
     volumes:
-      - ./serves.json:/pgadmin4/servers.json
+      - ./servers.json:/pgadmin4/servers.json
       - ./pg_admin_data:/var/lib/pgadmin
     depends_on:
       - db

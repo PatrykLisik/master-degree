@@ -66,8 +66,7 @@
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
           // Transit added successfully, update the transits table
-          const newTransit = JSON.parse(xhr.responseText);
-          updateTransitsTable(newTransit);
+        location.reload();
           startTimeInput.value = "";
         }
       };
@@ -98,7 +97,7 @@
     function deleteTransit(transitId) {
       // Make AJAX call to delete transit
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/api/transit-delete", true);
+      xhr.open("DELETE", "/api/transit/"+transitId, true);
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {

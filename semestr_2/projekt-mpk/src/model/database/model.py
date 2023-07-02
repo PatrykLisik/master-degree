@@ -1,8 +1,8 @@
 import decimal
-from datetime import datetime
+from datetime import datetime, time
 from enum import Enum
 
-from sqlalchemy import DateTime, DECIMAL, ForeignKey, Integer, String
+from sqlalchemy import DateTime, DECIMAL, ForeignKey, Integer, String, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.model.database import Base
@@ -93,4 +93,4 @@ class Transit(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     route_id: Mapped[int] = mapped_column(ForeignKey(Route.id))
     route: Mapped[Route] = relationship(back_populates="transits")
-    start_time: Mapped[datetime] = mapped_column(DateTime)
+    start_time: Mapped[time] = mapped_column(Time)

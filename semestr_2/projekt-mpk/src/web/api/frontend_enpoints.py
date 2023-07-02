@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, date
 
 from sanic import Blueprint, Request
 from sanic.log import logger
@@ -13,7 +14,6 @@ from src.repositories.abstract import (
     AbstractStopRepository,
 )
 from src.web.api import COOKIE_KEY
-from src.web.api.api import transit_data
 from src.web.api.mobile_app_usecase import (
     get_all_routes_usecase,
     get_route_stops_usecase,
@@ -150,14 +150,32 @@ transit_lines_data: dict[int, dict] = {
 
 
 @html_blueprint.route("/edit-line-transits/<line_id>")
-async def line_transits(request, line_id: str) -> TemplateResponse:
+async def line_transits(
+    request, bus_line_repo: AbstractRouteRepository, line_id: str
+) -> TemplateResponse:
     selected_stop = request.args.get("selected_line")
-    selected_stop_id = int(selected_stop) if selected_stop else None
+    if not line_id:
+        raise ValueError("Bus line does not exist")
+    bus_line = await bus_line_repo.get(line_id)
 
-    logger.info(f"selected_stop {selected_stop_id}")
-    logger.info(f"transit_lines_data {transit_lines_data}")
-    transit_line_data = transit_lines_data[int(line_id)]
-    transit_line_data["transits"] = transit_data
+    transit_line_data = {
+        "id": bus_line.id,
+        "name": bus_line.name,
+        "transits_count": len(bus_line.transits),
+        "combined_time": str(bus_line.combined_time),
+        "transits": [
+            {
+                "id": transit.id,
+                "start_time": transit.start_time.strftime("%H:%M"),
+                "end_time": (
+                    datetime.combine(date.today(), transit.start_time)
+                    + bus_line.combined_time
+                ).strftime("%H:%M"),
+            }
+            for transit in bus_line.transits
+        ],
+    }
+    logger.info(f"XXXXtransit_line_data: f{transit_line_data}")
     return await render(
         "line_transits.html", status=200, context={"line": transit_line_data}
     )

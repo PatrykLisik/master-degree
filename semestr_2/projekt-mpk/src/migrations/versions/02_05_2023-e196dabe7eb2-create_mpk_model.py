@@ -15,6 +15,7 @@ from sqlalchemy import (
     PrimaryKeyConstraint,
     String,
     NUMERIC,
+    Time,
 )
 
 # revision identifiers, used by Alembic.
@@ -73,7 +74,7 @@ def upgrade() -> None:
         "transit",
         Column("id", Integer, primary_key=True, autoincrement=True),
         Column("route_id", Integer, ForeignKey("route.id")),
-        Column("start_time", DateTime, nullable=False),
+        Column("start_time", Time, nullable=False),
         PrimaryKeyConstraint("id"),
     )
 
