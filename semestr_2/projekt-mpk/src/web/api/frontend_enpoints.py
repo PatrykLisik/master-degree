@@ -13,7 +13,7 @@ from src.repositories.abstract import (
     AbstractStopRepository,
 )
 from src.web.api import COOKIE_KEY
-from src.web.api.api import transit_data, bus_lines_data
+from src.web.api.api import transit_data
 from src.web.api.mobile_app_usecase import (
     get_all_routes_usecase,
     get_route_stops_usecase,
@@ -164,7 +164,20 @@ async def line_transits(request, line_id: str) -> TemplateResponse:
 
 
 @html_blueprint.route("/bus-lines")
-async def bus_lines(request) -> TemplateResponse:
+async def bus_lines(
+    request, bus_line_repo: AbstractRouteRepository
+) -> TemplateResponse:
+    routes = await bus_line_repo.get_all()
+    bus_lines_data = [
+        {
+            "id": route.id,
+            "name": route.name,
+            "stop_count": len(route.stops),
+            "transits_count": len(route.transits),
+            "combined_time": route.combined_time,
+        }
+        for route in routes
+    ]
     return await render(
         "show_bus_lines.html", status=200, context={"bus_lines": bus_lines_data}
     )

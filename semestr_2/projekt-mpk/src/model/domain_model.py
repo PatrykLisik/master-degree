@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import timedelta, time
 from enum import Enum
+from itertools import pairwise
 from typing import Self
 
 
@@ -18,6 +19,15 @@ class Route:
     id: str = field(hash=True)
     name: str = field(hash=True)
     stops: list[Stop] = field(hash=False)
+    transits: list["Transit"] = field(hash=False, default_factory=list)
+
+    @property
+    def combined_time(self) -> timedelta:
+        combined_time = timedelta()
+        for start_stop, next_stop in pairwise(self.stops):
+            time_to_next_stop = start_stop.time_to_other_stops[next_stop.id]
+            combined_time += time_to_next_stop
+        return combined_time
 
 
 @dataclass(frozen=True)

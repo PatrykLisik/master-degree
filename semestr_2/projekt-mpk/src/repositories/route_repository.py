@@ -1,10 +1,7 @@
-import json
-import uuid
-from dataclasses import asdict
 from datetime import timedelta
-from typing import Dict, Optional, Set
+from datetime import timedelta
+from typing import Set
 
-from sanic.log import logger
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
@@ -14,19 +11,14 @@ from src.model.database.model import (
     StopTimes as DBStopTimes,
 )
 from src.model.domain_model import Route as DomainRoute, Stop as DomainStop
-from src.model.infile.infile_mappers import (
-    domain_route_to_infile,
-    infile_route_to_domain,
-)
-from src.model.infile.infile_model import Route
-from src.repositories.abstract import AbstractRouteRepository, AbstractStopRepository
+from src.repositories.abstract import AbstractRouteRepository
 
 
 class DatabaseRouteRepository(AbstractRouteRepository):
     def __init__(self, session_maker: async_sessionmaker[AsyncSession]):
         self.session_maker = session_maker
 
-    async def add(self, name: str, stops: list[str]) -> DomainRoute:
+    async def add(self, name: str) -> DomainRoute:
         async with self.session_maker() as session:
             async with session.begin():
                 new_route = DBRoute(name=name, stops=[])  # assume no stops
@@ -92,7 +84,7 @@ class DatabaseRouteRepository(AbstractRouteRepository):
             stops_times_statement = select(DBStopTimes)
             stops_times = await session.scalars(stops_times_statement)
             domain_routes = set()
-            for route in routes:
+            for route in routes.unique():
                 id_to_domain_stops = {
                     stop.id: DomainStop(
                         id=stop.id,
@@ -114,3 +106,6 @@ class DatabaseRouteRepository(AbstractRouteRepository):
                 domain_route = DomainRoute(name=route.name, id=route.id, stops=stops)
                 domain_routes.add(domain_route)
             return domain_routes
+
+    async def search(self, query: str) -> Set[DomainRoute]:
+        return set()

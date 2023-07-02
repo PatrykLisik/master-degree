@@ -14,7 +14,7 @@ from src.model.domain_model import (
 
 class AbstractRouteRepository(ABC):
     @abstractmethod
-    async def add(self, name: str, stops: list[str]) -> DomainRoute:
+    async def add(self, name: str) -> DomainRoute:
         raise NotImplementedError
 
     @abstractmethod
@@ -27,6 +27,10 @@ class AbstractRouteRepository(ABC):
 
     @abstractmethod
     async def get_all(self) -> Set[DomainRoute]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def search(self, query: str) -> Set[DomainRoute]:
         raise NotImplementedError
 
 

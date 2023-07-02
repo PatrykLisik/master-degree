@@ -8,7 +8,7 @@ from sanic.response import JSONResponse
 from sanic_ext import validate
 from sanic_ext.extensions.openapi import openapi
 
-from src.repositories.abstract import AbstractStopRepository
+from src.repositories.abstract import AbstractStopRepository, AbstractRouteRepository
 
 api_blueprint = Blueprint(name="api", url_prefix="/")
 bus_lines_data = [
@@ -84,7 +84,9 @@ async def save_distance_data(
 
 
 @api_blueprint.delete("/api/bus-stops/<stop_id>/distance/<other_stop_id>")
-async def delete_distance_data(request,stop_repo: AbstractStopRepository, stop_id, other_stop_id) -> JSONResponse:
+async def delete_distance_data(
+    request, stop_repo: AbstractStopRepository, stop_id, other_stop_id
+) -> JSONResponse:
     # Delete the distance data from the database or perform necessary operations
     await stop_repo.delete_time_between_stops(stop_id, other_stop_id)
     return json_response({"message": "Distance data deleted successfully"})
@@ -142,20 +144,36 @@ async def add_transit(request, body) -> JSONResponse:
 
 
 @api_blueprint.route("/api/lines-search")
-async def lines_search(request) -> JSONResponse:
+async def lines_search(request, route_repo: AbstractRouteRepository) -> JSONResponse:
     search_query = request.args.get("search", "")
-    search_results = filter_lines(search_query)
-    return json_response(search_results)
-
-
-def filter_lines(search_query):
-    # Filter the lines based on the search query
-    filtered_lines = [
-        line
-        for line in bus_lines_data
-        if search_query.lower() not in line["name"].lower()
+    search_results = await route_repo.search(f"%{search_query}%")
+    bus_lines_data = [
+        {
+            "id": route.id,
+            "name": route.name,
+            "stop_count": len(route.stops),
+            "transits_count": len(route.transits),
+            "combined_time": route.combined_time,
+        }
+        for route in search_results
     ]
-    return filtered_lines
+    return json_response(bus_lines_data)
+
+
+class AddBusLine(BaseModel):
+    name: str = Field(description="Name of the line")
+
+
+@api_blueprint.post("/api/line-add")
+@openapi.definition(
+    body={"application/json": AddBusLine.model_json_schema()},
+)
+@validate(json=AddBusLine)
+async def add_route(
+    request, route_repo: AbstractRouteRepository, body: AddBusLine
+) -> JSONResponse:
+    await route_repo.add(body.name)
+    return json_response({"message": "Route added successfully"})
 
 
 class BusStop(BaseModel):

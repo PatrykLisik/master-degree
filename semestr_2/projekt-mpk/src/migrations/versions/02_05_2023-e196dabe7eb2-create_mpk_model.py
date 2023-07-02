@@ -40,7 +40,16 @@ def upgrade() -> None:
         Column(
             "start_stop_id", Integer, ForeignKey("stop.id", name="stop_times_start_id")
         ),
-        Column("end_stop_id", Integer, ForeignKey("stop.id", name="stop_times_end_id",ondelete="CASCADE",onupdate="CASCADE")),
+        Column(
+            "end_stop_id",
+            Integer,
+            ForeignKey(
+                "stop.id",
+                name="stop_times_end_id",
+                ondelete="CASCADE",
+                onupdate="CASCADE",
+            ),
+        ),
         Column("time_in_seconds", Integer),
         PrimaryKeyConstraint("id"),
     )

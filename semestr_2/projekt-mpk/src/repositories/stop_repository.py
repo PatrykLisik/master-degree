@@ -182,14 +182,12 @@ class DatabaseStopRepository(AbstractStopRepository):
     async def get_all(self) -> Set[DomainStop]:
         async with self.session_maker() as session:
             select_all_stops_statement = select(StopDB).limit(8)
-            print(f"XXXX select_all_stops_statement {str(select_all_stops_statement)}")
             db_stops = await session.scalars(select_all_stops_statement)
 
             domain_stops = set()
             for stop in db_stops.unique():
                 domain_stop = db_stop_to_domain(stop)
                 domain_stops.add(domain_stop)
-            print(f"XXX domain_stops {domain_stops}")
             return domain_stops
 
     async def get_many(self, stop_ids: set[str]) -> Set[DomainStop]:

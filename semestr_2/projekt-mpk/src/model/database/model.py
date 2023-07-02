@@ -39,9 +39,6 @@ class Stop(Base):
     )
 
 
-# primaryjoin="StopTimes.start_stop_id==Stop.id"
-
-
 class StopTimes(Base):
     __tablename__ = "stop_times"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -73,9 +70,16 @@ class Route(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     stops: Mapped[list[RouteStop]] = relationship(
-        order_by=RouteStop.order, back_populates="route"
+        order_by=RouteStop.order,
+        back_populates="route",
+        lazy="joined",
+        passive_deletes=True,
     )
-    transits: Mapped[list["Transit"]] = relationship(back_populates="route")
+    transits: Mapped[list["Transit"]] = relationship(
+        back_populates="route",
+        lazy="joined",
+        passive_deletes=True,
+    )
 
 
 class Transit(Base):
