@@ -70,12 +70,13 @@ class DatabaseRouteRepository(AbstractRouteRepository):
             }
 
             stops = [id_to_domain_stops[stop.id] for stop in route.stops]
-            transits = [Transit(
-                id=transit.id,
-                start_time=transit.start_time,
-                route=route.id
-            ) for transit in route.transits]
-            return DomainRoute(name=route.name, id=route.id, stops=stops, transits=transits)
+            transits = [
+                Transit(id=transit.id, start_time=transit.start_time, route=route.id)
+                for transit in route.transits
+            ]
+            return DomainRoute(
+                name=route.name, id=route.id, stops=stops, transits=transits
+            )
 
     async def get_all(self) -> Set[DomainRoute]:
         async with self.session_maker() as session:
@@ -107,12 +108,15 @@ class DatabaseRouteRepository(AbstractRouteRepository):
                 }
 
                 stops = [id_to_domain_stops[stop.id] for stop in route.stops]
-                transits = [Transit(
-                    id=transit.id,
-                    start_time=transit.start_time,
-                    route=route.id
-                ) for transit in route.transits]
-                domain_route = DomainRoute(name=route.name, id=route.id, stops=stops, transits=transits)
+                transits = [
+                    Transit(
+                        id=transit.id, start_time=transit.start_time, route=route.id
+                    )
+                    for transit in route.transits
+                ]
+                domain_route = DomainRoute(
+                    name=route.name, id=route.id, stops=stops, transits=transits
+                )
                 domain_routes.add(domain_route)
             return domain_routes
 
@@ -148,12 +152,15 @@ class DatabaseRouteRepository(AbstractRouteRepository):
                 }
 
                 stops = [id_to_domain_stops[stop.id] for stop in route.stops]
-                transits = [Transit(
-                    id=transit.id,
-                    start_time=transit.start_time,
-                    route=route.id
-                ) for transit in route.transits]
-                domain_route = DomainRoute(name=route.name, id=route.id, stops=stops, transits=transits)
+                transits = [
+                    Transit(
+                        id=transit.id, start_time=transit.start_time, route=route.id
+                    )
+                    for transit in route.transits
+                ]
+                domain_route = DomainRoute(
+                    name=route.name, id=route.id, stops=stops, transits=transits
+                )
                 domain_routes.add(domain_route)
             return domain_routes
 

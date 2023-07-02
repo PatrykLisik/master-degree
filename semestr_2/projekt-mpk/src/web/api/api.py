@@ -55,6 +55,7 @@ async def delete_bus_line(
     await route_repo.delete(stop_id)
     return json_response({"message": "Bus stop deleted successfully"})
 
+
 @api_blueprint.delete("/api/transit/<transit_id>")
 async def delete_transit(
     request, transit_repo: AbstractTransitRepository, transit_id

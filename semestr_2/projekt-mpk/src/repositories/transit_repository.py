@@ -117,6 +117,8 @@ class DatabaseTransitRepository(AbstractTransitRepository):
 
     async def delete(self, transit_id: str):
         async with self.session_maker() as session:
-            delete_stop_statement = delete(DBTransit).where(DBTransit.id == int(transit_id))
+            delete_stop_statement = delete(DBTransit).where(
+                DBTransit.id == int(transit_id)
+            )
             await session.execute(delete_stop_statement)
             await session.commit()
