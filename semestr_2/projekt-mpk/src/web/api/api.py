@@ -44,6 +44,14 @@ async def delete_bus_stop(
     return json_response({"message": "Bus stop deleted successfully"})
 
 
+@api_blueprint.delete("/api/bus-line/<stop_id>")
+async def delete_bus_line(
+    request, route_repo: AbstractRouteRepository, stop_id
+) -> JSONResponse:
+    await route_repo.delete(stop_id)
+    return json_response({"message": "Bus stop deleted successfully"})
+
+
 @api_blueprint.route("/api/bus-stops/<stop_id>/distances")
 async def get_distance_data(
     request, stop_repo: AbstractStopRepository, stop_id: str
@@ -146,14 +154,14 @@ async def add_transit(request, body) -> JSONResponse:
 @api_blueprint.route("/api/lines-search")
 async def lines_search(request, route_repo: AbstractRouteRepository) -> JSONResponse:
     search_query = request.args.get("search", "")
-    search_results = await route_repo.search(f"%{search_query}%")
+    search_results = await route_repo.search_by_name(f"%{search_query}%")
     bus_lines_data = [
         {
             "id": route.id,
             "name": route.name,
             "stop_count": len(route.stops),
             "transits_count": len(route.transits),
-            "combined_time": route.combined_time,
+            "combined_time": str(route.combined_time),
         }
         for route in search_results
     ]

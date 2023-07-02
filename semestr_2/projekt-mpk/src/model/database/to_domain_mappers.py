@@ -1,7 +1,11 @@
 from datetime import timedelta
 
 from src.model.database.model import Stop as StopDB
-from src.model.domain_model import Stop as DomainStop, Transit as DomainTransit
+from src.model.domain_model import (
+    Stop as DomainStop,
+    Transit as DomainTransit,
+    Route as DomainRoute,
+)
 
 
 def db_stop_to_domain(stop: StopDB) -> DomainStop:
@@ -25,7 +29,7 @@ async def db_transit_to_domain(new_transit):
         route=DomainRoute(
             id=new_transit.route_id,
             name=new_transit.route.name,
-            stops=[await db_stop_to_domain(stop) for stop in new_transit.route.stops],
+            stops=[db_stop_to_domain(stop) for stop in new_transit.route.stops],
         ),
         start_time=new_transit.start_time,
     )

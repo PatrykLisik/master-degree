@@ -30,8 +30,12 @@ class AbstractRouteRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def search(self, query: str) -> Set[DomainRoute]:
+    async def search_by_name(self, query: str) -> Set[DomainRoute]:
         raise NotImplementedError
+
+    @abstractmethod
+    def delete(self, route_id: str):
+        pass
 
 
 class AbstractStopRepository(ABC):

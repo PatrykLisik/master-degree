@@ -139,7 +139,27 @@
 
   function deleteLine(lineId) {
     // Call the API to delete the bus line using lineId
+                // Make the AJAX POST request to the API endpoint
+            fetch("/api/bus-line/"+lineId, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data as needed
+                console.log(data);// Refresh the page by setting the URL to itself
+            location.reload();
 
+                // Optionally, perform additional actions such as updating the table or displaying a success message
+            })
+            .catch(error => {
+                // Handle any errors that occur during the AJAX request
+                console.error("Error:", error);
+
+                // Optionally, display an error message to the user
+            });
     // Refresh the table after successful deletion
     location.reload();
   }

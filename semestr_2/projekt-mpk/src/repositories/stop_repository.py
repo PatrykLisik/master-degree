@@ -225,6 +225,7 @@ class DatabaseStopRepository(AbstractStopRepository):
         async with self.session_maker() as session:
             delete_stop_statement = delete(StopDB).where(StopDB.id == int(stop_id))
             await session.execute(delete_stop_statement)
+            await session.commit()
 
     async def search_by_name(self, query) -> Set[DomainStop]:
         async with self.session_maker() as session:
