@@ -23,7 +23,7 @@ from src.web.api.mobile_app_usecase import (
 html_blueprint = Blueprint(name="frontend", url_prefix="/")
 
 
-@html_blueprint.get("/browse-lines")
+@html_blueprint.get("/browse-lines/")
 async def index(
     request: Request,
     route_repository: AbstractRouteRepository,
@@ -72,7 +72,7 @@ async def index_with_route(
     )
 
 
-@html_blueprint.get("browse-lines/<route_id>/<stop_id>/")
+@html_blueprint.get("/browse-lines/<route_id>/<stop_id>/")
 async def index_with_route_and_stop_selected(
     request: Request,
     route_id: str | None,
@@ -97,11 +97,7 @@ async def index_with_route_and_stop_selected(
             route_id=route_id,
             stop_id=stop_id,
         )
-    stops = None
-    if route_id:
-        stops = await get_route_stops_usecase(
-            route_repository=route_repository, route_id=route_id
-        )
+
     return await render(
         "browse_lines.html",
         status=200,
@@ -124,36 +120,11 @@ async def line_editor(request: Request, line_id: str) -> TemplateResponse:
     return await render("edit_bus_line.html", status=200)
 
 
-transit_lines_data: dict[int, dict] = {
-    1: {
-        "id": 1,
-        "name": "Line 1",
-        "transits_count": 10,
-        "stop_count": 5,
-        "combined_time": "1 hour",
-    },
-    2: {
-        "id": 2,
-        "name": "Line 2",
-        "transits_count": 8,
-        "stop_count": 7,
-        "combined_time": "45 minutes",
-    },
-    3: {
-        "id": 3,
-        "name": "Line 3",
-        "transits_count": 12,
-        "stop_count": 4,
-        "combined_time": "1 hour 30 minutes",
-    },
-}
-
 
 @html_blueprint.route("/edit-line-transits/<line_id>")
 async def line_transits(
     request, bus_line_repo: AbstractRouteRepository, line_id: str
 ) -> TemplateResponse:
-    selected_stop = request.args.get("selected_line")
     if not line_id:
         raise ValueError("Bus line does not exist")
     bus_line = await bus_line_repo.get(line_id)
@@ -175,7 +146,6 @@ async def line_transits(
             for transit in bus_line.transits
         ],
     }
-    logger.info(f"XXXXtransit_line_data: f{transit_line_data}")
     return await render(
         "line_transits.html", status=200, context={"line": transit_line_data}
     )

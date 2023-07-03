@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time, date
 from typing import Iterable, List, TypeVar
 
 from sanic.log import logger
@@ -8,14 +8,14 @@ from src.repositories.abstract import AbstractRouteRepository, AbstractTransitRe
 
 
 async def get_all_routes_usecase(
-    route_repository: AbstractRouteRepository,
+        route_repository: AbstractRouteRepository,
 ) -> dict[str, str]:
     routes = await route_repository.get_all()
     return {route.name: route.id for route in routes}
 
 
 async def get_route_stops_usecase(
-    route_repository: AbstractRouteRepository, route_id: str
+        route_repository: AbstractRouteRepository, route_id: str
 ) -> dict[str, str]:
     route = await route_repository.get(route_id=route_id)
     if not route:
@@ -24,16 +24,16 @@ async def get_route_stops_usecase(
 
 
 async def get_stop_timetable_usecase(
-    route_repository: AbstractRouteRepository,
-    transit_repository: AbstractTransitRepository,
-    route_id: str,
-    stop_id: str,
-) -> List[datetime]:
+        route_repository: AbstractRouteRepository,
+        transit_repository: AbstractTransitRepository,
+        route_id: str,
+        stop_id: str,
+) -> List[time]:
     route = await route_repository.get(route_id=route_id)
     time_offset = _time_to_stop_on_list(stop_list=route.stops, target_stop_id=stop_id)
     logger.info(f"time_offset: {time_offset}")
-    route_transits = await transit_repository.get_by_route(route_id)
-    return [transit.start_time + time_offset for transit in route_transits]
+    route_transits = route.transits
+    return [(datetime.combine(date.today(), transit.start_time) + time_offset).time() for transit in route_transits]
 
 
 T = TypeVar("T")

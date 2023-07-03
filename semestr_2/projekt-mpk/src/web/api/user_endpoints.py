@@ -31,7 +31,6 @@ async def create_user(
 async def login(
     request: Request, user_repository: AbstractUserRepository
 ) -> HTTPResponse:
-    print(request.form)
     user = await login_user_usecase(
         user_repository=user_repository,
         email=request.form.get("email"),

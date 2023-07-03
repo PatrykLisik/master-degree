@@ -8,3 +8,10 @@ pytest-bdd==6.1.1
 pytest
 selenium
 pydantic
+httpx
+pytest-asyncio
+sanic-testing
+pytest-dotenv
+pydantic
+pytest-asyncio
+pytest-cov==4.1.0

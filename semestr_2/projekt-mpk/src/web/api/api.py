@@ -15,34 +15,11 @@ from src.repositories.abstract import (
 )
 
 api_blueprint = Blueprint(name="api", url_prefix="/")
-bus_lines_data = [
-    {
-        "id": 1,
-        "name": "Bus Line 1",
-        "stop_count": 10,
-        "transits_count": 5,
-        "combined_time": "45 minutes",
-    },
-    {
-        "id": 2,
-        "name": "Bus Line 2",
-        "stop_count": 8,
-        "transits_count": 3,
-        "combined_time": "30 minutes",
-    },
-    {
-        "id": 3,
-        "name": "Bus Line 3",
-        "stop_count": 12,
-        "transits_count": 7,
-        "combined_time": "1h 25 minutes",
-    },
-]
 
 
 @api_blueprint.delete("/api/bus-stops/<stop_id>")
 async def delete_bus_stop(
-    request, stop_repo: AbstractStopRepository, stop_id
+        request, stop_repo: AbstractStopRepository, stop_id
 ) -> JSONResponse:
     await stop_repo.delete(stop_id)
     return json_response({"message": "Bus stop deleted successfully"})
@@ -50,7 +27,7 @@ async def delete_bus_stop(
 
 @api_blueprint.delete("/api/bus-line/<stop_id>")
 async def delete_bus_line(
-    request, route_repo: AbstractRouteRepository, stop_id
+        request, route_repo: AbstractRouteRepository, stop_id
 ) -> JSONResponse:
     await route_repo.delete(stop_id)
     return json_response({"message": "Bus stop deleted successfully"})
@@ -58,7 +35,7 @@ async def delete_bus_line(
 
 @api_blueprint.delete("/api/transit/<transit_id>")
 async def delete_transit(
-    request, transit_repo: AbstractTransitRepository, transit_id
+        request, transit_repo: AbstractTransitRepository, transit_id
 ) -> JSONResponse:
     await transit_repo.delete(transit_id)
     return json_response({"message": "Transit deleted successfully"})
@@ -66,7 +43,7 @@ async def delete_transit(
 
 @api_blueprint.route("/api/bus-stops/<stop_id>/distances")
 async def get_distance_data(
-    request, stop_repo: AbstractStopRepository, stop_id: str
+        request, stop_repo: AbstractStopRepository, stop_id: str
 ) -> JSONResponse:
     stop = await stop_repo.get(stop_id)
 
@@ -95,7 +72,7 @@ class TimeBetweenStops(BaseModel):
 )
 @validate(json=TimeBetweenStops)
 async def save_distance_data(
-    request, stop_repo: AbstractStopRepository, body: TimeBetweenStops
+        request, stop_repo: AbstractStopRepository, body: TimeBetweenStops
 ) -> JSONResponse:
     await stop_repo.set_time_between_stops(
         body.stop_id, body.other_stop_id, timedelta(minutes=body.time)
@@ -105,30 +82,11 @@ async def save_distance_data(
 
 @api_blueprint.delete("/api/bus-stops/<stop_id>/distance/<other_stop_id>")
 async def delete_distance_data(
-    request, stop_repo: AbstractStopRepository, stop_id, other_stop_id
+        request, stop_repo: AbstractStopRepository, stop_id, other_stop_id
 ) -> JSONResponse:
     # Delete the distance data from the database or perform necessary operations
     await stop_repo.delete_time_between_stops(stop_id, other_stop_id)
     return json_response({"message": "Distance data deleted successfully"})
-
-
-transit_data = [
-    {
-        "id": 1,
-        "start_time": " 09:00",
-        "end_time": " 09:30",
-    },
-    {
-        "id": 2,
-        "start_time": "10:00",
-        "end_time": "10:30",
-    },
-    {
-        "id": 3,
-        "start_time": " 11:00",
-        "end_time": " 11:30",
-    },
-]
 
 
 class TransitData(BaseModel):
@@ -142,7 +100,7 @@ class TransitData(BaseModel):
 )
 @validate(json=TransitData)
 async def add_transit(
-    request, transit_repo: AbstractTransitRepository, body: TransitData
+        request, transit_repo: AbstractTransitRepository, body: TransitData
 ) -> JSONResponse:
     await transit_repo.add(route_id=str(body.line_id), start_time=body.start_time)
 
@@ -176,7 +134,7 @@ class AddBusLine(BaseModel):
 )
 @validate(json=AddBusLine)
 async def add_route(
-    request, route_repo: AbstractRouteRepository, body: AddBusLine
+        request, route_repo: AbstractRouteRepository, body: AddBusLine
 ) -> JSONResponse:
     await route_repo.add(body.name)
     return json_response({"message": "Route added successfully"})
@@ -194,7 +152,7 @@ class BusStop(BaseModel):
 )
 @validate(json=BusStop)
 async def add_stop(
-    request, stop_repo: AbstractStopRepository, body: BusStop
+        request, stop_repo: AbstractStopRepository, body: BusStop
 ) -> JSONResponse:
     await stop_repo.add(
         body.stop_name, geolocation_x=body.x_position, geolocation_y=body.y_position

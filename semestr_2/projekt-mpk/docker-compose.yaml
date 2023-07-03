@@ -37,7 +37,6 @@ services:
       - "8080:8080"
     volumes:
       - ./src:/app/src/
-      - ./data:/app/data
       - ./migrations:/app/migrations
     depends_on:
       - db
@@ -48,4 +47,24 @@ services:
       - DB_NAME=$POSTGRES_DB
       - DB_HOST=db
       - DB_PORT=5432
-    entrypoint: ["/bin/sh", "-c", "alembic upgrade head && sanic src.server.app --host 0.0.0.0 --port 8080 --dev "]
+    entrypoint: [ "/bin/sh", "-c", "alembic upgrade head && sanic src.server.app --host 0.0.0.0 --port 8080 --dev " ]
+  test:
+    container_name: "test_mpk_server"
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:
+      - ./src:/app/src/
+      - ./pytest.ini:/app/pytest.ini
+      - ./.coveragerc:/app/.coveragerc
+    depends_on:
+      - db
+    environment:
+      - TEMPLATING_PATH_TO_TEMPLATES=/app/src/templates/
+      - DB_PASSWORD=$POSTGRES_PASSWORD
+      - DB_USER=$POSTGRES_USER
+      - DB_NAME=$POSTGRES_DB
+      - DB_HOST=db
+      - DB_PORT=5432
+    entrypoint: [ "/bin/sh", "-c", "pytest" ]
