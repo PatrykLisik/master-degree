@@ -32,6 +32,12 @@ class DatabaseStopRepository(AbstractStopRepository):
             await session.commit()
         return domain_stop
 
+    async def get(self, stop_id: str) -> DomainStop:
+        async with self.session_maker() as session:
+            stop = await session.get(StopDB, int(stop_id))
+            if stop is None:
+                raise ValueError("Stop not found")
+            return db_stop_to_domain(stop)
 
     async def get_all(self) -> Set[DomainStop]:
         async with self.session_maker() as session:

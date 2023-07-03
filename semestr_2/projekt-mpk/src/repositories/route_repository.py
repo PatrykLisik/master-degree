@@ -6,7 +6,6 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from src.model.database.model import (
     Route as DBRoute,
-    RouteStop as DBRouteStop,
     StopTimes as DBStopTimes,
     Stop as DBStop
 )
@@ -35,7 +34,7 @@ class DatabaseRouteRepository(AbstractRouteRepository):
             route = await session.get(DBRoute, int(route_id), populate_existing=True)
             route_stops_ids = {stop.id for stop in route.stops}
 
-            stops_statement = select(DBRouteStop).where(DBRoute.id.in_(route_stops_ids))
+            stops_statement = select(DBStop).where(DBRoute.id.in_(route_stops_ids))
             stops = await session.scalars(stops_statement)
 
             stops_times_statement = select(DBStopTimes).where(
@@ -57,10 +56,10 @@ class DatabaseRouteRepository(AbstractRouteRepository):
                         if stop_time.start_stop_id == stop.id
                     },
                 )
-                for stop in stops
+                for stop in stops.unique()
             }
 
-            stops = [id_to_domain_stops[stop.id] for stop in route.stops]
+            stops_domain_stops = [id_to_domain_stops[stop.id] for stop in route.stops]
             transits = [
                 Transit(id=transit.id,
                         start_time=transit.start_time,
@@ -69,7 +68,7 @@ class DatabaseRouteRepository(AbstractRouteRepository):
                 for transit in route.transits
             ]
             return DomainRoute(
-                name=route.name, id=route.id, stops=stops, transits=transits
+                name=route.name, id=route.id, stops=stops_domain_stops, transits=transits
             )
 
     async def get_all(self) -> Set[DomainRoute]:
@@ -120,7 +119,7 @@ class DatabaseRouteRepository(AbstractRouteRepository):
             )
             db_routes = await session.scalars(select_all_routes_statement)
 
-            stops_statement = select(DBRouteStop)
+            stops_statement = select(DBStop)
             stops = await session.scalars(stops_statement)
 
             stops_times_statement = select(DBStopTimes)
@@ -141,10 +140,10 @@ class DatabaseRouteRepository(AbstractRouteRepository):
                             if stop_time.start_stop_id == stop.id
                         },
                     )
-                    for stop in stops
+                    for stop in stops.unique()
                 }
 
-                stops = [id_to_domain_stops[stop.id] for stop in route.stops]
+                domain_stops = [id_to_domain_stops[stop.id] for stop in route.stops]
                 transits = [
                     Transit(
                         id=transit.id, start_time=transit.start_time, route=route.id
@@ -152,7 +151,7 @@ class DatabaseRouteRepository(AbstractRouteRepository):
                     for transit in route.transits
                 ]
                 domain_route = DomainRoute(
-                    name=route.name, id=route.id, stops=stops, transits=transits
+                    name=route.name, id=route.id, stops=domain_stops, transits=transits
                 )
                 domain_routes.add(domain_route)
             await session.commit()

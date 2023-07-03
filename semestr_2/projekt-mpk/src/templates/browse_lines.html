@@ -14,7 +14,7 @@
                                 <div class="row justify-content-center">
                                     <div class="list-group">
                                         {% for route in routes %}
-                                            <a href="/{{ routes[route] }}"
+                                            <a href="/browse-lines/{{ routes[route] }}"
 
                                                     {% if current_route and current_route == routes[route] %}
                                                class="list-group-item list-group-item-action active" aria-current="true"
@@ -38,7 +38,7 @@
                                     <div class="list-group">
 
                                         {% for stop in stops %}
-                                            <a href="#"
+                                            <a href="/browse-lines/{{ current_route }}/{{ stop.id }}"
 
                                                     {% if current_stop and current_stop == stops[stop] %}
                                                class="list-group-item list-group-item-action active" aria-current="true"

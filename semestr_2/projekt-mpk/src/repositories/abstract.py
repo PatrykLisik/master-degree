@@ -45,7 +45,6 @@ class AbstractStopRepository(ABC):
     async def delete(self, stop_id: str):
         raise NotImplementedError
 
-
     @abstractmethod
     async def get_all(self) -> Set[DomainStop]:
         raise NotImplementedError
