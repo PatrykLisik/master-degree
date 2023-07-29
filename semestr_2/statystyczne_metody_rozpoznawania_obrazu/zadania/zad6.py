@@ -14,15 +14,25 @@ if __name__ == '__main__':
         prog='Zadanie 6',
         description='Nearest neighbor classifier',
     )
-    parser.add_argument('-trn', '--train_file', required=True)
-    parser.add_argument('-tst', '--test_file', required=True)
-    parser.add_argument('-o', '--output_file', default="zad2_out.txt")
+    parser.add_argument('-trn', '--train_file', required=False)
+    parser.add_argument('-tst', '--test_file', required=False)
+    parser.add_argument('-o', '--output_file', required=False)
 
     args = parser.parse_args()
 
-    training_set_file_path = args.train_file
-    testing_set_file_path = args.test_file
-    output_file_path = args.output_file
+    training_set_file_path = args.train_file or input("Training set file? ")
+    testing_set_file_path = args.test_file or input("Testing set file? ")
+    output_file_path = args.output_file or input("Output file? ")
+
+    logging.basicConfig(level=logging.INFO,
+                        format='%(message)s',
+                        filename=output_file_path,
+                        filemode='w')
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(message)s')
+    console.setFormatter(formatter)
+    logging.getLogger('').addHandler(console)
 
     training_data = np.genfromtxt(training_set_file_path, skip_header=1, dtype=np.float64)
 
@@ -74,15 +84,7 @@ if __name__ == '__main__':
 
     posterior_probabilities = confusion_matrix.T / class_totals
 
-    logging.basicConfig(level=logging.INFO,
-                        format='%(message)s',
-                        filename=output_file_path,
-                        filemode='w')
-    console = logging.StreamHandler()
-    console.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(message)s')
-    console.setFormatter(formatter)
-    logging.getLogger('').addHandler(console)
+
 
     logging.info(" Results of classification:")
 

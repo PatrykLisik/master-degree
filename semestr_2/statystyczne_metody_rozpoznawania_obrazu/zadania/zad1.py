@@ -13,15 +13,19 @@ if __name__ == '__main__':
         prog='Zadanie 1',
         description='Klasyfikator  minimalno-odległościowy',
     )
-    parser.add_argument('-trn', '--train_file', required=True)
-    parser.add_argument('-tst', '--test_file', required=True)
-    parser.add_argument('-o', '--output_file', default="zad1_out.txt")
+    parser.add_argument('-trn', '--train_file', required=False)
+    parser.add_argument('-tst', '--test_file', required=False)
+    parser.add_argument('-o', '--output_file', required=False)
 
     args = parser.parse_args()
 
+    train_file_path = args.train_file or input("Training set file? ")
+    test_file_path = args.test_file or input("Testing set file? ")
+    output_file = args.output_file or input("Output file?")
+
     logging.basicConfig(level=logging.INFO,
                         format='%(message)s',
-                        filename=args.output_file,
+                        filename=output_file,
                         filemode='w')
     console = logging.StreamHandler()
     console.setLevel(logging.INFO)
@@ -29,8 +33,7 @@ if __name__ == '__main__':
     console.setFormatter(formatter)
     logging.getLogger('').addHandler(console)
 
-    train_file_path = args.train_file
-    test_file_path = args.test_file
+
 
     train_data = np.genfromtxt(train_file_path, skip_header=1)
     test_data = np.genfromtxt(test_file_path, skip_header=1)

@@ -9,12 +9,17 @@ if __name__ == '__main__':
         prog='Zadanie 3',
         description=' Error correction algorithm.',
     )
-    parser.add_argument('-trn', '--train_file', required=True, help='Training set file')
-    parser.add_argument('-cls', '--classes', required=True, nargs="+", type=int)
-    parser.add_argument('-i', '--max_iter_count', required=True, type=int, help='Maximum number of iterations')
-    parser.add_argument('-o', '--output_file', default="zad3_out.txt", help='Output file')
+    parser.add_argument('-trn', '--train_file', required=False, help='Training set file')
+    parser.add_argument('-cls', '--classes', required=False, nargs="+", type=int)
+    parser.add_argument('-i', '--max_iter_count', required=False, type=int, help='Maximum number of iterations')
+    parser.add_argument('-o', '--output_file', help='Output file')
 
     args = parser.parse_args()
+
+    training_filename = args.train_file or input("Training set file? ")
+    class_1, class_2 = args.classes or map(int, input("Pair of classes? ").split(" "))
+    max_iter_count = args.max_iter_count or int(input("Maximum naumber of iteration? "))
+    output_file = args.output_file or input("Output file? ")
 
     logging.basicConfig(level=logging.INFO,
                         format='%(message)s',
@@ -27,10 +32,8 @@ if __name__ == '__main__':
     logging.getLogger('').addHandler(console)
 
     logging.info("\nError correction algorithm.")
-    training_filename = args.train_file
-    output_filename = args.output_file
-    class_1, class_2 = args.classes
-    max_iter_count = args.max_iter_count
+
+
 
     train_data = np.genfromtxt(training_filename, skip_header=1, dtype=np.float64)
 

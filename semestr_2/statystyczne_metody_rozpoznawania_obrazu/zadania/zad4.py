@@ -16,15 +16,19 @@ if __name__ == '__main__':
         prog='Zadanie 4',
         description='Training set editing for linear separability.',
     )
-    parser.add_argument('-trn', '--train_file', required=True, help='Training set file')
-    parser.add_argument('-cls', '--classes', required=True, nargs="+", type=int)
-    parser.add_argument('-o', '--output_file', default="zad4_out.txt", help='Output file')
+    parser.add_argument('-trn', '--train_file', required=False, help='Training set file')
+    parser.add_argument('-cls', '--classes', required=False, nargs="+", type=int)
+    parser.add_argument('-o', '--output_file',required=False, help='Output file')
 
     args = parser.parse_args()
 
+    train_file_path = args.train_file or input("Training set file? ")
+    class_1, class_2 = args.classes or map(int, input("Pair of classes? ").split(" "))
+    output_file = args.output_file or input("Output file? ")
+
     logging.basicConfig(level=logging.INFO,
                         format='%(message)s',
-                        filename=args.output_file,
+                        filename=output_file,
                         filemode='w')
     console = logging.StreamHandler()
     console.setLevel(logging.DEBUG)
@@ -34,9 +38,7 @@ if __name__ == '__main__':
 
     logging.info("Training set editing for linear separability.\n")
 
-    train_data = np.genfromtxt(args.train_file, skip_header=1, dtype=np.float64)
-
-    class_1, class_2 = args.classes
+    train_data = np.genfromtxt(train_file_path, skip_header=1, dtype=np.float64)
 
     class_1_data = train_data[train_data[:, 0] == class_1][:, 1:]
     class_2_data = train_data[train_data[:, 0] == class_2][:, 1:]
