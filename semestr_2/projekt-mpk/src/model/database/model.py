@@ -90,7 +90,8 @@ class Transit(Base):
 
     __tablename__ = "transit"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer,
+                                    primary_key=True)
     route_id: Mapped[int] = mapped_column(ForeignKey(Route.id))
     route: Mapped[Route] = relationship(back_populates="transits")
     start_time: Mapped[time] = mapped_column(Time)

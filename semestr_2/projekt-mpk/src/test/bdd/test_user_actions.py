@@ -14,7 +14,7 @@ def create_user(app, mail, password, name):
     return loop.run_until_complete(app.post("/user/create", data={"email": mail, "name": name, "password": password}))
 
 
-@then(parsers.parse("User with mail {mail} and password {password} is persisted in repository"))
+@then(parsers.parse("User with mail {mail} and password {password} are persisted in repository"))
 @pytest.mark.asyncio
 def step_impl(app, mail, password):
     loop = asyncio.get_event_loop()

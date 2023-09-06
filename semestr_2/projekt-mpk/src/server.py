@@ -26,7 +26,6 @@ def create_app(name="MPK"):
     app.config.INJECTION_SIGNAL = "http.handler.before"
 
     app.static("/favicon.ico", "templates/favicon.ico")
-
     app.blueprint(html_blueprint)
     app.blueprint(user_blueprint)
     app.blueprint(api_blueprint)

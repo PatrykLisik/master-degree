@@ -2,18 +2,17 @@ import numpy as np
 
 
 def gradient_func(x, y):
-    return (2 * np.exp(-5 * x - 3 * y ** 2) * (-5 * x ** 3 + 20 * x ** 2 * y + x - 2 * y)), (
-            -2 * x * np.exp(-5 * x ** 2 - 3 * y ** 2) * (3 * x * y - 12 * y ** 2 + 2))
+    return -np.cos(1 / (x * y)) / (x * x * y), -np.cos(1 / (x * y)) / (x * y * y)
 
 
 # %%
 def func(X, Y):
-    return (X ** 2 - 4 * X * Y) * np.exp(-3 * Y ** 2 - 5 * X ** 2)
+    return np.sin(1 / (X * Y))
 
 
 # %%
 def alpha(iter: int):
-    return 0.02
+    return 0.05
 
 
 def simple_gradient(gradient, start_point, file, max_iter_count=10 ** 5,
@@ -33,13 +32,13 @@ def simple_gradient(gradient, start_point, file, max_iter_count=10 ** 5,
 
 
 if __name__ == '__main__':
-    start_point1 = np.array([-0.34, -1.04])
+    start_point1 = np.array([-1.87, 0.53])
     file_path = "./gradient.txt"
     with open(file_path, "w") as file:
         print("Pierwsze minium", file=file)
         simple_gradient(gradient=gradient_func, start_point=start_point1, file=file)
 
-    start_point2 = np.array([0.2, 1.16])
+    start_point2 = np.array([-1, 0.3])
     with open(file_path, "a") as file:
         print("\n\nDrugie minium", file=file)
         simple_gradient(gradient=gradient_func, start_point=start_point2, file=file)
