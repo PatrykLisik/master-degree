@@ -26,12 +26,12 @@ if __name__ == '__main__':
         print("", file=tsp_file)
     time_start = time.perf_counter()
     with open("./tsp_all.txt", "a") as tsp_file:
-        for order in permutations(np.arange(length), length):
+        for order in permutations(range(length), length):
+            order = [*order, order[0]]
             road_length = 0
             for point_a, point_b in pairwise(order):
                 distance = data[point_a, point_b]
                 road_length += distance
-            road_length += data[order[-1], order[0]]
             print(f"{order}:{road_length}", file=tsp_file, flush=False)
             if road_length < best_length:
                 best_length = road_length
