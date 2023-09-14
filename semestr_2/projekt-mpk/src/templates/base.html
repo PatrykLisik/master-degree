@@ -19,31 +19,33 @@
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a href="/browse-lines/" class="nav-link px-2 link-secondary">Home</a></li>
-        <li><a href="/bus-lines" class="nav-link px-2 link-dark">Lines</a></li>
-        <li><a href="/bus-stops" class="nav-link px-2 link-dark">Stops</a></li>
+        {% if not user_data is none and "admin" in user_data['name'] %}
+            <li><a href="/bus-lines" class="nav-link px-2 link-dark">Lines</a></li>
+            <li><a href="/bus-stops" class="nav-link px-2 link-dark">Stops</a></li>
+        {% endif %}
     </ul>
 
     <div class="col-md-3 text-end">
-    {% if not user_data is none and 'name' in user_data %}
-     <a>  {{ user_data['name'] }} | {{ user_data.email }} </a>
-     <a type="button-warning" class="btn btn-danger me-2" href="/user/logout">Logout </a>
-    {% else %}
+        {% if not user_data is none and 'name' in user_data %}
+            <a>  {{ user_data['name'] }} | {{ user_data.email }} </a>
+            <a type="button-warning" class="btn btn-danger me-2" href="/user/logout">Logout </a>
+        {% else %}
 
-        <a type="button" class="btn btn-outline-primary me-2" href="/login">Login</a>
-        <a type="button" class="btn btn-primary" href="/signup">Sign-up</a>
+            <a type="button" class="btn btn-outline-primary me-2" href="/login">Login</a>
+            <a type="button" class="btn btn-primary" href="/signup">Sign-up</a>
 
-    {% endif %}
+        {% endif %}
     </div>
 
 </header>
 
 <div id="content">{% block content %}{% endblock %}</div>
 
-    <footer class="footer d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary fixed-bottom" >
-      <div class="container">
+<footer class="footer d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary fixed-bottom">
+    <div class="container">
         <span class="text-light">Copyright © 2023. All rights reserved. Patryk Lisik UŁ</span>
-      </div>
-    </footer>
+    </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"

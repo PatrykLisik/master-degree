@@ -22,7 +22,7 @@ async def create_user(
         name=request.form.get("name"),
     )
     response = redirect(
-        "/",
+        "/browse-lines",
     )
     return add_logged_in_cookie(response, user)
 
@@ -37,7 +37,7 @@ async def login(
         password=request.form.get("password"),
     )
     response = redirect(
-        "/",
+        "/browse-lines",
     )
     return add_logged_in_cookie(response, user)
 
@@ -45,7 +45,7 @@ async def login(
 @user_blueprint.route("/logout")
 async def logout(request: Request) -> HTTPResponse:
     response = redirect(
-        "/",
+        "/browse-lines",
     )
     response.add_cookie(COOKIE_KEY, max_age=0, value="")
     return response

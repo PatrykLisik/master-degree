@@ -52,10 +52,7 @@ async def index_with_route(
         route_id: str | None,
         route_repository: AbstractRouteRepository,
 ) -> TemplateResponse:
-    user_data = request.cookies.get(COOKIE_KEY, {})
-    if user_data:
-        user_data = json.loads(user_data)
-    logger.debug(f"Cookie {user_data}")
+    user_data = await extract_user_data(request)
 
     routes = await get_all_routes_usecase(route_repository)
     logger.debug(f"Routes: {routes}")
@@ -77,6 +74,14 @@ async def index_with_route(
     )
 
 
+async def extract_user_data(request):
+    user_data = request.cookies.get(COOKIE_KEY, {})
+    if user_data:
+        user_data = json.loads(user_data)
+    logger.debug(f"Cookie {user_data}")
+    return user_data
+
+
 @html_blueprint.get("/browse-lines/<route_id>/<stop_id>/")
 async def index_with_route_and_stop_selected(
         request: Request,
@@ -87,10 +92,7 @@ async def index_with_route_and_stop_selected(
 ) -> TemplateResponse:
     if not route_id or not stop_id:
         return TemplateResponse(status=418)
-    user_data = request.cookies.get(COOKIE_KEY, {})
-    if user_data:
-        user_data = json.loads(user_data)
-    logger.debug(f"Cookie {user_data}")
+    user_data = await extract_user_data(request)
 
     routes = await get_all_routes_usecase(route_repository)
 
@@ -125,23 +127,28 @@ async def index_with_route_and_stop_selected(
 
 @html_blueprint.get("/login")
 async def login(request: Request) -> TemplateResponse:
-    return await render("login.html", status=200)
+    user_data = await extract_user_data(request)
+    return await render("login.html", status=200, context={"user_data":user_data})
 
 
 @html_blueprint.get("/signup")
 async def signup(request: Request) -> TemplateResponse:
-    return await render("signup.html", status=200)
+    user_data = await extract_user_data(request)
+    return await render("signup.html", status=200,context={"user_data":user_data})
 
 
 @html_blueprint.get("/edit-line/<line_id>")
 async def line_editor(request: Request, line_id: str) -> TemplateResponse:
-    return await render("edit_bus_line.html", status=200)
+    user_data = await extract_user_data(request)
+    return await render("edit_bus_line.html", status=200,context={"user_data":user_data})
 
 
 @html_blueprint.route("/edit-line-transits/<line_id>")
 async def line_transits(
         request, bus_line_repo: AbstractRouteRepository, line_id: str
 ) -> TemplateResponse:
+    user_data = await extract_user_data(request)
+
     if not line_id:
         raise ValueError("Bus line does not exist")
     bus_line = await bus_line_repo.get(line_id)
@@ -164,7 +171,7 @@ async def line_transits(
         ],
     }
     return await render(
-        "line_transits.html", status=200, context={"line": transit_line_data}
+        "line_transits.html", status=200, context={"line": transit_line_data,"user_data":user_data}
     )
 
 
@@ -172,6 +179,7 @@ async def line_transits(
 async def bus_lines(
         request, bus_line_repo: AbstractRouteRepository
 ) -> TemplateResponse:
+    user_data = await extract_user_data(request)
     routes = await bus_line_repo.get_all()
     bus_lines_data = [
         {
@@ -184,12 +192,13 @@ async def bus_lines(
         for route in routes
     ]
     return await render(
-        "show_bus_lines.html", status=200, context={"bus_lines": bus_lines_data}
+        "show_bus_lines.html", status=200, context={"bus_lines": bus_lines_data,"user_data":user_data}
     )
 
 
 @html_blueprint.route("/bus-stops")
 async def bus_stops(request, stop_repo: AbstractStopRepository) -> TemplateResponse:
+    user_data = await extract_user_data(request)
     selected_stop_id = request.args.get("selected_stop")
     target_stop_id = request.args.get("target_stop")
 
@@ -244,5 +253,6 @@ async def bus_stops(request, stop_repo: AbstractStopRepository) -> TemplateRespo
             "selected_stop_id": int(selected_stop_id) if selected_stop_id else None,
             "target_stop_id": int(target_stop_id) if target_stop_id else None,
             "distances": distance_data,
+            "user_data": user_data
         },
     )
