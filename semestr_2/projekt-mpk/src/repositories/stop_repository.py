@@ -89,7 +89,7 @@ class DatabaseStopRepository(AbstractStopRepository):
 
     async def search_by_name(self, query) -> Set[DomainStop]:
         async with self.session_maker() as session:
-            select_all_stops_statement = select(StopDB).where(StopDB.name.like(query))
+            select_all_stops_statement = select(StopDB).where(StopDB.name.ilike(query))
             db_stops = await session.scalars(select_all_stops_statement)
 
             domain_stops = set()

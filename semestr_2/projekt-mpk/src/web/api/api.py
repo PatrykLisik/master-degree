@@ -109,7 +109,9 @@ async def add_transit(
 
 @api_blueprint.route("/api/lines-search")
 async def lines_search(request, route_repo: AbstractRouteRepository) -> JSONResponse:
-    search_query = request.args.get("search", "")
+    search_query: str = request.args.get("search", "")
+    # if search_query:
+    #     search_query = search_query.lower()
     search_results = await route_repo.search_by_name(f"%{search_query}%")
     bus_lines_data = [
         {

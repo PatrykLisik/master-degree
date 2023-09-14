@@ -4,6 +4,8 @@ from enum import Enum
 from itertools import pairwise
 from typing import Self
 
+from sanic.log import logger
+
 
 @dataclass(frozen=True)
 class Stop:
@@ -24,9 +26,11 @@ class Route:
     @property
     def combined_time(self) -> timedelta:
         combined_time = timedelta()
+        # logger.debug(f"self.stops {self.stops}")
         for start_stop, next_stop in pairwise(self.stops):
+            # logger.debug(f"Start_stop {start_stop} | next_stop {next_stop}")
             if start_stop and next_stop:
-                time_to_next_stop = start_stop.time_to_other_stops.get(next_stop.id, timedelta())
+                time_to_next_stop = start_stop.time_to_other_stops.get(str(next_stop.id), timedelta())
                 combined_time += time_to_next_stop
         return combined_time
 
