@@ -62,13 +62,20 @@ def pair_iterator(iterable: Iterable[T]) -> (T, T):
 def _time_to_stop_on_list(stop_list: List[Stop], target_stop_id) -> timedelta:
     # calculate offset from start
     offset: timedelta = timedelta()
+    logger.debug(f"OFFSET | target_stop_id= {target_stop_id}")
+    logger.debug(f"OFFSET| stop list {stop_list}")
     for stop, next_stop in pair_iterator(stop_list):
-        if stop.id == target_stop_id:
-            return offset
-        delta = stop.time_to_other_stops[next_stop.id]
+        try:
+            delta = stop.time_to_other_stops[str(next_stop.id)]
+        except KeyError:
+            logger.error(f"Stop {stop.id} has no distance definition to {next_stop.id}")
+            delta = timedelta()
+
         offset += delta
-        if next_stop.id == target_stop_id:
+        logger.debug(f"Stop id= {stop.id} | offset = {offset}")
+        if str(stop.id) == str(target_stop_id):
             return offset
+    return offset
 
 
 def time_delta_from_str(timedelta_string: str) -> timedelta:

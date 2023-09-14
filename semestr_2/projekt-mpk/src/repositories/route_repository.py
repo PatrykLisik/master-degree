@@ -1,6 +1,7 @@
 from datetime import timedelta
 from typing import Set
 
+from sanic.log import logger
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
@@ -32,15 +33,15 @@ class DatabaseRouteRepository(AbstractRouteRepository):
     async def get(self, route_id: str) -> DomainRoute:
         async with self.session_maker() as session:
             route = await session.get(DBRoute, int(route_id), populate_existing=True)
-            route_stops_ids = {stop.id for stop in route.stops}
+            route_stops_ids = {stop.stop_id for stop in route.stops}
 
             stops_statement = select(DBStop).where(DBRoute.id.in_(route_stops_ids))
-            stops = await session.scalars(stops_statement)
+            stops = list((await session.scalars(stops_statement)).unique())
 
             stops_times_statement = select(DBStopTimes).where(
                 DBStopTimes.start_stop_id.in_(route_stops_ids)
             )
-            stops_times = await session.scalars(stops_times_statement)
+            stops_times = list(await (session.scalars(stops_times_statement)))
 
             id_to_domain_stops = {
                 stop.id: DomainStop(
@@ -56,10 +57,14 @@ class DatabaseRouteRepository(AbstractRouteRepository):
                         if stop_time.start_stop_id == stop.id
                     },
                 )
-                for stop in stops.unique()
+                for stop in stops
             }
 
-            stops_domain_stops = [id_to_domain_stops[stop.id] for stop in route.stops]
+            logger.debug(f"id_to_domain_stops {id_to_domain_stops}")
+            stops_domain_stops = []
+            for route_stop in route.stops:
+                logger.debug(f"Route stops | {route_stop.stop_id}")
+                stops_domain_stops.append(id_to_domain_stops[route_stop.stop_id])
             transits = [
                 Transit(id=transit.id,
                         start_time=transit.start_time,
@@ -77,29 +82,36 @@ class DatabaseRouteRepository(AbstractRouteRepository):
             stops = await session.scalars(stops_statement)
 
             stops_times_statement = select(DBStopTimes)
-            stops_times = await session.scalars(stops_times_statement)
+            stops_times = list(await session.scalars(stops_times_statement))
             domain_routes = set()
             routes_statement = select(DBRoute).order_by(DBRoute.name)
             routes = await session.scalars(routes_statement)
+
+            # logger.debug("Stop time | {stop_time.id} | {stop_time.start_stop_id} | {stop_time.end_stop_id}")
+            # for stop_time in stops_times:
+                # logger.debug(f"Stop time | {stop_time.id} | {stop_time.start_stop_id} | {stop_time.end_stop_id}")
             for route in routes.unique():
-                id_to_domain_stops = {
-                    stop.id: DomainStop(
-                        id=stop.id,
-                        name="",
-                        loc_y=stop.loc_y,
-                        loc_x=stop.loc_x,
-                        time_to_other_stops={
-                            str(stop_time.end_stop_id): timedelta(
+                id_to_domain_stops = {}
+                for stop in stops.unique():
+
+                    time_to_other_stops = {}
+                    for stop_time in stops_times:
+                        # logger.debug(f"Stop.id = {stop.id} | stop_time.start_stop_id={stop_time.start_stop_id}")
+                        if stop_time.start_stop_id == stop.id:
+                            # logger.debug(f"Time to next stop {stop_time.end_stop_id}->{stop_time.start_stop_id}")
+                            time_to_other_stops[str(stop_time.end_stop_id)] = timedelta(
                                 seconds=stop_time.time_in_seconds
                             )
-                            for stop_time in stops_times
-                            if stop_time.start_stop_id == stop.id
-                        },
+                    id_to_domain_stops[stop.id] = DomainStop(
+                        id=stop.id,
+                        name=stop.name,
+                        loc_y=stop.loc_y,
+                        loc_x=stop.loc_x,
+                        time_to_other_stops=time_to_other_stops,
                     )
-                    for stop in stops.unique()
-                }
 
-                domain_stops = [id_to_domain_stops[stop.id] for stop in route.stops]
+                logger.debug(f"id_to_domain_stops {id_to_domain_stops}")
+                domain_stops = [id_to_domain_stops.get(stop.id) for stop in route.stops]
                 transits = [
                     Transit(
                         id=transit.id, start_time=transit.start_time, route=route.id
@@ -123,8 +135,9 @@ class DatabaseRouteRepository(AbstractRouteRepository):
             stops = await session.scalars(stops_statement)
 
             stops_times_statement = select(DBStopTimes)
-            stops_times = await session.scalars(stops_times_statement)
+            stops_times = list((await session.scalars(stops_times_statement)).all())
             domain_routes = set()
+
             for route in db_routes.unique():
                 id_to_domain_stops = {
                     stop.id: DomainStop(
@@ -140,7 +153,7 @@ class DatabaseRouteRepository(AbstractRouteRepository):
                             if stop_time.start_stop_id == stop.id
                         },
                     )
-                    for stop in stops.unique()
+                    for stop in stops.all()
                 }
 
                 domain_stops = [id_to_domain_stops[stop.id] for stop in route.stops]

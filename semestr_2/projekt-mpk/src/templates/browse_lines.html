@@ -38,7 +38,7 @@
                                     <div class="list-group">
 
                                         {% for stop in stops %}
-                                            <a href="/browse-lines/{{ current_route }}/{{ stop.id }}"
+                                            <a href="/browse-lines/{{ current_route }}/{{ stops[stop] }}"
 
                                                     {% if current_stop and current_stop == stops[stop] %}
                                                class="list-group-item list-group-item-action active" aria-current="true"
@@ -60,13 +60,11 @@
                                 <h5 class="card-title">Timetable</h5>
                                 <div class="row justify-content-center">
                                     <div class="list-group">
-                                        <a href="#" class="list-group-item list-group-item-action active"
-                                           aria-current="true">
-                                            15:10
-                                        </a>
-                                        <a href="" class="list-group-item list-group-item-action">15:25</a>
-                                        <a href="#" class="list-group-item list-group-item-action">15:30</a>
-                                        <a href="#" class="list-group-item list-group-item-action">16:45</a>
+                                        {% for transit in transits %}
+                                            <a href="" class="list-group-item list-group-item-action">{{ transit }}</a>
+
+                                        {% endfor %}
+
                                     </div>
                                 </div>
                             </div>

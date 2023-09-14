@@ -25,8 +25,8 @@ html_blueprint = Blueprint(name="frontend", url_prefix="/")
 
 @html_blueprint.get("/browse-lines/")
 async def index(
-    request: Request,
-    route_repository: AbstractRouteRepository,
+        request: Request,
+        route_repository: AbstractRouteRepository,
 ) -> TemplateResponse:
     user_data = request.cookies.get(COOKIE_KEY, {})
     if user_data:
@@ -38,15 +38,19 @@ async def index(
     return await render(
         "browse_lines.html",
         status=200,
-        context={"user_data": user_data, "routes": routes, "current_route": None},
+        context={"user_data": user_data,
+                 "routes": routes,
+                 "current_route": None,
+                 "transits": []
+                 },
     )
 
 
 @html_blueprint.get("/browse-lines/<route_id>/")
 async def index_with_route(
-    request: Request,
-    route_id: str | None,
-    route_repository: AbstractRouteRepository,
+        request: Request,
+        route_id: str | None,
+        route_repository: AbstractRouteRepository,
 ) -> TemplateResponse:
     user_data = request.cookies.get(COOKIE_KEY, {})
     if user_data:
@@ -68,17 +72,18 @@ async def index_with_route(
             "routes": routes,
             "current_route": route_id,
             "stops": stops,
+            "transits": []
         },
     )
 
 
 @html_blueprint.get("/browse-lines/<route_id>/<stop_id>/")
 async def index_with_route_and_stop_selected(
-    request: Request,
-    route_id: str | None,
-    stop_id: str | None,
-    route_repository: AbstractRouteRepository,
-    transit_repository: AbstractTransitRepository,
+        request: Request,
+        route_id: str | None,
+        stop_id: str | None,
+        route_repository: AbstractRouteRepository,
+        transit_repository: AbstractTransitRepository,
 ) -> TemplateResponse:
     if not route_id or not stop_id:
         return TemplateResponse(status=418)
@@ -89,7 +94,11 @@ async def index_with_route_and_stop_selected(
 
     routes = await get_all_routes_usecase(route_repository)
 
-    time_table = None
+    stops = await get_route_stops_usecase(
+        route_repository=route_repository, route_id=route_id
+    )
+
+    transits = None
     if route_id and stop_id:
         time_table = await get_stop_timetable_usecase(
             route_repository=route_repository,
@@ -97,11 +106,20 @@ async def index_with_route_and_stop_selected(
             route_id=route_id,
             stop_id=stop_id,
         )
+        transits = []
+        for time in time_table:
+            transits.append(f"{time.hour:02d}:{time.minute:02d}")
 
     return await render(
         "browse_lines.html",
         status=200,
-        context={"user_data": user_data, "routes": routes},
+        context={
+            "user_data": user_data,
+            "routes": routes,
+            "current_route": route_id,
+            "stops": stops,
+            "transits": transits
+},
     )
 
 
@@ -120,10 +138,9 @@ async def line_editor(request: Request, line_id: str) -> TemplateResponse:
     return await render("edit_bus_line.html", status=200)
 
 
-
 @html_blueprint.route("/edit-line-transits/<line_id>")
 async def line_transits(
-    request, bus_line_repo: AbstractRouteRepository, line_id: str
+        request, bus_line_repo: AbstractRouteRepository, line_id: str
 ) -> TemplateResponse:
     if not line_id:
         raise ValueError("Bus line does not exist")
@@ -139,8 +156,8 @@ async def line_transits(
                 "id": transit.id,
                 "start_time": transit.start_time.strftime("%H:%M"),
                 "end_time": (
-                    datetime.combine(date.today(), transit.start_time)
-                    + bus_line.combined_time
+                        datetime.combine(date.today(), transit.start_time)
+                        + bus_line.combined_time
                 ).strftime("%H:%M"),
             }
             for transit in bus_line.transits
@@ -153,7 +170,7 @@ async def line_transits(
 
 @html_blueprint.route("/bus-lines")
 async def bus_lines(
-    request, bus_line_repo: AbstractRouteRepository
+        request, bus_line_repo: AbstractRouteRepository
 ) -> TemplateResponse:
     routes = await bus_line_repo.get_all()
     bus_lines_data = [

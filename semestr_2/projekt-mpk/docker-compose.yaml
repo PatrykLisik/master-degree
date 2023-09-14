@@ -28,6 +28,7 @@ services:
       - "5432:5432"
     volumes:
       - ./db_data:/var/lib/postgresql/data
+    command: ["postgres", "-c", "log_statement=all"]
   server:
     container_name: "mpk_server"
     build:

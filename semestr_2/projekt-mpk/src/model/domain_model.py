@@ -25,8 +25,9 @@ class Route:
     def combined_time(self) -> timedelta:
         combined_time = timedelta()
         for start_stop, next_stop in pairwise(self.stops):
-            time_to_next_stop = start_stop.time_to_other_stops.get(next_stop.id, timedelta())
-            combined_time += time_to_next_stop
+            if start_stop and next_stop:
+                time_to_next_stop = start_stop.time_to_other_stops.get(next_stop.id, timedelta())
+                combined_time += time_to_next_stop
         return combined_time
 
 
