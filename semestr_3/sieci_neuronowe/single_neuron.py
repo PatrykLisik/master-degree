@@ -29,7 +29,10 @@ def error(output, expected):
 
 def learn(inputs, weigths, err, learn_speed):
     new_w = weigths.copy()
-    new_w -= learn_speed*(err * inputs.T).T
+    chnage = learn_speed*(err * inputs.T)
+    print("Change")
+    print(chnage)
+    new_w -= chnage
     return new_w
 
 
