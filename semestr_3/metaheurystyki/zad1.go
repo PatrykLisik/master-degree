@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"sync"
 	"time"
 )
 
@@ -86,7 +87,8 @@ func run_simualtion(gens_to_change int, size int, dist float64, prec float64) Si
 
 	}
 
-	return SimulationData{gens_to_change, max_iteration_count, current_fitness, prec}
+	result := SimulationData{gens_to_change, max_iteration_count, current_fitness, prec}
+	return result
 
 }
 
@@ -96,36 +98,45 @@ func main() {
 	dists := []float64{0.5, 0.25, 0.1, 0.05}
 	repeat := 1000
 	precisions := []float64{700.0, 800.0, 999.0, 999.9, 999.99, 999.999, 999.9999}
-
+	//precisions := []float64{999.0}
 	fmt.Println("gen_count, change_count, dist, prec, iterations, end_fitness")
+	var wg sync.WaitGroup
 	for _, gen_count := range gen_counts {
 		for _, dist := range dists {
 			for gen_count_to_change := 1; gen_count_to_change < gen_count; gen_count_to_change++ {
 				for _, prec := range precisions {
 					for i := 0; i < repeat; i++ {
-						result := run_simualtion(
-							gen_count_to_change,
-							gen_count,
-							dist,
-							prec,
-						)
-						fmt.Println(
-							fmt.Sprintf("%v, %v, %v, %v, %v, %v",
-								gen_count,
+						wg.Add(1)
+						go func() {
+							result := run_simualtion(
 								gen_count_to_change,
+								gen_count,
 								dist,
 								prec,
-								result.iter_count,
-								result.final_value,
-							),
-						)
+							)
+
+							fmt.Println(
+								fmt.Sprintf("%v, %v, %v, %v, %v, %v",
+									gen_count,
+									gen_count_to_change,
+									dist,
+									prec,
+									result.iter_count,
+									result.final_value,
+								),
+							)
+							defer wg.Done()
+						}()
 
 					}
+					//fmt.Println("wait....")
+					wg.Wait()
 				}
 
 			}
 		}
 	}
+
 	//fmt.Println(run_simualtion(1, 5, 0.5, 990.0))
 	//fmt.Println(change_genome(start_genome,0.5,1))
 }
