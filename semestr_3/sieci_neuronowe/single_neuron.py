@@ -27,12 +27,12 @@ def error(output, expected):
     return err
 
 
-def learn(inputs, weigths, err, learn_speed):
+def learn(inputs, weigths, error, learn_speed):
     new_w = weigths.copy()
-    chnage = learn_speed*(err * inputs.T)
+    change = learn_speed * error * inputs
     print("Change")
-    print(chnage)
-    new_w -= chnage
+    print(change)
+    new_w -= change
     return new_w
 
 
@@ -50,19 +50,24 @@ def norm(d):
     return (d.T / div).T
 
 
-print("Single neuron")
-d_norm = norm(data)
-print(d_norm)
+# main
 afunc = line_activation(a=1, b=0)
 
-n_out = run_neuron(weigths=w, input=d_norm, activation_func=afunc)
-print("Neuron out")
-print(n_out)
+epoch = 0
 
-err = error(n_out, expected)
-print("Neuron errors")
-print(err)
+while True:
+    print("Epoch {epoch}")
+    print("Single neuron")
+    d_norm = norm(data)
+    print(d_norm)
 
-w = learn(inputs=d_norm, err=err, weigths=w, learn_speed=learn_speed)
-print("New weigths")
-print(w)
+    for in_, exp_ in zip(d_norm, expected):
+        n_out = run_neuron(weigths=w, input=in_, activation_func=afunc)
+        err_ = np.abs(exp_ - n_out)
+        print(f"error to learn {err_}")
+        w = learn(inputs=in_, error=err_, weigths=w, learn_speed=learn_speed)
+        print("New weigths")
+        print(w)
+    input()
+    epoch += 1
+    print("\n\n\n\n")
