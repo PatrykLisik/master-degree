@@ -88,7 +88,7 @@
 \author{Patryk Lisik} % Your name
 \institute[] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
 {
- Uniwersytet Łódzki \\ % Your institution for the title page
+  Uniwersytet Łódzki \\ % Your institution for the title page
 }
 
 \date{2023/24} % Date, can be changed to a custom date
@@ -120,13 +120,9 @@
     };
     \end{minted}
     \caption{Przykład własnego typu w C++}
-        \label{fig:cpp-operator-oveerload}
+        \label{fig:cpp-operator-overload}
     \end{figure}
 
-\end{frame}
-
-\begin{frame}
-    
 \end{frame}
 
 \begin{frame}[containsverbatim]{Co to obiekt?}
@@ -142,10 +138,13 @@
         LineFunction func{4.5, 2.1};
         double d = func(7.2);
     \end{minted}
-        \label{fig:cpp-obj-on-stack}
     \end{figure}
 
     \end{block}
+    
+\end{frame}
+
+\begin{frame}
     
 \end{frame}
 
@@ -208,12 +207,6 @@
         \caption{Jawnie zdefiniowany konstruktor w C++. Zgodnie z zasadą 0/3/5.}
     \end{figure}
     
-\end{frame}
-
-\begin{frame}
-   \begin{block}
-       This is an example block. 
-   \end{block} 
 \end{frame}
 
 \begin{frame}[containsverbatim]{Type alokacji}
@@ -440,7 +433,7 @@ ChildFucntion(ChildFucntion const & cf{
         \includegraphics[width=7cm]{cyclic_ref.png}
         \caption{Problem cyklicznych referencji gdzie pamięć nigdy nie jest zwalniana. Źródło: \cite{weak-ptr-vs-magazine}}
         \label{fig:enter-label}
-    \end{figure}
+    \end{figure} 
 
 \begin{block}{std::weak\_ptr}
     Rozwiązaniem problemu cyklicznych referencji jest referencja słaba(std::weak\_ptr) która nie powoduje inkrementacji licznika referencji. Nie gwarantuje one że obiekt nie został już usunięty \cite{weak-ptr-vs-magazine, cpp-weak-ptr}. 
@@ -449,7 +442,7 @@ ChildFucntion(ChildFucntion const & cf{
 
 
 
-\section{Odśmiecanie  Garbage Collctor}
+\section{Odśmiecanie Garbage Collector}
 
 \begin{frame}{Oznacz i zmieć (ang. \textit{mark and sweep})}
     \begin{block}{Faza mark}
@@ -474,7 +467,7 @@ ChildFucntion(ChildFucntion const & cf{
 \begin{frame}{Inne rodzaje odśmiecaczy/garbage collectorów}
 \begin{block}{}
 Generacyjny \\
-Trzykolorowy  \\
+Trzy kolorowy  \\
 Arenowy
 \end{block}
 
