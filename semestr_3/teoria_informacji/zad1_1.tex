@@ -1,0 +1,51 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{enumitem}
+\usepackage{amsmath}
+
+
+\title{Zadanie 1--1}
+\author{Patryk Lisik}
+\date{\(15\) Listopad  2023}
+
+\begin{document}
+
+\maketitle
+\renewcommand{\abstractname}{Treść}
+
+\begin{abstract}
+Dyskretne niepamiętające źródło informacji $\mathcal{S}$ podaje wyniki losowania koloru z talii kart,
+tj. znaku ze zbioru $S = \{ \heartsuit, \diamondsuit, \clubsuit, \spadesuit \} $. 
+Do przekazania informacji z tego źródła zastosowano kod binarny $\mathcal{C} = \{ 0, 11,110,1111 \}$ 
+przypisujący kolorom kart następujące słowa kodowe:
+
+    \begin{figure}[h]
+\centering
+\begin{tabular}{ccccc}
+    $\mathcal{S}_i$ & $\heartsuit$   & $\diamondsuit$   & $\clubsuit$   & $\spadesuit$ & \hline
+    $\omega_i$      & 0              & 10               & 110           & 111 &
+\end{tabular}
+\label{tab:codes}
+
+\end{figure}
+
+    Wyznacz dla tego kodu zbiory $\mathcal{C}_i$, $i=0,1....i$, i $\mathcal{C}_{\infty}$, wykorzystywane w twierdzeniu
+    Sardanisa--Pattersona, i sprawdź, czy powyższy kod jest jednoznacznie dekodowalny i czy jest natychmiastowy(tzn.
+     nie wprowadza opóźnień).
+\end{abstract}
+
+
+\section*{Rozwiązanie}
+
+Wyznaczenie $\mathcal{C}_i$.
+\begin{flalign*}
+    \mathcal{C}_0 = \{0,10,110,111\} \\
+    \mathcal{C}_1 = \mathcal{C}_2 = \cdots = \mathcal{C}_{\infty} = \emptyset
+\end{flalign*}
+
+Na podstawie twierdzenia Sardanisa--Pattersona kod $\mathcal{S}$ jest jednoznacznie dekodowalny,
+ponieważ zbiory $\mathcal{C}_0$ i $\mathcal{C}_{\infty}$ są rozłączone.   
+
+Kod nie jest natychmiastowy, ponieważ jest prefiksowy($\mathcal{C}_1 = \emptyset $).
+\end{document}
