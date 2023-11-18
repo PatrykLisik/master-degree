@@ -4,8 +4,7 @@ neuron_count = 14
 
 data = np.array([np.linspace(0, 2 * np.pi, neuron_count)])
 w = np.random.uniform(-1, 1, (data.shape[1], neuron_count))
-expected = np.array([[(np.sin(np.linspace(0, 2 * np.pi, neuron_count))+1)/2]])
-
+expected = np.array([[(np.sin(np.linspace(0, 2 * np.pi, neuron_count)) + 1) / 2]])
 
 learn_speed = 0.1
 
@@ -20,13 +19,14 @@ def error(output, expected):
     return err
 
 
-def learn(inputs, weigths, error, learn_speed):
+def learn(inputs, weigths, error, learn_speed, d_activation):
     new_w = weigths.copy()
     # error = np.expand_dims(error, axis=1)
     # inputs = np.expand_dims(inputs, axis=0)
     # print(f"Error {error.shape}")
     # print(f"Inputs {inputs.shape}")
-    change = learn_speed * np.outer(inputs, error)
+    change = learn_speed * np.outer(inputs, error) - d_activation(np.dot(inputs, weigths))
+
     # print("Change")
     # print(change)
     new_w = new_w + change
@@ -49,6 +49,10 @@ def sign(x):
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
+
+
+def d_sigmoid(x):
+    return sigmoid(x) * (1 - sigmoid(x))
 
 
 def norm(d):
@@ -77,7 +81,7 @@ while True:
         print(f"Out {n_out}")
         print(f"Exp {exp_}")
         print(f"error to learn {err_}")
-        w = learn(inputs=in_, error=err_, weigths=w, learn_speed=learn_speed)
+        w = learn(inputs=in_, error=err_, weigths=w, learn_speed=learn_speed, d_activation=d_sigmoid)
         # print("New weigths")
         # print(w)
     input()
