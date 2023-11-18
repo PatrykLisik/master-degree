@@ -7,7 +7,7 @@ w = np.random.uniform(-1, 1, (data.shape[1], neuron_count))
 expected = np.array([[(np.sin(np.linspace(0, 2 * np.pi, neuron_count))+1)/2]])
 
 
-learn_speed = 0.01
+learn_speed = 0.1
 
 
 def run_neuron(input, weigths, activation_func):
@@ -62,9 +62,8 @@ def norm(d):
 afunc = line_activation(a=1, b=0)
 
 epoch = 0
-print(w.shape)
+print(w)
 print()
-print(data)
 while True:
     print(f"Epoch {epoch}")
     # print("Single neuron")
