@@ -4,16 +4,15 @@ import numpy as np
 data = np.array(
     [
         [3, 4, 3, 4, 5],
-        [1, -2, 1, -2, -4],
-        [4, 2, 5, 3, 2],
-        [0, -1, 0, -3, -3],
+        [1, -2, 1, -2, -2],
+        [-3, -2, -3, 2, 3],
     ]
 )
 
 neuron_count = 3
 
 w = np.random.uniform(-1, 1, (data.shape[1], neuron_count))
-expected = np.array([[1, -1, 0.8], [-1, 0.8, -0.8], [0.8, -0.8, 1], [-0.8, 1, -1]])
+expected = np.array([[1, -1, -1], [-1, 1, -1], [-1, -1, 1]])
 
 learn_speed = 0.1
 
@@ -48,6 +47,13 @@ def line_activation(a, b):
     return _inner
 
 
+@np.vectorize
+def sign(x):
+    if x > 0:
+        return 1
+    return -1
+
+
 def norm(d):
     div = np.sqrt(np.sum(np.power(d, 2), axis=1))
     # print(div)
@@ -63,12 +69,14 @@ print(w)
 while True:
     print(f"Epoch {epoch}")
     # print("Single neuron")
-    d_norm = norm(data)
+    d_norm = data
     # print(f" dnorm {d_norm}")
 
     for in_, exp_ in zip(d_norm, expected):
-        n_out = run_neuron(weigths=w, input=in_, activation_func=afunc)
+        n_out = run_neuron(weigths=w, input=in_, activation_func=sign)
         err_ = exp_ - n_out
+        print(f"Out {n_out}")
+        print(f"Exp {exp_}")
         print(f"error to learn {err_}")
         w = learn(inputs=in_, error=err_, weigths=w, learn_speed=learn_speed)
         # print("New weigths")
