@@ -1,0 +1,88 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{epsdice}
+\usepackage[table,xcdraw]{xcolor}
+
+\title{Zadanie 1--3}
+\author{Patryk Lisik}
+\date{\(19\) Listopad  2023}
+
+\begin{document}
+
+\maketitle
+\renewcommand{\abstractname}{Treść}
+
+\begin{abstract}
+    Dyskretne niepamiętające źródło informacji $\mathcal{S}$ podaje wynik rzutu nieuczciwą kostką 
+    $S = \{ \epsdice{1}, \epsdice{2}, \epsdice{3}, \epsdice{4}, \epsdice{5}, \epsdice{6} \}$ 
+    z prawdopodobieństwami:
+    \begin{figure}[h]
+\centering
+\begin{tabular}{ccccccc}
+    $s_i$ & $\epsdice{1}$ & $\epsdice{2}$ & $\epsdice{3}$   & $\epsdice{4}$ & $\epsdice{5}$ & $\epsdice{1}$  &\hline
+    $\omega_i$      & 0.3  & 0.25 & 0.2 & 0.1 & 0.08 & 0.07 &
+\end{tabular}
+\label{tab:codes}
+
+\end{figure}
+
+    i znajdź średnią długość słowa $L$ i efektywność $\eta$ dla kodu Shannona--Fano $\mathcal{D}$ i porównaj wyniki z wartościami dla kodu optymalnego.
+\end{abstract}
+
+
+\section*{Rozwiązanie}
+Materiały wykładowe nie zawierają algorytmu budowania kodów Shannona--Fano. Wykorzystano następujący algorytm budowania kodów Shannona-Fano zdefiniowany w "Wprowadzenie do kompresji danych" -- Adam Drozdek.
+Definicja algorytmu znajduje się w rozdziale 2.2 -- Kodowanie Shannona--Fano.
+
+Algorytm kodowania jest następujący:\\
+$s$ – ciąg symboli ze zbioru posortowanych wg prawdopodobieństw\\ 
+Funkcja $Shannon-Fano(s)$: \\
+Jeśli $s$ zawiera dwa symbole, do słowa kodu pierwszej litery dodaj 0, do słowa kodu drugiej litery – 1.\\
+W przeciwnym razie (s zawiera więcej niż dwa symbole) podziel s na dwa podciągi $s1$ i $s2$ tak, 
+żeby różnica między sumą prawdopodobieństw liter z $s1$ i $s2$ była najmniejsza.
+Do słów kodu symboli z $s1$ dodaj 0, do kodów symboli z $s2$ – 1.
+Wywołaj rekurencyjne funkcje: $Shannon-Fano(s1)$ oraz $Shannon-Fano(s2)$.
+
+
+
+\subsection*{Średnia długość słowa}
+Obliczanie średniej długości słowa w kodowaniu Shannona--Fano. 
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\rowcolor[HTML]{FFCCC9} 
+    Kodowany symbol       & Kod  & $p_i$  & Długość słowa & $L(c)$  \\ \hline
+   \epsdice{1}        & 00   & 0.3  & 2 & 0.6       \\ \hline
+   \epsdice{2}        & 01   & 0.25 & 2 & 0.5      \\ \hline
+   \epsdice{3}       & 101   & 0.2  & 3 & 0.6     \\ \hline
+   \epsdice{4}      & 1100  & 0.1  & 4 & 0.4      \\ \hline
+   \epsdice{5}      & 1110 & 0.08 & 4 & 0.32      \\ \hline
+   \epsdice{6}    & 1111 & 0.07 & 4 & 0.21      \\ \hline
+                      &      &      &         &     \\ \hline
+    Średnia długość słowa &      &      &   & $\sum$ 2.63      \\ \hline
+\end{tabular}
+\label{tab:my-table}
+\end{table}
+\subsection*{Entropia źródła}
+
+\begin{multline*}
+    H(\mathcal{S}) = \sum p_1 \log_1 \frac{1}{p_i} =\\
+    -(0.3 \log_2 0.3 + 0.25 \log_2 0.25 + 0.1 \log_2 0.1 + 0.08 \log_2 0.08 + 0.07 \log_2 0.07 )\\
+    \approx 2.37
+\end{multline*}
+
+\subsection*{Porównanie wydajności kodów}
+ 
+Efektywność kodu Huffmana:
+$$\eta = \frac{H(\mathcal{S})}{L(\mathcal{C})}* 100\% = \frac{2.33}{2.37} \approx 98.31 \% $$ 
+
+Efektywność kodu Shannona-Fano
+$$\eta_{\mathcal{D}} = \frac{H(\mathcal{S})}{L(\mathcal{D})}* 100\% = \frac{2.33}{2.63} \approx 88.59 \% $$ 
+
+\end{document}
+
+
+

@@ -1,0 +1,87 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{epsdice}
+\usepackage[table,xcdraw]{xcolor}
+
+\title{Zadanie 1--4}
+\author{Patryk Lisik}
+\date{\(19\) Listopad  2023}
+
+\begin{document}
+
+\maketitle
+\renewcommand{\abstractname}{Treść}
+
+\begin{abstract}
+    Dyskretne niepamiętające źródło informacji $\mathcal{S}$ podaje wynik rzutu nieuczciwą kostką 
+    $S = \{ \epsdice{1}, \epsdice{2}, \epsdice{3}, \epsdice{4}, \epsdice{5}, \epsdice{6} \}$ 
+    dla której prawdopodobieństwo wypadnięcia poszczególnych ścianek kostki są:
+    \begin{figure}[h]
+\centering
+\begin{tabular}{ccccccc}
+    $s_i$ & $\epsdice{1}$ & $\epsdice{2}$ & $\epsdice{3}$   & $\epsdice{4}$ & $\epsdice{5}$ & $\epsdice{1}$  &\hline
+    $\omega_i$      & 0.3  & 0.25 & 0.2 & 0.1 & 0.08 & 0.07 &
+\end{tabular}
+\label{tab:codes}
+
+\end{figure}
+    Zbuduj dwukrotne rozszerzenie tego źródła $\mathcal{S}^2$ i wyznacz prawdopodobieństwa wypadnięcia poszczególnych 
+    par ścianek (przyjmij, że ścianki są rozróżnialne, tzn. np. pary $\epsfice{1}\epsdice{2}$ i $\epsdice{2}\epsdice{2}$
+    są różne). Oblicz entropię źródła $\mathcal{S}^2$ (w bitach) i porównaj z wynikiem Zadania 1--2
+\end{abstract}
+
+
+\section*{Rozwiązanie}
+ Prawdopodobieństwa wypadnięcia poszczególnych par ścianek 
+\begin{table}[h]
+\begin{tabular}{
+>{\columncolor[HTML]{FFCCC9}}l|l|l|l|l|l|l|}
+$p_{ij}$ &
+    \multicolumn{1}{l|}{\cellcolor[HTML]{FFCCC9} $ \epsdice{1}$} &
+    \multicolumn{1}{l|}{\cellcolor[HTML]{FFCCC9}$\epsdice{2}$} &
+    \multicolumn{1}{l|}{\cellcolor[HTML]{FFCCC9}$\epsdice{3}$} &
+    \multicolumn{1}{l|}{\cellcolor[HTML]{FFCCC9}$\epsdice{4}$} &
+    \multicolumn{1}{l|}{\cellcolor[HTML]{FFCCC9}$\epsdice{5}$} &
+    \multicolumn{1}{l|}{\cellcolor[HTML]{FFCCC9}$\epsdice{6}$} \\
+    $\epsdice{1}$ & 0.09  & 0.075  & 0.06  & 0.03  & 0.024  & 0.021  \\ \hline
+    $\epsdice{2}$ & 0.075 & 0.0625 & 0.05  & 0.025 & 0.02   & 0.0175 \\ \hline
+    $\epsdice{3}$ & 0.06  & 0.05   & 0.04  & 0.02  & 0.016  & 0.014  \\ \hline
+    $\epsdice{4}$ & 0.03  & 0.025  & 0.02  & 0.01  & 0.008  & 0.007  \\ \hline
+    $\epsdice{5}$ & 0.024 & 0.02   & 0.016 & 0.008 & 0.0064 & 0.0056 \\ \hline
+    $\epsdice{6}$ & 0.021 & 0.0175 & 0.014 & 0.007 & 0.0056 & 0.0049 \\ \hline
+\end{tabular}
+\label{tab:my-table}
+\end{table}
+
+Entropia źródła
+
+$$ I_{ij} = -p_{ij}log_2 p_{ij} $$
+
+\begin{table}[t]
+\begin{tabular}{|
+>{\columncolor[HTML]{FFCCC9}}l |r|r|r|r|r|r}
+    $I_{ij}$ &
+    \multicolumn{1}{l|}{\cellcolor[HTML]{FFCCC9} $ \epsdice{1}$} &
+    \multicolumn{1}{l|}{\cellcolor[HTML]{FFCCC9}$\epsdice{2}$} &
+    \multicolumn{1}{l|}{\cellcolor[HTML]{FFCCC9}$\epsdice{3}$} &
+    \multicolumn{1}{l|}{\cellcolor[HTML]{FFCCC9}$\epsdice{4}$} &
+    \multicolumn{1}{l|}{\cellcolor[HTML]{FFCCC9}$\epsdice{5}$} &
+    \multicolumn{1}{l|}{\cellcolor[HTML]{FFCCC9}$\epsdice{6}$} \\
+$\epsdice{1}$ & 0.31 & 0.28 & 0.24 & 0.15 & 0.14 & 0.13 \\ \hline
+$\epsdice{2}$ & 0.28 & 0.25 & 0.21 & 0.13 & 0.11 & 0.10 \\ \hline
+$\epsdice{3}$ & 0.24 & 0.21 & 0.18 & 0.11 & 0.10 & 0.09 \\ \hline
+$\epsdice{4}$ & 0.15 & 0.13 & 0.11 & 0.06 & 0.06 & 0.05 \\ \hline
+$\epsdice{5}$ & 0.12 & 0.11 & 0.09 & 0.05 & 0.05 & 0.04 \\ \hline
+$\epsdice{6}$ & 0.11 & 0.10 & 0.08 & 0.05 & 0.04 & 0.04 \\ \hline
+\end{tabular}
+\end{table}
+
+Suma entropii podwojonego $\mathcal{S}^2 = 2.38$. Entropia źródła z Zadania 1--2 to $2.37$ różnica wynika prawdopodobnie 
+z błędów zaokrągleń.   
+\end{document}
+
+
+
