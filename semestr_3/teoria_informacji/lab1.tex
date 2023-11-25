@@ -174,7 +174,6 @@ P=
     \frac{1}{4} & \frac{1}{2} & \frac{1}{4} \\
     \frac{1}{4} & \frac{1}{4} & \frac{1}{2} \\
 \end{pmatrix}
-
 $$
 
 $$p = (x y z ) $$
@@ -191,7 +190,241 @@ $$
 
 
 $$ H(X) = -x \log_2 X - y\log y - z \log z $$ 
-$$ H(Y) =  -\frac{2x+y+z}{4}\log_2 \frac{2x+y+z}{4} - \frac{x+2y+z}{4}\log_2 \frac{x+2y+z}{4} - \frac{x + y +2z}{4}\log_2 \frac{x + y +2z}{4}  $$
+
+\begin{multline*}
+H(Y) =  -\frac{2x+y+z}{4}\log_2 \frac{2x+y+z}{4} - \frac{x+2y+z}{4}\log_2 \frac{x+2y+z}{4} - \\
+    \frac{x + y +2z}{4}\log_2 \frac{x + y +2z}{4} = \\
+    = 2 - \frac{1}{4}\cdot\left[(1+x)\log_2(1+x) + (1+y)]\log_2(1+y)+(1+z)\log_2(1+z) \right]
+\end{multline*}
+
+$$
+R =\overline{p}P=
+\begin{pmatrix}
+    x &    &  \\
+      & y  &  \\
+      &    & z \\
+\end{pmatrix}
+\begin{pmatrix}
+    \frac{1}{2} & \frac{1}{4} & \frac{1}{4} \\
+    \frac{1}{4} & \frac{1}{2} & \frac{1}{4} \\
+    \frac{1}{4} & \frac{1}{4} & \frac{1}{2} \\
+\end{pmatrix}
+= 
+\begin{pmatrix}
+    \frac{x}{2} & \frac{x}{4} & \frac{x}{4} \\
+    \frac{y}{4} & \frac{y}{2} & \frac{y}{4} \\
+    \frac{z}{4} & \frac{z}{4} & \frac{z}{2} \\
+\end{pmatrix}
+$$
+
+\begin{multline*}
+H(X,Y) =  -\frac{x}{2}\log_2\frac{x}{2}-\frac{x}{4}\log_2\frac{x}{4} - \\
+ -\frac{y}{2}\log_2\frac{y}{2}-\frac{y}{4}\log_2\frac{y}{4} = \dots = 
+    = \frac{3}{2}-x\log_2x-y\log_2y-z\log_2z
+\end{multline*}
+
+\begin{multline*}
+    I(X,Y) = \frac{1}{2}- \frac{1}{4} [(1+x)\log_2(1+x)+(1+y)\log_2(1+y)+(1+z)\log_2(1+z)]
+\end{multline*}
+
+$$F(x,y,z) = \frac{1}{2}- \frac{1}{4} [(1+x)\log_2(1+x)+(1+y)\log_2(1+y)+(1+z)\log_2(1+z)] - \lambda (x+y+z-1)$$
+
+Metoda Lagranga 
+
+\begin{align*}
+    \frac{\partial F}{x} = \frac{1}{4}[\log_2(1+x) + \frac{1}{\ln2}] + \lambda = 0 \\
+    \frac{\partial F}{y} = \frac{1}{4}[\log_2(1+y) + \frac{1}{\ln2}] + \lambda = 0 \\
+    \frac{\partial F}{z} = \frac{1}{4}[\log_2(1+z) + \frac{1}{\ln2}] + \lambda = 0 \\
+    G(x,y,z) = x+y+z - 1 = 0
+\end{align*}
+
+$$ \log_2(1+x) = 4\lambda - \ln 2 $$
+$$ 1+x = \frac{2^{4\lambda}}{2^{\ln 2}} $$
+
+\begin{align*}
+    x = \frac{2^{4\lambda}}{2^{\ln 2}} - 1 \\
+    y = \frac{2^{4\lambda}}{2^{\ln 2}} - 1 \\
+    z = \frac{2^{4\lambda}}{2^{\ln 2}} - 1 \\
+\end{align*}
+
+\begin{align*}
+    x= \frac{1}{3}
+    y= \frac{1}{3}
+    z= \frac{1}{3}
+\end{align*}
+
+\section*{Lab 2}
+
+\subsection*{Problem 1}
+
+$$GF(2) = \mathcal{F} = < \{0,1 \}>, \oplus \cdot $$
+
+\begin{table}[h]
+\begin{tabular}{l|ll}
+$\oplus$  & 0 & 1 \\ \hline
+0 & 0 & 1 \\
+1 & 1 & 1
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\begin{tabular}{l|ll}
+$\cdot$  & 0 & 1 \\ \hline
+0 & 0 & 0 \\
+1 & 0 & 1
+\end{tabular}
+\end{table}
+
+
+\begin{align*}
+    e_1 = (1000)
+    e_2 = (0100)
+    e_3 = (0010)
+    e_4 = (0001)
+\end{align*}
+
+$$v=a_1e_1 + a_2e_2+a_3e_3+a_4e_4 a_i \quad \in GF(2)$$
+$$v=(a_1 \quad a_2 \quad a_3 \quad a_4) \quad  a_i \in GF(2)$$
+
+$$
+V_4 = 
+\begin{Bmatrix}
+    v_0 = (0000) & v_4 = (0010) & v_8 = (0001)    & v_{12} = (0011)   \\
+    v_1 = (1000) & v_5 = (1010) & v_9 = (0011)    & v_{13} = (1011)   \\
+    v_2 = (0100) & v_6 = (0110) & v_{10} = (0101) & v_{14} = (0111)\\
+    v_3 = (1100) & v_7 = (1110) & v_{11} = (1101) & v_{15} = (1111)\\
+\end{Bmatrix}
+$$
+
+$$v=(a_1a_2a_3a_4 $$
+$$w=(b_1b_2b_3b_4 $$
+
+Definicje działań
+
+$$v\oplus w  = (a_1 \oplus b_1 \quad a_2 \oplus b_2 \quad a_3 \oplus b_3 \quad a_4 \oplus b_4 \quad$$
+$$aV = (aa_1 \quad  aa_1 \quad aa_3 \quad aa_3 \quad aa_4 \quad$$ 
+
+$$ \forall_{c \ in v_4} 0(a_1a_2a_3a_4) = (0000) $$
+
+$$ \forall_{c \ in v_4} 1(a_1a_2a_3a_4) = (a_1a_2a_3a_4) $$
+$$ \forall_{c \ in v_4} v\oplus c = 0 $$
+
+$$ S= {(0000),(1001), (0100),(1101)  = {v_1,v_9,v_2,v_{11}$$
+
+$v_x$ odpowida char w C
+
+
+\begin{table}[h]
+\begin{tabular}{llll}
+$v_0 \oplus v_0 = 0$   & &                         &  \\ 
+$v_0 \oplus v_9 = v_9$ & $v_9 \oplus v_9 = v_0 $ &  &\\
+$v_0 \oplus v_2 = v_2$ & $v_0 \oplus v_2 = v_11$ & $v_2 \oplus v_2 = 0$ & \\
+    $v_0 \oplus v_{11} = v_{11}$ & $v_9 \oplus v_11 = v_2$ & $v_2 \oplus v_{11} = v_9 $ & $v_{11} \oplus v_{11} = 0 $ \\
+\end{tabular}
+\end{table}
+
+
+$$f_1 = (1001) \quad f_2 =(0100) \quad u = a_1f_1+a_2f_2 \quad a_1 \in GF(2) $$
+
+\begin{align*}
+    u_0 = 0f_1+0f_2 = (0000) = v_0 \\
+    u_1 = 1f_1+0f_2 = f_1  = (1001) = v_9 \\
+    u_2 = 0f_1+1f_2 = f_2 = (0100) = v_2 \\
+    u_3 = 1f_1+1f_2 = (1101) = v_{11} \\
+\end{align*}
+
+$$<(1001),(0100)> = \{(0000), (1001),(0100),(1101)\} = S $$
+
+\subsection*{Chyba nowe zadanie???}
+
+$$S \subset V_4 $$
+$$S = {v_0, v_12, v_6, v_2, v_10, v_14, v_4, v_8} \quad S^{\perp} = ?$$
+
+$$S^{\perp} = \{ w \in V_4: \quad \forall_{V \in S} wv=0 \} $$
+
+Dokończyć jak ktoś wstawi zdjęcie
+
+\subsection*{To z macieżą G}
+
+Deklarujmy że można perzekszałcić macież $G$ w $G'$ za pomocą działań elementarnych. 
+Czyli zamiana wierszy, kombinacja liniowa wierszy. 
+
+$$
+G=
+\begin{pmatrix}
+    1 & 0 & 1 & 1 & 0 \\
+    0 & 1 & 0 & 0 & 1 \\
+    1 & 1 & 0 & 1 & 1 \\
+\end{pmatrix}
+\quad
+G'=
+\begin{pmatrix}
+    0 & 1 & 0 & 0 & 1 \\
+    1 & 0 & 1 & 1 & 0 \\
+    1 & 0 & 0 & 1 & 0 \\
+\end{pmatrix}
+ $$
+
+$$G = 
+\begin{pmatrix}
+    g_1 \\
+    g_2 \\
+    g_3 \\
+\end{pmatrix}
+\quad
+G` = 
+\begin{pmatrix}
+    g_1 \\
+    g_2 \\
+    g_2 \oplus g_3 \\
+\end{pmatrix}
+$$
+
+
+
+chyba kolejne zadanie 
+
+\begin{align*}
+    u_0 = 0g_1 \oplus 0g_2 \oplus 0g_3 = 00000
+    u_1 = 1g_1 \oplus 0g_2 \oplus 0g_3 = 10110
+    u_2 = 0g_1 \oplus 1g_2 \oplus 0g_3 = 01001
+    u_3 = 1g_1 \oplus 1g_2 \oplus 0g_3 = 11110
+    u_4 = 0g_1 \oplus 0g_2 \oplus 1g_3 = 11011
+    u_5 = 1g_1 \oplus 0g_2 \oplus 1g_3 = 01101
+    u_6 = 0g_1 \oplus 1g_2 \oplus 1g_3 = 10010
+    u_7 = 1g_1 \oplus 1g_2 \oplus 1g_3 = 00100
+\end{align*}
+
+\subsection*{Problem 7?}
+
+$$
+H= 
+
+\begin{pmatrix}
+    0 & 1 & 0 & 0 & 1 \\
+    1 & 0 & 0 & 1 & 0 \\
+\end{pmatrix}
+\quad
+H = 
+\begin{pmatrix}
+   h_1 \\ 
+   h_2 \\
+\end{pmatrix}
+$$
+
+\begin{align*}
+   v_0 = 0h_1 \oplus 0h_2 = 00000 
+   v_1 = 1h_1 \oplus 0h_2 = 01001 
+   v_2 = 0h_1 \oplus 1h_2 = 10010 
+   v_3 = 1h_1 \oplus 1h_2 = 11011 
+\end{align*}
+
+$$S \in a_1g_1 \oplus a_2g_2 \oplus a_3g_3 = u $$
+$$S^{\perp \in b_1h_1 \oplus b_2h_2 =v $$
+
+$$v\cdot u = (b_1h_1 \oplus b_2h_2 )$$
+
+
 
 
 \end{document}
