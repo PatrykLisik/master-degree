@@ -16,7 +16,7 @@
 
 \section*{Problem 1}
 
-Dane jest niepamiętające dyskretne źródło informacji z alfabetem $A = \{a,b,c,d\}$ i prawdopodobieństwem 
+Dane jest niepamiętające dyskretne źródło informacji z alfabetem $A = \{a,b,c,d\}$ i prawdopodobieństwem  
 nadania każdego znaku odpowiednio $P(X=a)=\frac{1}{2}, P(X=b)=P(X=c)=\frac{1}{8}, P(X=d) = \frac{1}{2}$. 
 Jaka jest entropia źródła?
 
@@ -29,8 +29,7 @@ I\_i & 1b  & 3b  & 3b  & 2b  \\ \hline
 \end{tabular}
 
 \end{table}
-Ilość informacji I
-$I_i = log_2\frac{1}{p_i} $
+Ilość informacji $I_i = \log_2\frac{1}{p_i}$
 
 $$H(X) = \sum p_iI_i = 1.75b $$
 
@@ -49,46 +48,63 @@ Przyjmując
 
 \end{table}
 
-H(X) = 1.875b
+$$H(X) = 1.875b$$
 
-Musimy próbkowań z częstotliwością dwukrotnie większą niż źródło = 8000 hz
+Musimy próbkowań z częstotliwością dwukrotnie większą niż źródło = $8000$ hz
 
-8000 * 1.875b = 15000 b/s
+$$8000 \cdot 1.875b = 15000 b/s $$
 
 \section*{Problem 3}
-
+Oblicz tempo informacji źródła nadającego r = 3000 znaków na sekundę z zakresu czterech znaków z prawdopodobieństwami danymi w tabeli.
 
 \begin{table}[h]
-\begin{tabular}{|l|l|l|l|l|l|}
-\hline
-x\_i & A   & B   & C   & C   \\ \hline
-p\_i & 1/3 & 1/3 & 1/6 & 1/6 \\ \hline
-I\_i & $\log_23$  & $\log_23$  & $1+\log_23$  & $1+\log_23$  \\ \hline
+\begin{tabular}{l|lllll}
+\hline \hline
+$x_i$ & A   & B   & C   & C   \\ \hline
+$P_i$ & $\frac{1}{3}$ & $\frac{1}{3}$ &$\frac{1}{6}$& $\frac{1}{6}$\\ 
+$I_i(bit)$ & $\log_23$  & $\log_23$  & $1+\log_23$  & $1+\log_23$ \\  \hline \hline
 \end{tabular}
 
 \end{table}
-
-$$ H(X) = \frac{1}{3} + \log_23 \approx = 1.918b $$
-$$log_23 \approx 1.585 $$
-
-\section*{Problem 3}
-
-$$H(X^2) = \frac{1}{4}\cdot 2b+\frac{2}{8}\cdot 3b + \frac{5}{16}\cdot 4b + \frac{4}{32} \cdot 5b + 
-\frac{4}{64} 6b =3.5b = H(X)  $$
+$$\log_26 = \log_2(2\cdot 3)=\log_2 2 + \log_23 = 1 + \log_23 $$
+$$\log_23 \approx 1.585 $$
+$$ H(X) =\frac{1}{3}\log_23 + \frac{1}{3}\log_23 + \frac{1}{6}\log_26 \frac{1}{6}\log_26 =\frac{1}{3} + \log_23 \approx = 1.918b $$
 
 \section*{Problem 4}
-$$P= 
+
+Zbuduj rozszerzenie 2. rzędu źródła z Problemu 1 i oblicz jego entropię.
+
+\begin{table}[h]
+\hspace*{-1.5cm}
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+$y_1=x_j x_k$ & aa  & ab   & ac   & ad  & ba   & bb   & bc   & bd   & ca   & cb   & cc   & cd   & da  & db   & dc   & dd   \\ \hline
+    $p_1$        & $\frac{1}{4}$ & $\frac{1}{16}$ & $\frac{1}{16}$ & $\frac{1}{8}$ & $\frac{1}{16}$ & $\frac{1}{64}$ & $\frac{1}{64}$ & $\frac{1}{32}$ & $\frac{1}{16}$ & $\frac{1}{64}$ & $\frac{1}{64}$ & $\frac{1}{32}$ & $\frac{1}{8}$ & $\frac{1}{32}$ & $\frac{1}{32}$ & $\frac{1}{16}$ \\[0.4em] \hline
+$I_i $     & 2b  & 4b   & 4b   & 3b  & 4b   & 6b   & 6b   & 5b   & 4b   & 6b   & 6b   & 5b   & 3b  & 5b   & 5b   & 4b   \\ \hline
+\end{tabular}
+\caption{Rozszeżenie żródła z problmu 1}
+\end{table}
+
+$$H(X^2) = \frac{1}{4}\cdot 2b+\frac{2}{8}\cdot 3b + \frac{5}{16}\cdot 4b + \frac{4}{32} \cdot 5b + 
+\frac{4}{64} 6b =3.5b = 2H(X)  $$
+
+\section*{Problem 5}
+Rozważ kanał binarny (niesymetryczny) o macierzy kanału
+$$ \mathbf{P}= 
 \begin{pmatrix}
     \frac{3}{4} & \frac{1}{4} \\
     \frac{1}{8} & \frac{7}{8} 
 \end{pmatrix}
 $$
+o prawdopodobieństwach wejścia $P(X = 0) = \frac{4}{5}, P(X = 1)=\frac{1}{5}$. 
+Oblicz prawdopodobieństwo wyjściowe i prawdopodobieństwo wstecz. 
+
 $$p=\left( \frac{4}{5} \frac{1}{5}  \right) $$
 $$H(X) = \frac{4}{5}\log_2(\frac{5}{4}) + \frac{1}{5} \log_25 = \log_25 - \frac{8}{5}  $$
 
-Prawdopodobieńśtwa wyjścia wyjścia:
+Prawdopodobieństwa wyjścia wyjścia:
 
-$$q = pP = (\frac{4}{5} \frac{1}{5} )   
+$$q = p\mathbf{P} = (\frac{4}{5} \frac{1}{5} )   
 \begin{pmatrix}
     \frac{3}{4} & \frac{1}{4} \\
     \frac{1}{8} & \frac{7}{8} 
@@ -101,7 +117,7 @@ Entropia wyjściowa:
 
 $$H(Y) = \frac{5}{8}\log_2\frac{8}{5} + \frac{3}{8}\log_2\frac{8}{3} = 0.954b $$
 
-Macierz prawdopodobieńs włącznych 
+Macierz prawdopodobieństw włączanych 
 
 $$ R =
 \begin{pmatrix}
@@ -120,16 +136,19 @@ $$
 Entropia łączna
 Wynik powinien sumować się do 1. 
 
-$$H(X,Y)= \frac{3}{5}\log_2\frac{5}{3} + \frac{1}{5}\log_25 + \frac{1}{40}\log_2 40 + \frac{7}{40}\frac{40}{7} =
-= \frac{3}{5} + \log25 - \frac{3}{5}\log_23 - \frac{7}{40}\log_27 \approx 1.780 b
-$$
+\begin{multline*}
+    H(X,Y)= \frac{3}{5}\log_2\frac{5}{3} + \frac{1}{5}\log_25 + \frac{1}{40}\log_2 40 + \frac{7}{40}\frac{40}{7}\\
+    = \frac{5}{3}\log_25 - \frac{3}{5}\log_23+\frac{1}{5}\log25+\frac{1}{40}\log25+\frac{3}{40}+\frac{7}{40}\log25+\frac{21}{40}
+    -\frac{7}{40}\log_27 \\
+    = \frac{3}{5} + \log25 - \frac{3}{5}\log_23 - \frac{7}{40}\log_27 \approx 1.780 b
+\end{multline*}
 
 Entropia szumu :
-
-$$H(Y|X) = \frac{3}{5}\log_2 \frac{4}{3} + \frac{1}{5}\log_24 + \frac{1}{40}\log_2{8} + \frac{7}{40}\log_2 \frac{7}{8}=
-= \frac{6}{5} - \frac{3}{5}\log_23 + \frac{2}{5} + \frac{3}{40} + \frac{21}{40} - \frac{7}{40}\log_27 = 
-\frac{11}{5} - \frac{3}{5}\log_23 - \frac{7}{40}\log_2 7
-$$
+\begin{multline*}
+    H(Y|X) = \frac{3}{5}\log_2 \frac{4}{3} + \frac{1}{5}\log_24 + \frac{1}{40}\log_2{8} + \frac{7}{40}\log_2 \frac{7}{8}=\\
+    = \frac{6}{5} - \frac{3}{5}\log_23 + \frac{2}{5} + \frac{3}{40} + \frac{21}{40} - \frac{7}{40}\log_27 = 
+    \frac{11}{5} - \frac{3}{5}\log_23 - \frac{7}{40}\log_2 7
+\end{multline*}
 
 Macierz Q / Macierz wstecz
 
@@ -154,6 +173,8 @@ Tu nie ma mnożenie macierzowego
 $$p_iP_{ij} =R_{ij} = Q_{ij}q_j  $$
 $$q_j = \sum_i p_iP_{ij} $$
 
+\section*{Problem 6}
+Wyznacz entropię \textit{a priori} i \textit{a posteriori} dla poprzedniego kanału.
 
 Ekwiwokacja
 $$H(X|Y) = \frac{3}{5}\log \frac{25}{24} + \frac{1}{5}\log{15}{8} + \frac{1}{40}\log_2 25 + \frac{7}{40}\log_2\frac{15}{7}
@@ -165,10 +186,10 @@ Informacja wzajemna
 $$ I(X,Y) = H(X)+ H(Y) - H(X,Y) = \frac{4}{5} + \frac{9}{40}\log_23 - \frac{5}{8}\log_25 + \frac{7}{40}\log_27 \approx 0.197b $$
 
 \section*{Problem 7}
-Wyznacz pojemnośc kanału 
+Wyznacz pojemność poniższego kanału: 
 
 $$
-P=
+\mathbf{P}=
 \begin{pmatrix}
     \frac{1}{2} & \frac{1}{4} & \frac{1}{4} \\
     \frac{1}{4} & \frac{1}{2} & \frac{1}{4} \\
@@ -176,17 +197,21 @@ P=
 \end{pmatrix}
 $$
 
-$$p = (x y z ) $$
+$$p = (x\quad y \quad z ) $$
 $$ x+y+z = 1 $$
-$$ C = max I(X,Y) = max [H(X) + H(Y) - H(X,Y) ] $$ 
-$$q=(x y z ) 
-\begin{pmatrix}
-    \frac{1}{2} & \frac{1}{4} & \frac{1}{4} \\
-    \frac{1}{4} & \frac{1}{2} & \frac{1}{4} \\
-    \frac{1}{4} & \frac{1}{4} & \frac{1}{2} \\
-\end{pmatrix}
-= \left( \frac{2x+y+z}{4} \frac{x+2y+z}{4} \frac{x + y +2z}{4}  \right)
-$$ 
+$$ C = \max I(X,Y) = \max [H(X) + H(Y) - H(X,Y) ] $$ 
+$$I(X;Y) = H(X) + H(Y) - H(X,Y) $$
+
+\begin{multline*}
+    q=(x \quad y \quad z ) 
+    \begin{pmatrix}
+        \frac{1}{2} & \frac{1}{4} & \frac{1}{4} \\
+        \frac{1}{4} & \frac{1}{2} & \frac{1}{4} \\
+        \frac{1}{4} & \frac{1}{4} & \frac{1}{2} \\
+    \end{pmatrix}  \\
+    = \left( \frac{2x+y+z}{4} \quad \frac{x+2y+z}{4} \quad \frac{x + y +2z}{4}  \right) \\
+    = \left( \frac{1+x}{4} \quad \frac{1+y}{4} \quad \frac{1+z}{4} \right)
+\end{multline*}
 
 
 $$ H(X) = -x \log_2 X - y\log y - z \log z $$ 
@@ -196,7 +221,6 @@ H(Y) =  -\frac{2x+y+z}{4}\log_2 \frac{2x+y+z}{4} - \frac{x+2y+z}{4}\log_2 \frac{
     \frac{x + y +2z}{4}\log_2 \frac{x + y +2z}{4} = \\
     = 2 - \frac{1}{4}\cdot\left[(1+x)\log_2(1+x) + (1+y)]\log_2(1+y)+(1+z)\log_2(1+z) \right]
 \end{multline*}
-
 $$
 R =\overline{p}P=
 \begin{pmatrix}
@@ -232,10 +256,12 @@ $$F(x,y,z) = \frac{1}{2}- \frac{1}{4} [(1+x)\log_2(1+x)+(1+y)\log_2(1+y)+(1+z)\l
 Metoda Lagranga 
 
 \begin{align*}
-    \frac{\partial F}{x} = \frac{1}{4}[\log_2(1+x) + \frac{1}{\ln2}] + \lambda = 0 \\
-    \frac{\partial F}{y} = \frac{1}{4}[\log_2(1+y) + \frac{1}{\ln2}] + \lambda = 0 \\
-    \frac{\partial F}{z} = \frac{1}{4}[\log_2(1+z) + \frac{1}{\ln2}] + \lambda = 0 \\
-    G(x,y,z) = x+y+z - 1 = 0
+    \begin{cases}
+        \frac{\partial F}{x} = \frac{1}{4}[\log_2(1+x) + \frac{1}{\ln2}] + \lambda = 0 \\
+        \frac{\partial F}{y} = \frac{1}{4}[\log_2(1+y) + \frac{1}{\ln2}] + \lambda = 0 \\
+        \frac{\partial F}{z} = \frac{1}{4}[\log_2(1+z) + \frac{1}{\ln2}] + \lambda = 0 \\
+        G(x,y,z) = x+y+z - 1 = 0
+    \end{cases}
 \end{align*}
 
 $$ \log_2(1+x) = 4\lambda - \ln 2 $$
