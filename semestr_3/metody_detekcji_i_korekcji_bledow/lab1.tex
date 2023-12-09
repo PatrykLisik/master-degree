@@ -8,7 +8,7 @@
 \title{Teoria informacji -- Lab1}
 \author{Patryk Lisik}
 \date{\(19\) Listopad  2023}
-
+\newcommand{\floor}[1]{\lfloor #1 \rfloor}
 \begin{document}
 
 \maketitle
@@ -335,7 +335,7 @@ $$ \forall_{c \ in v_4} 0(a_1a_2a_3a_4) = (0000) $$
 $$ \forall_{c \ in v_4} 1(a_1a_2a_3a_4) = (a_1a_2a_3a_4) $$
 $$ \forall_{c \ in v_4} v\oplus c = 0 $$
 
-$$ S= {(0000),(1001), (0100),(1101)  = {v_1,v_9,v_2,v_{11}$$
+$$ S= \{(0000),(1001), (0100),(1101) \}  = \{v_1,v_9,v_2,v_{11} \}$$
 
 $v_x$ odpowida char w C
 
@@ -376,7 +376,7 @@ Deklarujmy że można perzekszałcić macież $G$ w $G'$ za pomocą działań el
 Czyli zamiana wierszy, kombinacja liniowa wierszy. 
 
 $$
-G=
+g=
 \begin{pmatrix}
     1 & 0 & 1 & 1 & 0 \\
     0 & 1 & 0 & 0 & 1 \\
@@ -425,7 +425,6 @@ chyba kolejne zadanie
 
 $$
 H= 
-
 \begin{pmatrix}
     0 & 1 & 0 & 0 & 1 \\
     1 & 0 & 0 & 1 & 0 \\
@@ -445,12 +444,221 @@ $$
    v_3 = 1h_1 \oplus 1h_2 = 11011 
 \end{align*}
 
-$$S \in a_1g_1 \oplus a_2g_2 \oplus a_3g_3 = u $$
-$$S^{\perp \in b_1h_1 \oplus b_2h_2 =v $$
+$$ S \in a_1g_1 \oplus a_2g_2 \oplus a_3g_3 = u $$
+$$ S^{\perp} \in b_1h_1 \oplus b_2h_2 =v $$
 
 $$v\cdot u = (b_1h_1 \oplus b_2h_2 )$$
 
+\section*{Lab 3} 
+
+\subsection*{Problem 8}
+
+\begin{align*}
+    G=
+    \begin{pmatrix}
+        1 & 1 & 0 & 1 & 0  & 0 & 0 \\
+        0 & 1 & 1 & 0 & 1  & 0 & 0 \\
+        1 & 1 & 1 & 0 & 0  & 1 & 0\\
+        1 & 0 & 1 & 0 & 0  & 0 & 1\\
+    \end{pmatrix} \\
+    c= mG =(1001)
+    \begin{pmatrix}
+        1 & 1 & 0 & 1 & 0  & 0 & 0 \\
+        0 & 1 & 1 & 0 & 1  & 0 & 0 \\
+        1 & 1 & 1 & 0 & 0  & 1 & 0\\
+        1 & 0 & 1 & 0 & 0  & 0 & 1\\
+    \end{pmatrix} \\
+    (m_0m_1m_2m_3)
+    \begin{pmatrix}
+        1 & 1 & 0 & 1 & 0  & 0 & 0 \\
+        0 & 1 & 1 & 0 & 1  & 0 & 0 \\
+        1 & 1 & 1 & 0 & 0  & 1 & 0\\
+        1 & 0 & 1 & 0 & 0  & 0 & 1\\
+    \end{pmatrix} = \\  (m_0 \oplus m_2 \oplus m_0 \oplus m_0 \oplus) \text{tu nie wiem co on napisał}
+\end{align*}
 
 
+\begin{align*}
+   c_0 \oplus c_3 \oplus c_5 \oplus c_6 = 0 \\
+   c_1 \oplus c_3 \oplus c_4 \oplus c_5 = 0 \\
+   c_2 \oplus c_4 \oplus c_5 \oplus c_6 = 0 \\
+\end{align*}
 
+\begin{align*}
+   c_0 = m_0 \oplus m_2 \oplus m_3 = c_3 \oplus c_5 \oplus c_6  \\
+   c_1 = m_0 \oplus m_1 \oplus m_2 = c_3 \oplus c_4 \oplus c_5  \\
+   c_2 = m_0 \oplus m_2 \oplus m_3 = c_4 \oplus c_5 \oplus c_6  \\
+   c_3 = m_0 \\
+   c_4 = m_1 \\
+   c_5 = m_2 \\
+   c_6 = m_3 \\
+   H = 
+ \begin{pmatrix}
+    1 & 0 & 0 & 1 & 0  & 1 & 1 \\
+    0 & 1 & 0 & 1 & 1  & 1 & 0 \\
+    0 & 0 & 1 & 0 & 1  & 1 & 1\\
+\end{pmatrix} \\
+cH^T = 0 \\
+s = rH^T
+    (s_0s_1s_2) = (r_1r_2r_3r_4r_4r_5r_6)
+    \begin{pmatrix}
+        1 & 0 & 0 \\
+        0 & 1 & 0 \\
+        0 & 0 & 1 \\
+        1 & 1 & 0 \\
+        0 & 1 & 1 \\
+        1 & 1 & 1 \\
+        1 & 0 & 1 \\
+    \end{pmatrix} = \\ = (
+    r_0\oplus r_3 \oplus r_5 \oplus r_6,
+    r_1 \oplus r_3 \oplus r_4\oplus r_5,
+    r_4\oplus r_2\oplus r_4\oplus r_5\oplus r_6)
+\end{align*}
+W macierzy H wszystkie kolumny są liniowo nie zależne
+
+
+Prawdopodobieństwo nie wykrycia błędu.(undetected error)
+$$
+Pr_{ue} = \sum^n_{i=l+1} A_ip^i(1-p)^{n-1}
+$$
+Prawdobodobieńswto nie możliwośic poprawnia błędu 
+
+$$
+Pr_{ue} = \sum^n_{i=t+1} \binom{n}{i}p^i(1-p)^{n-i} =
+1-\left[ \sum^t_{i=0} \binom{n}{i}p^i(1-p)^{n-i} \right] =\dots  = 21p^2 \quad p<<1
+$$
+
+TO DO przepisać to długie równanie ze zdjęcia
+
+Prawdopodobieństwo niemożliwości zdekodowania (uncodeded) 
+
+\begin{align*}
+Pr_{uc} = 1 - (1-p)^4 = 1 - \binom{1}{0} + \binom{4}{1}p +
+\binom{4}{2}p^2 \binom{4}{3}p^3 + \binom{4}{4}p^4 = \\
+= 1-1+4p + 6p^2 + 4p^3 - p^4 = \\
+= 4p - 6p^2 + 4p^3 - p^4 \\
+\approx 4p
+\end{align*} 
+
+$p$ = 0.01 = $1\%$ błędnych bitów \\
+$P_{uc}$ = $0.04\%$ błędnych wiadomości 4-bitowych \\
+$P_{we}$ = 0.0021 = 2.1 \textperthousand - niepoprawialncyh błędów
+$Pr_{ue} = 3 \cdot 10^{-6}$ - niewykrytych błędów
+
+\subsection*{Now zadanie} 
+
+$$
+G=
+ \begin{pmatrix}
+    0 & 1 & 0 & 0 & 1 \\
+    1 & 0 & 1 & 1 & 0 \\
+    1 & 0 & 0 & 1 & 0 \\
+\end{pmatrix} \\
+$$
+
+
+\begin{table}[h]
+\begin{tabular}{|l|l|l|}
+\hline
+m    & c     & w(c) \\ \hline
+0000 & 00000 & 0    \\ \hline
+100  & 01001 & 2    \\ \hline
+010  & 10110 & 3    \\ \hline
+110  & 11111 & 5    \\ \hline
+001  & 10010 & 2    \\ \hline
+101  & 11011 & 4    \\ \hline
+011  & 00100 & 1    \\ \hline
+111  & 01101 & 3    \\ \hline
+\end{tabular}
+\end{table}
+$$d_{\min} = 1 \quad l=0 \quad t=0 $$
+
+
+Tablica standardowa do dekodowania
+
+\begin{table}[h]
+\begin{tabular}{llllllll}
+0000  & 100   & 010   & 110   & 001   & 101   & 011   & 111   \\ \hline
+00000 & 01001 & 10110 & 11111 & 10010 & 11011 & 00100 & 01101 \\
+10000 & 11001 & 00110 & 01111 & 00010 & 01011 & 10100 & 11101 \\
+01000 & 00001 & 11110 & 10111 & 11010 & 10011 & 01100 & 00101 \\
+11000 & 10001 & 01110 & 00111 & 01010 & 00011 & 11100 & 10101
+\end{tabular}
+\end{table}
+
+$$\Delta(00011) = 101 $$
+
+Odległość nie musi być najbliższa.
+
+$$\Delta(011000) = 011$$
+$$d(01100,00100) = d(01100,01101) $$
+
+\subsection*{Nowe zadanie ?} 
+
+\begin{align*}
+    G=
+    \begin{pmatrix}
+        1 & 1 & 0 & 1 & 0  & 0 & 0 \\
+        0 & 1 & 1 & 0 & 1  & 0 & 0 \\
+        1 & 1 & 1 & 0 & 0  & 1 & 0\\
+        1 & 0 & 1 & 0 & 0  & 0 & 1\\
+    \end{pmatrix} \quad 
+   H = 
+ \begin{pmatrix}
+    1 & 0 & 0 & 1 & 0  & 1 & 1 \\
+    0 & 1 & 0 & 1 & 1  & 1 & 0 \\
+    0 & 0 & 1 & 0 & 1  & 1 & 1\\
+\end{pmatrix} \\
+    d_{\min} = 3 \quad t=\floor{\frac{d_{\min}-1}{2} } = 1
+\end{align*}
+
+
+$$
+r=(110 1101) \\
+rH^T = (1101101) 
+    \begin{pmatrix}
+        1 & 0 & 0 \\
+        0 & 1 & 0 \\
+        0 & 0 & 1 \\
+        1 & 1 & 0 \\
+        0 & 1 & 1 \\
+        1 & 1 & 1 \\
+        1 & 0 & 1 \\
+    \end{pmatrix}  
+\implies e=(0001000)
+$$
+
+\section*{Zestaw 3?} 
+\subsection*{Zadanie 1}
+\begin{align*}
+    G=
+    \begin{pmatrix}
+        1 & 1 & 0 & 1 & 0  & 0 & 0 \\
+        0 & 1 & 1 & 0 & 1  & 0 & 0 \\
+        0 & 0 & 1 & 1 & 0  & 1 & 0\\
+        0 & 0 & 0 & 1 & 1  & 0 & 1\\
+    \end{pmatrix} \\ 
+    c_0 = m_0G = (0000000) \\
+    c_1 = m_1G = (1101000) \\
+    c_2 = m_2G = (0110100) \\
+    c_3 = m_3G = (1011100) \\
+\end{align*}
+
+to jest postać systematyczna ??
+\begin{align*}
+    g(x) = 1 \oplus x \oplus x^3 \\
+    \\
+    m_0 = (0000) \quad m_0(x) = 0 \quad p_0(x) = x^3 m(x) \mod g(x) = 0 \\
+    c_0(x) = p_0(x) \oplus x^3 m(x)=0  \quad c_0 = (0000000) \\
+    \\
+    m_1 = (1000) \quad m_1(x) = 0 \quad p_1(x) = x^3 m(x) \mod g(x) = 1\oplus x \\
+    c_1(x) = p_1(x) \oplus x^3 m(x)=0  \quad c_0 = (1101000) \\
+    \\
+    m_2 = (0100) \quad m_1(x) = 0 \quad p_1(x) = x^3 m(x) \mod g(x) = 1\oplus x \\
+    c_1(x) = p_1(x) \oplus x^3 m(x)=0  \quad c_0 = (1101000) \\
+    \\
+    m_3 = (1000) \quad m_1(x) = 0 \quad p_1(x) = x^3 m(x) \mod g(x) = 1\oplus x \\
+    c_1(x) = p_1(x) \oplus x^3 m(x)=0  \quad c_0 = (1101000) \\
+    \\
+\end{align*}
 \end{document}
