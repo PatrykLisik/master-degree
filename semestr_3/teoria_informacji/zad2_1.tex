@@ -1,0 +1,85 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{tikz}
+
+\title{Zadanie 2--1}
+\author{Patryk Lisik}
+\date{\(12\) Grudnia  2023}
+
+\begin{document}
+
+\maketitle
+\renewcommand{\abstractname}{Treść}
+
+\begin{abstract}
+Dla dwóch jednakowych binarnych kanałów symetrycznych połączonych
+szeregowo i przedstawionych na rysunku 1 wyznacz macierz prawdopodobieństw
+    warunkowych w przód $P_{ij} = \text{Pr}(Y = y_j |X = x_i)$ kanału $(x_i = 0, 1;
+    y_j = 0, 1)$. Jakie są prawdopodobieństwa wyjściowe $q_j = \text{Pr}(Y = y_j)$ kanału, jeżeli
+    $p_0 = \text{Pr}(X = 0) = x, p_1 = \text{Pr}(X = 1) = 1 - x$? Wyznacz macierz prawdopodobieństw
+    warunkowych wstecz $Q_{ij} = \text{Pr}(X = x_i|Y = y_j)$ kanału oraz macierz
+    prawdopodobieństw łącznych $\text{R}_{ij} = \text{Pr}(X = x_i, Y = y_j)$.
+
+    \begin{figure}[h]
+    \begin{tikzpicture}
+        \draw[gray, thick] (0,1) -- (2,1);
+        \draw[gray, thick] (0,0) -- (2,0);
+    \end{tikzpicture}
+    \end{figure}
+\end{abstract}
+
+
+\section*{Rozwiązanie}
+Macierz w przód $P_{ij}$
+$$
+\begin{pmatrix}
+    (1-p)(1-p)+p\cdot p           & (p\cdot(1-p)) + (1-p)\cdot p \\
+     (p\cdot(1-p)) + (1-p)\cdot p & (1-p)(1-p)+p\cdot p          \\
+\end{pmatrix}=
+\begin{pmatrix}
+    2p^2 - 2p + 1 & 2p-2p^2        \\ 
+    2p-2p^2       & 2p^2 - 2p + 1  \\ 
+\end{pmatrix}
+$$
+Łatwo zauważyć że $P=-2p^2+2p$
+\\ \\
+Prawdopodobieństwo wyjściowe
+\begin{flalign*}
+    & q_0 = xP_{00}+ (1-x)P_{10} = 4p^2-2p^2-4px+2p+x \\ 
+    & q_1 = (1-x)P_{11} + xP_{01} = -2p^2+2p+x-1 \\
+\end{flalign*}
+
+Macierz prawdopodobieństwo wstecz $Q_{ij}$
+
+$$Q_{ij} = \frac{p_i}{q_j}P_{ij} $$
+
+\begin{flalign*}
+    Q = 
+    \begin{pmatrix}
+        \frac{p_0}{q_0}P_{00} & \frac{p_1}{q_0}P_{10} \\    
+        \frac{p_0}{q_1}P_{01} & \frac{p_1}{q_1}P_{11} \\
+    \end{pmatrix} = 
+    \begin{pmatrix}
+        \frac{x(2p^2-2p+1)}{4p^2x-2p^2-4px+2p+x} & \frac{(1-x)(2p-2p^2)}{4p^2x-2p^2-4px+2p+x} \\[5pt]
+        \frac{x(2p-2p^2)}{-2p^2+2p+x-1}          & \frac{(1-x)(2p^2-2p+1)}{-2p^2+2p+x-1}
+    \end{pmatrix}
+\end{flalign*}
+
+Macierz prawdopodobieństwo łącznych:
+$$R_{ij} = p_iP_{ij} $$
+
+$$
+R = 
+\begin{pmatrix}
+    p_{0}P_{00} & p_{1}P_{10} \\ 
+    p_0P_{01}   & p_1P_{11}
+\end{pmatrix} = 
+\begin{pmatrix}
+    x(2p^2-2p+1) &  (1-x)(2p-2p^2) \\
+    x(2p-2p^2)   &  (1-x)(2p^2-2p+1)
+\end{pmatrix}
+$$
+\end{document}
