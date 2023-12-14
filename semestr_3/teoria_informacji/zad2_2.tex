@@ -1,0 +1,52 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{tikz}
+
+\title{Zadanie 2--2}
+\author{Patryk Lisik}
+\date{\(12\) Grudnia  2023}
+
+\begin{document}
+
+\maketitle
+\renewcommand{\abstractname}{Treść}
+
+\begin{abstract}
+Pokaż, że dla niesymetrycznego kanały binarnego z rysunku 1, gdzie 
+    $$ Pr(X=0)=x \quad  Pr(X=1)=1-x $$
+    oraz 
+    \begin{flalign*}
+        & \text{Pr}(Y=0|X=0)=1-p & \text{Pr}(Y=1|X=0)=p   &\\ 
+        & \text{Pr}(Y=0|X=1)=q   & \text{Pr}(Y=1|X=1)=1-q &\\
+    \end{flalign*}
+    informacja wzajemna dana jest wzorem
+    $$I(X;Y) = \Omega((1-p)x+q(1-x))-x\Omega (p)-(1-x)\Omega(q) $$
+    gdzie 
+    $$\Omega(x) = -x\log_2x-(1-x)\log_2(1-x) $$
+
+\end{abstract}
+
+
+\section*{Rozwiązanie}
+$$I(X;Y) = H(X) - H(X|Y) $$
+$$H(X) =  -(x\log_2x +(1-x)\log_2(1-x)$$
+
+$$H(X|Y) = q_0H(X|y_0) + q_1H(X|q_1) $$
+
+$$P_{ij} = 
+\begin{pmatrix}
+    1-p & p \\ 
+    q   & 1-q \\
+\end{pmatrix}
+$$
+
+\begin{flalign*}
+    & q_0 = x(1-p)+(1-x)q 
+    & q_1 = x(1-q) + xp
+\end{flalign*}
+
+
+\end{document}
