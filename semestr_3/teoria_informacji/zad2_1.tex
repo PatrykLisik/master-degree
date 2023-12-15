@@ -49,7 +49,7 @@ $$
 Prawdopodobieństwo wyjściowe
 \begin{flalign*}
     & q_0 = xP_{00}+ (1-x)P_{10} = 4p^2-2p^2-4px+2p+x \\ 
-    & q_1 = (1-x)P_{11} + xP_{01} = -2p^2+2p+x-1 \\
+    & q_1 = (1-x)P_{11} + xP_{01} = -4p^2x+2p^2+4px-x+1 \\
 \end{flalign*}
 
 Macierz prawdopodobieństwo wstecz $Q_{ij}$
@@ -64,7 +64,7 @@ $$Q_{ij} = \frac{p_i}{q_j}P_{ij} $$
     \end{pmatrix} = 
     \begin{pmatrix}
         \frac{x(2p^2-2p+1)}{4p^2x-2p^2-4px+2p+x} & \frac{(1-x)(2p-2p^2)}{4p^2x-2p^2-4px+2p+x} \\[5pt]
-        \frac{x(2p-2p^2)}{-2p^2+2p+x-1}          & \frac{(1-x)(2p^2-2p+1)}{-2p^2+2p+x-1}
+        \frac{x(2p-2p^2)}{-4p^2x+2p^2+4px-x+1}          & \frac{(1-x)(2p^2-2p+1)}{-4p^2x+2p^2+4px-x+1}
     \end{pmatrix}
 \end{flalign*}
 
