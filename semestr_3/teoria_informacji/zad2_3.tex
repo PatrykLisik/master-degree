@@ -1,0 +1,52 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{tikz}
+
+\title{Zadanie 2--3}
+\author{Patryk Lisik}
+\date{\(15\) Grudnia  2023}
+
+\begin{document}
+
+\maketitle
+\renewcommand{\abstractname}{Treść}
+
+\begin{abstract}
+    Oblicz prawdopodobieństwo błędnego dekodowania $Pr_e$ dla binarnego kanału symetrycznego 
+    $\Gamma$ z prawdopodobieństwem błędnej transmisji $P=0.2$ i wejściowym rozkładzie prawdopodobieństw
+   $\text{Pr}(X=0) = p=0.9 $ i $\text{Pr}(X=1)=1-p=0.1$, gdzie $\Delta$ jest reguła idealnego obserwatora. 
+\end{abstract}
+
+
+\section*{Rozwiązanie}
+\begin{multline*}
+    R_{ij} = 
+    \begin{pmatrix}
+        & p-pP & pP \\
+        & P-pP & 1-p-P+pP \\
+    \end{pmatrix} = \\ 
+       \begin{pmatrix}
+        & 0.9-0.9 \cdot 0.2   & 0.9 \cdot 0.2 \\ 
+        & 0.2 - 0.9 \cdot 0.2 & 1-0.9-0.2+0.9 \cdot 0.2
+    \end{pmatrix} = 
+    \begin{pmatrix}
+        & 0.72 & 0.18 \\ 
+        & 0.02 & 0.08 \\
+    \end{pmatrix}\\
+    \end{multline*}
+Z reguły idealnego obserwatora:
+\begin{align*}
+    R_{j*j}=
+    \begin{pmatrix}
+        & 0.72 &  \\
+        &  & 0.08 \\
+    \end{pmatrix}  \\ 
+\end{align*}
+Prawdopodobieństwo błędu:
+$$
+Pr_e = 1 - Pr_c= 1 - \sum_j R_{j*j} = 1- (0.72+0.08) = 0.2
+$$
+\end{document}
