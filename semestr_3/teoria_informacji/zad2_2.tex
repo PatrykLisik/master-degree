@@ -32,66 +32,30 @@ Pokaż, że dla niesymetrycznego kanały binarnego z rysunku 1, gdzie
 
 \section*{Rozwiązanie}
 
-
 \begin{flalign*}
- & I(X;Y) = H(X) - H(X|Y) \\
-    & H(X) =  -(x\log_2x +(1-x)\log_2(1-x)) & H(X|Y) = q_0H(X|y_0) + q_1H(X|y_1) \\ 
-\end{flalign*}
-
-\begin{flalign*}
-    & P_{ij} = 
-\begin{pmatrix}
-    1-p & p \\ 
-    q   & 1-q \\
-\end{pmatrix} \\
-    & q_0 = x(1-p)+(1-x)q  = -px - qx + q +x = q - x(p+q+1) \\ 
-    & q_1 = x(1-q) + xp  = x-qx+xp  = x(1-q+p)\\
-    & Q_{ij} = 
-    \begin{pmatrix}
-        \frac{p_0}{q_0}P_{00} & \frac{p_1}{q_0}P_{10} \\    
-        \frac{p_0}{q_1}P_{01} & \frac{p_1}{q_1}P_{11} \\
-    \end{pmatrix}= 
-    \begin{pmatrix}
-        \frac{x(1-p)}{x(1-p)(1-x)q} & \frac{(1-x)(p)}{x(1-p)(1-x)q} \\[4pt]  
-        \frac{xq}{x(1-q) + xp} & \frac{(1-x)(1-q)}{x(1-q) + xp} \\
-    \end{pmatrix}
-\end{flalign*}
-
-\begin{flalign*}
-    & H(X|y_j) = - \sum_i Q_{ij}\log_2 Q_{ij} \\ 
-    & H(X|y_0) = -Q_{00}\log_2Q_{00} - Q_{10}\log_2 Q_{10}  \\
-    & H(X|y_1) = -Q_{01}\log_2 Q_{01} - Q_{11} \log_2 Q_{11} \\
-\end{flalign*}
-
-\begin{flalign*}
-    & H(X|Y) = q_0H(X|y_0) + q_1H(X|y_1)  \\ 
-    & = q_0 \left(
-    \frac{p_0}{q_0}P_{00} \log_2  \frac{q_0}{p_0P_{00}} + 
-    \frac{p_1}{q_0}P_{10} \log_2  \frac{q_0}{p_1P_{10}}
-    \right)
-     +  q_1 \left(
-    \frac{p_0}{q_1}P_{01} \log_2  \frac{q_1}{p_0P_{01}} + 
-    \frac{p_1}{q_1}P_{11} \log_2  \frac{q_1}{p_1P_{11}}
-    \right) \\ 
-    & = p_0P_{00}\log_2 q_0 - p_0P_{00} \log_2 p_0P_{00} \\
-    & + p_1P_{10}\log_2 q_0 - p_1P_{10}\log_2 p_1P_{10} \\ 
-    & + p_0P_{01} \log_2 q_1 - p_0P_{01} \log_2 p_0P_{01} \\
-    & + p_1P_{11}\log_2 q_1 - p_1P_{11}\log_2p_1P_{11}
-\end{flalign*}
-
-
-\begin{flalign*}
-    &p_0 =x \quad p_1 = 1-x \\
-    & I(X;Y) = -x\log_2x - (1-x)\log_2(1-x) \\ 
-    & - x(1-p)\log_2 (x(1-p) + (1-x)q)  + x(1-p) \log_2 x(1-p) \\
-    & - (1-x)q\log_2 (x(1-p) + (1-x)q) + (1-x)q\log_2 (1-x)q \\ 
-    & - x q \log_2 (x(1-q)+xp) + xq \log_2 xq \\ 
-    & + (1-x)(1-q)\log_2 (x(1-q)+xp) + (1-x)(1-q)\log_2 ((1-x)(1-q)) \\
+    & I(X;Y) = H(Y) - H(Y|X)
     & \\
-    &\Omega((1-p)x+q(1-x)) = \\
-    & -(1-p)x+q(1-x) \log_2 ((1-p)x+q(1-x)) -(1-(1-p)x+q(1-x))  
+    & q_0 = x(1-p)+(1-x)q \\
+    & q_1 = (1-x)(1-q)+xp = 1- x+px-q-xq \\
+    & H(Y) = -\sum_j q_j\log_2 q_j = -q_0\log_2 q_0 - q_1\log_2 q_1 \\
+    & = x(1-p)+q(1-x)\log_2 (x(1-p)+q(1-x)) - (1-x+px-q-xq) \log_2 (1-x+px-q-xq) \\ 
+    & = \Omega((1-p)x+q(1-x))
+    & \\
 \end{flalign*}
 
+\begin{flalign*}
+    & H(Y|X) = \sum_i p_1H(Y|x_1) = p_0H(Y|x_0) + p_1H(Y|x_1) \\
+    & p_0H(Y|x_0) = x \left(\sum_i  \text{Pr}(y_1|x_0) \log_2 \text{Pr}(y_1|x_0) \right)\\
+    & = x(\text{Pr}(y_0|x_0) \log_2 \text{Pr}(y_0|x_0) + \text{Pr}(y_1|x_0) \log_2 \text{Pr}(y_1|x_0)) \\
+    & = x\Omega(p)
+\end{flalign*}
+
+
+\begin{flalign*}
+    & p_1H(Y|x_1) = (1-x)\left( \sum_i \text{Pr}(y_i|x_1) \log_2 \text{Pr}(y_i|x_1) \right) \\
+    & (1-x)(\text{Pr}(y_0|x_1) \log_2 \text{Pr}(y_0|x_1) + \text{Pr}(y_1|x_1) \log_2 \text{Pr}(y_1|x_1) ) \\
+    & = (1-x)\Omega(q)
+\end{flalign*}
 
 
 \end{document}
