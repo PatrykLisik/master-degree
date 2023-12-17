@@ -9,7 +9,15 @@
 \author{Patryk Lisik}
 \date{\(19\) Listopad  2023}
 \newcommand{\floor}[1]{\lfloor #1 \rfloor}
+
+\usepackage{xcolor,cancel}
+
+\newcommand\hcancel[2][black]{\setbox0=\hbox{$#2$}%
+\rlap{\raisebox{.45\ht0}{\textcolor{#1}{\rule{\wd0}{1pt}}}}#2}
+
 \begin{document}
+
+
 
 \maketitle
 
@@ -661,4 +669,182 @@ to jest postać systematyczna ??
     c_1(x) = p_1(x) \oplus x^3 m(x)=0  \quad c_0 = (1101000) \\
     \\
 \end{align*}
+
+\section*{Lab 4} 
+
+\subsection*{Problem 4} 
+
+Działamy w ciele $GF2$
+\begin{multline*}
+1 \oplus x^7 = (1\oplus x) 
+    (x^6 \oplus x^5 \oplus x^4 \oplus x^3 \oplus x^3 \oplus x^2 \oplus x \oplus 1)  
+    = (1 \oplus x) (1 \oplus x \oplus x^3)(1\oplus x^2 \oplus x^3) 
+\end{multline*}
+
+\begin{align*}
+    & g1(x) = 1 \oplus x & C_{cyc}(7,6) & \text{ wielomian cykiczny o długości 6}  \\
+    & m(x) =  m_0\oplus m_1x \oplus m_2 x^2 \oplus m_3 x^3 \oplus m_4 x^4 \oplus m_5 x^5 \\
+\end{align*}
+
+\begin{multline*}
+     p(x)  = xm(x) \mod g(x) & = (m_0\oplus m_1x \oplus m_2 x^2 \oplus m_3 x^3 \oplus m_4 x^4 \oplus m_5 x^5) 
+\mod (1 \oplus x) \\ 
+    c(x) = m_0\oplus m_1 \oplus \m_2 \oplus m_3 \oplus m_4 \oplus \m_5 \oplus m_0 x \oplus x \oplus m_1 x^2 \oplus m_2 x^3
+     \oplus m_4 \oplus x^4 \oplus m_5 x^5 
+\end{multline*}
+
+
+Macier nieusystematyzowana i maccierz usystematyzowa
+$$ 
+
+\overline{G}  = \begin{pmatrix}
+    1 & 1 & 0 & 0 & 0 & 0 & 0 \\ 
+    0 & 1 & 1 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 1 & 1 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 1 & 1 & 0 & 0 \\
+    0 & 0 & 0 & 1 & 1 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 1 & 1 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 1 & 1 \\
+\end{pmatrix}
+\quad 
+G = \begin{pmatrix}
+    1 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\ 
+    1 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+    1 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+    1 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+    1 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+    1 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+    1 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+\end{pmatrix}
+
+$$
+
+\begin{multline*}
+    g_3(x)  =1 \oplus x \oplus x^3 \quad \C_{\text{cyc}}(7,4) \\
+    m(x) = m_0 m_1 x \oplus m_2 x^2 \oplus m_3 x^3 \\
+    p(x) = x^3m(x) \mod g(x) = \\ (m_0x_3 \oplus m_1 x^4 \oplus m_2 x^5 \oplus m_3 x^6) \mod (1\oplus x \oplus x^3)
+\end{multline*}
+
+
+\begin{multline*}
+    c(x) = (m_0 \oplus m_2 \oplus m_6) \oplus (m_0 \oplus m_1 \oplus m_3)x \oplus (m_1 \oplus m_2 \oplus m_3 )x^2
+    \oplus m_0x^3 m_1 \oplus x^4 \oplus m_2 \oplus x^5 \oplus m_3 x^6
+\end{multline*}
+$c(x)$ - kod Hamminga $H_7$ (równoważny)
+$$g_{3'} = 1 \oplus x^2 \oplus x^3 $$
+
+$$
+\overline{G}_{3`} = \begin{pmatrix}
+    1 & 0 & 1 & 1 & 0 & 0 & 0 \\ 
+    0 & 1 & 0 & 1 & 1 & 0 & 0 \\ 
+    0 & 0 & 1 & 0 & 1 & 1 & 0 \\ 
+    0 & 0 & 0 & 1 & 0 & 1 & 1 \\ 
+\end{pmatrix}
+\quad
+G_{3`} = \begin{pmatrix}
+    1 & 0 & 1 & 1 & 0 & 0 & 0 \\ 
+    1 & 1 & 1 & 0 & 1 & 0 & 0 \\ 
+    0 & 1 & 0 & 0 & 0 & 1 & 0 \\ 
+    1 & 1 & 1 & 0 & 0 & 1 & 1 \\ 
+\end{pmatrix}
+$$
+3 pierwsze bity to bity parzystości 
+
+Kody dualne do kodu Hamminga $H_7$
+$$ g_6(x) = 1 \oplus x \oplus x^2 \oplus x^3 \oplus x^4 \oplus x^5 \oplus x^6 $$
+$$m(x) = m_0 $$
+$$p(x) = (x^6m_0) \mod (1 \oplus x \oplus x^2 \oplus x^3 \oplus x^4 \oplus x^5 \oplus x^6) $$
+$$c(x) = m_0 \oplus m_0x \oplus m_0x^2 \oplus m_0x^3 \oplus m_0x^4 \oplus m_0 x^5 \oplus m_0 x^6 $$
+jest to kod powtórzeniowy $R_7$
+
+\subsection*{Problem 5} 
+
+\section*{Zestaw 4}
+
+\subsection*{Problem 1}
+Ciało $GF(2^4)$
+
+Generowane przez $1 \oplus \alpha \oplus \alpha^4$
+$$\alpha^4 = 1 \oplus \alpha $$
+Ciało ma 16 elementów. Można zapisać je jako potęgi $\alpha$. (Poza jednym) 
+
+\begin{table}[h]
+    \begin{tabular}{l|lllllllllllllllll}
+        $\oplus   $  & 0 & 1 & $\alpha $  & $\alpha ^2 $ & $\alpha ^3 $ &$\alpha ^4 $  &$\alpha^5 $  & $\alpha ^6$ & $\alpha ^7 $ & $\alpha ^8 $ &  $\alpha^9 $& $\alpha ^{10} $ & $\alpha^{11} $ & $\alpha {12} $ & $\alpha ^{13}  $ & $\alpha ^{14}$ \\ \hline
+        $0        $  & 0 & 1 & $\alpha $  & $\alpha ^2 $ & $\alpha ^3 $ &$\alpha ^4 $  &$\alpha^5 $  & $\alpha ^6$ & $\alpha ^7 $ & $\alpha ^8 $ &  $\alpha^9 $& $\alpha ^{10} $ & $\alpha^{11} $ & $\alpha {12} $ & $\alpha ^{13}  $ & $\alpha ^{14}$ \\
+        $\alpha   $  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^2$  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^3$  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^4$  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^5$  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^6$  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^7$  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^8$  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^9$  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^{10}$ &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^{11}$ &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^{12}$ &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^{13}$ &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        $\alpha ^{14}$ &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\
+        &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  & 
+    \end{tabular}
+\end{table}
+
+\begin{multline*}
+     1 \oplus \alpha \oplus  \alpha^4  = 0 \\
+     \alpha^{15}  =1 \\
+     \alpha^4  = 1 \oplus \alpha \\
+     \alpha^5 = \alpha \oplus \alpha^2 \\
+     \alpha^6 = \alpha^2 \oplus \alpha^3 \\
+     \alpha^7 = \alpha^3 \oplus \alpha^4 \\
+     \alpha^8 = \alpha^4 \oplus \alpha^5 \\
+     \alpha^9 = \alpha^5 \oplus \alpha^6 \\
+     \alpha^{10} = \alpha^6 \oplus \alpha^7 \\
+     \alpha^{11} = \alpha^7 \oplus \alpha^8 \\
+     \alpha^{12} = \alpha^8 \oplus \alpha^9 \\
+     \alpha^{13} = \alpha^9 \oplus \alpha^{10} \\
+     \alpha^{14} = \alpha^{10} \oplus \alpha^{11} \\
+\end{multline*}
+
+$$
+     1 \oplus \alpha^6 = 1\oplus \alpha^2\oplus\alpha^3 = \alpha^{13}
+$$
+
+$$
+     1 \oplus \alpha^9 = 1 \oplus \alpha\oplus\alpha^3=\alpha^7
+$$
+
+$$\alpha \oplus \alpha^6 = \alpha \oplus \alpha^2\oplus\alpha^3=\alpha^{11} $$
+
+$$\alpha \oplus \alpha ^7 = 1\oplus\alpha^3=\alpha^14 $$
+
+\subsection*{Chyba jakieś nowe zadanie} 
+
+$$GF(2^4) \quad \alpha^4 = 1\oplus\alpha \quad \alpha^{15} = 1 $$
+
+
+$$\alpha^{2^0} = \alpha^1 = \alpha $$
+$$\alpha^{2^1} = \alpha^1 = \alpha^2 $$
+$$\alpha^{2^2} = \alpha^4  $$
+$$\alpha^{2^3} = \alpha^8  $$
+$$\alpha^{2^4} = \alpha^{16} = \alpha  $$
+
+\begin{multline*}
+    \phi_1 (x) = (\alpha \oplus x)(\alpha^2 \oplus x)(\alpha^4 \oplus x)(\alpha^8 \oplus x) \\ 
+    =\alpha^{15} \oplus (\alpha^7 \oplus \alpha^11 \oplus \alpha^{13} \oplus \alpha^{14})x 
+    \oplus (\alpha^3 \oplus \alpha ^5 \oplus \alpha^6 \oplus \alpha^9 \oplus \alpha^{10} \oplus \alpha^{12})x^2
+    \oplus (\alpha \oplus \alpha^2 \oplus \alpha^4 \oplus \alpha^8)x^3 \alpha x^4 
+\end{multline*}
+
+\begin{multline*}
+    \phi_3 = (\alpha^3 \oplus x) (a^6 \oplus x)(\alpha^9 \oplus x)(\alpha^12 \oplus x)  
+    = 1 \oplus (\alpha^3 \oplus \alpha ^6 \oplus \alpha^9 \oplus \alpha^12)x 
+    \oplus (\alpha^9 \alpha^12 \oplus \cancel{1} \oplus \cancel{1} \oplus \alpha^3 
+    \alpha ^6)x^2 \oplus (\alpha^3 ) \\ 
+    \dots \text{starł z tablicy}  = 1 \oplus x \oplus x^2 \oplus x^3 \oplus x^4
+\end{multline*}
+
+ $$   \phi_5(x) = (\alpha^5 \oplus x)(\alpha^{10} \oplus x) = 1 \oplus x \oplus  x^2 \\ $$
+ $$   \phi_7(x) = (\alpha^7 \alpha x)(\alpha^11 \oplus x)(\alpha^13 \oplus x)(\alpha^11 \oplus x) = 1\oplus x^3 \oplus x^4 $$
+
 \end{document}
