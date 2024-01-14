@@ -9,15 +9,12 @@
 \author{Patryk Lisik}
 \date{\(19\) Listopad  2023}
 \newcommand{\floor}[1]{\lfloor #1 \rfloor}
-
 \usepackage{xcolor,cancel}
 
 \newcommand\hcancel[2][black]{\setbox0=\hbox{$#2$}%
 \rlap{\raisebox{.45\ht0}{\textcolor{#1}{\rule{\wd0}{1pt}}}}#2}
 
 \begin{document}
-
-
 
 \maketitle
 
@@ -669,7 +666,6 @@ to jest postać systematyczna ??
     c_1(x) = p_1(x) \oplus x^3 m(x)=0  \quad c_0 = (1101000) \\
     \\
 \end{align*}
-
 \section*{Lab 4} 
 
 \subsection*{Problem 4} 
@@ -846,5 +842,56 @@ $$\alpha^{2^4} = \alpha^{16} = \alpha  $$
 
  $$   \phi_5(x) = (\alpha^5 \oplus x)(\alpha^{10} \oplus x) = 1 \oplus x \oplus  x^2 \\ $$
  $$   \phi_7(x) = (\alpha^7 \alpha x)(\alpha^11 \oplus x)(\alpha^13 \oplus x)(\alpha^11 \oplus x) = 1\oplus x^3 \oplus x^4 $$
+=======
+
+\section*{Lab 4}
+
+jedno zadanie zrobione wcześniej. Jedno ominięte.
+
+
+\begin{multline*}
+    & r(x) = 1 \oplus x^2 \\ 
+    & s_1 = r(\alpha) = 1 \oplus \alpha^2  = \mathcal{X} \oplus \alpha ^2 = \alpha^2 \\
+    & s_2 = r(\alpha^2) = 1\oplus \alpha ^{16} = 1\oplus \alpha = \alpha ^4  \\
+    & s_3 = r(\alpha ^3) =1 \oplus \alpha ^{24} = 1\oplus \alpha^9 = 1 \oplus \alpha \oplus \alpha^3 = \alpha^7  \\
+    & s_4 = r(\alpha^4) = 1\oplus \alpha ^{32} = 1 \oplus \alpha^4 = \alpha^2 \\
+    & s(x)\sigma(x) - \mu(x)x^4 = - w(x)
+\end{multline*}
+
+
+Jakieś inne zadanie
+
+Wzmianka o rozszeżonym algorytmie euklidesa. 
+
+\begin{table}[h]
+\begin{tabular}{lllll}
+    i & $q_i$ & $r_i = r_{i-1} - q_ir_{i-2} $ & $t_1 = t_{i-1}-q_it_{i-2}$ &  \\ \hline
+    $-1$ & --                           & $x^4$                                                         & 1 &    \\
+    $0$  & --                           & $\alpha^2x^3\oplus\alpha^7x^2\oplus\alpha^4 \oplus \alpha^2 $ & 1  &    \\
+    $1$  & $\alpha^7x \oplus \alpha^6 $ & $\alpha^4 x^2 \oplus \alpha ^{13}x \oplus \alpha ^2 $         & $\alpha^7x\oplus\alpha^6$  & \\  
+    $2 $ & $\alpha^4x\oplus\alpha^2$    & $\alpha^4$                                                    & $\alpha^{11}x^2\oplus\alpha^5x\alpha^3$
+\end{tabular}
+\end{table}
+
+\begin{multline*}
+    & w(x) = \lambda r_1(x) = \lambda\alpha^5 & \\
+    & \omega(x) = \lambda t_1(x)  = \lambda (\alpha^{11}x^2\oplus\alpha^5x\oplus \alpha^3) &
+\end{multline*}
+
+Pochodne nie istnieją bo nie ma pojęcia granicy 
+
+
+\begin{table}[h]
+\begin{tabular}{lll}
+    $x$ & $\omega(x) $& \\ \hline
+    $0$ & $ \omega(0)=\alpha^7$ &  \\
+    $\alpha^9$ & $\omega(0) = 1 \oplus \alpha^9 \oplus \alpha^7 = 0 $ & $j_1=0$ \\
+    $\alpha^7$ & $\omega(\alpha^7) = \alpha^11 \oplus \alpha \oplus \alpha^7 =0 $ & \\
+\end{tabular}
+\end{table}
+
+\section*{Zestaw 5}
+
+
 
 \end{document}
