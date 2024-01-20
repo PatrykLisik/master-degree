@@ -890,8 +890,127 @@ Pochodne nie istnieją bo nie ma pojęcia granicy
 \end{tabular}
 \end{table}
 
-\section*{Zestaw 5}
+\section*{Zestaw 6 - ostanie zajęcia}
 
+$$C_{BCH}(15,7) \quad t=2 \quad GF(2^4) \quad p(x)=1\oplus x \oplus x^4 $$
 
+\begin{multline*}
+    &r(x) = 1\oplus ^8 & \\ 
+    &s_1 = r(\alpha ) =   1 \oplus \alpha^8 = \alpha ^2 & \\
+    &s_2 = r(\alpha ^2) =  1 \oplus \alpha = \alpha ^4 & \\
+    &s_3 = r(\alpha ^3) = 1 \oplus \alpha ^9  = \alpha ^4 & \\
+    &s_4 = r(\alpha ^4) = 1 \oplus \alpha ^2  = \alpha ^8 & \\
+\end{multline*}
+
+\begin{multline*}
+    &\rho^{(-1)}(x)=1 & l_{-1}=0 & d_{-1}=-1  & \\
+    &\rho^{(0)}(x)=1 & l_{0}=0 & d_{0}=s_1   & \\
+\end{multline*}
+
+$$ d_u=s_{\mu H}\oplus \rho  $$
+
+\section*{Kolejne zadanie - chyba 5} 
+
+$$C_{BCH}(7,3) \quad  GF(2^3) \quad p(x)=1\oplus x \oplus x^3 $$
+
+\begin{table}[h]
+    \begin{tabular}{llllll}
+        $0$ & $0$ & $000$ & $\alpha^3$ & $1 \oplus \alpha $ & $110$ \\
+        $1$ & $1$ & $100$ & $\alpha^4$ & $\alpha \oplus \alpha $ & $011$ \\
+        $\alpha$ & $\alpha$ & $010$ & $\alpha^5$ & $ 1 \oplus \alpha \oplus \alpha^2 $ & $111$ \\
+        $\alpha^2$ & $\alpha^2$ & $001$ & $\alpha^5$ & $ 1 \oplus \alpha^2 $ & $101$ \\
+    \end{tabular}
+\end{table}
+
+\begin{table}[h]
+    \begin{tabular}{l|llllll}
+        $\mu $ & $\rho^{\mu}(x)$                    & $l_\mu$ & $d_\mu$    & $\mu - l_\mu$ & $\rho$ & $\mu - \rho $ & \hline \\
+        $-1$   & $1$                                & $0$     & 1          &  -1           &        &               & \\
+        $0$    & $1$                                & $0$     & 0          &   0           &  -1    &  1            & \\
+        $1$    & $1$                                & $0$     & $\alpha^2$ &   1           &  -1    &  2            & \\
+        $2$    & $1\oplus \alpha^2x^2$              & $2$     & $\alpha^3$ &   0           &   1    &  1            & \\
+        $3$    & $1\oplus\alpha x\oplus \alpha^2x^2$& $2$     & $\alpha^3$ &   0           &   1    &  2            & \\
+        $4$    & $1\oplus\alpha x\oplus \alpha^6x^2$&      &  &              &       &              & \\
+    \end{tabular}
+    
+\end{table}
+\begin{align}
+    & \rho(x) = 1 \oplus \alpha x \oplus \alpha^6 x^2 = (1\oplus \alpha^4)(1\oplus \alpha^2x) \\
+    & \beta_1 = \alpha^4 \quad d_1=4 \\
+    & \beta_2 = \alpha^2 \quad d_2=2 \\
+    & z(x) = 1\oplus \alpha \oplus x^2 \\ 
+    & e_4 = \frac{z(\beta_1^{-1}}{1\oplus \beta_2 \beta_1^{-1}} =
+        \frac{z(\alpha^3)}{1\oplus \alpha^2 \alpha^3} = \frac{1\oplus \alpha^4 \oplus \alpha^6 }{1 \oplus \alpha^5} 
+        = \frac{\alpha}{\alpha^5} = \alpha^{-3} = \alpha^4 \\
+    & e_2 = \frac{z(\beta_2^{-1}}{1\oplus \beta_1 \beta_2^{-1}} =
+        \frac{z(\alpha^5)}{1\oplus \alpha^4 \alpha^5} = \frac{1\oplus \alpha^6 \oplus \alpha^3 }{1 \oplus \alpha^5} 
+        = \frac{\alpha^5}{\alpha^6} = \alpha^{-1} = \alpha^6 \\
+    & e(x) = \alpha^6 x^2 \oplus \alpha^4 x^4 \\
+\end{align}
+
+\section*{Zadanie 6?}
+
+\begin{align*}
+    & s_1(0) = 0 \\
+    & s_2(0) = 0 \\ 
+    & s_1(t+1) = m(t) \\
+    & s_2(t+1) = s_1(t) \\
+    & s_1(t) = m(t-1) \\ 
+    & s_2(t) = m(t-2) \\
+\end{align*}
+
+$$m = (100011) $$
+
+\begin{table}[h]
+    \begin{tabular}{lllllll}
+        & i & $m_1$ & $S_i^{(1)}$ & $S_i^{(1)}$ & $C_i^{(1)}$ & $C_i^{(2)}$ & \\ \hline
+        & 1 & 1     & 0           & 0           & 1           & 1           & \\
+        & 2 & 0     & 1           & 0           & 0           & 1           & \\
+        & 3 & 0     & 0           & 1           & 1           & 1           & \\
+        & 4 & 0     & 0           & 0           & 0           & 0           & \\
+        & 5 & 1     & 0           & 0           & 1           & 1           & \\
+        & 6 & 1     & 1           & 0           & 1           & 0           & \\
+        & 7 & 0     & 1           & 1           & 1           & 0           & \\
+        & 8 & 0     & 0           & 1           & 1           & 1           & \\
+        & 9 & 0     & 0           & 0           & 0           & 0           & \\
+        
+    \end{tabular}
+\end{table}
+
+\begin{align*}
+    & C^{(1)}(\mathcal{D})  = M(\mathcal{D}G^{(1)}(\mathcal{D}) \\
+    & C^{(2)}(\mathcal{D})  = M(\mathcal{D}G^{(2)}(\mathcal{D}) \\
+    & \begin{pmatrix}
+        & C^{(1)}(\mathcal{D}) \\
+        & C^{(2)}(\mathcal{D})
+    \end{pmatrix} =
+    M(\mathcal{D}) \begin{pmatrix}
+        & 1 \oplus \mathcal{D}^2 \\
+        & 1 \oplus \mathcal{D} \oplus \mathcal{D}^2 \\
+    \end{pmatrix}  \\ 
+\end{align*}
+
+\begin{align*}
+    & \begin{pmatrix}
+        & C^{(1)}(\mathcal{D}) \\
+        & C^{(2)}(\mathcal{D})
+    \end{pmatrix} = (1\oplus \mathcal{D}^4 \oplus \mathcal{D}^5) 
+    \begin{pmatrix}
+        & 1 \oplus \mathcal{D}^2 \\
+        & 1 \oplus \mathcal{D} \oplus \mathcal{D}^2 \\
+    \end{pmatrix}  \\
+    & \begin{pmatrix}
+        & C^{(1)}(\mathcal{D}) \\
+        & C^{(2)}(\mathcal{D})
+    \end{pmatrix} =
+    \begin{pmatrix}
+        & (1 \oplus \mathcal{D}^4 \oplus \mathcal{D}^5 )(1\oplus\mathcal{D}^2) \\
+        & (1 \oplus \mathcal{D}^4 \oplus \mathcal{D}^5 )(1 \oplus \mathcal{D}\oplus\mathcal{D}^2) 
+    \end{pmatrix} =  \\
+    & = \begin{pmatrix}
+        & 1 \oplus \mathcal{D}^4 \oplus \mathcal{D}^5 \oplus \mathcal{D}^2 \oplus \mathcal{D}^6 \oplus \mathcal{D}^7 \\
+        & 1 \oplus \mathcal{D}^4 \oplus \cancel{\mathcal{D}^8} \text{reszta starta z tablicy :(} 
+    \end{pmatrix} \\
+\end{align*}
 
 \end{document}
