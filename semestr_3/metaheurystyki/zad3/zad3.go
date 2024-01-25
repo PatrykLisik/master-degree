@@ -68,12 +68,12 @@ func road_len(cities_data [][]int, s Specimen) int {
 		//	)
 		distance += dist
 	}
-    distance+=cities_data[len(city_order)-1][0]
+	distance += cities_data[len(city_order)-1][0]
 	return distance
 }
 
 func fitness(cities_data [][]int, s Specimen) int {
-    return 8000 - road_len(cities_data, s)
+	return 8000 - road_len(cities_data, s)
 }
 
 func get_cities_data(path string) [][]int {
@@ -106,64 +106,97 @@ func evolve(s Specimen) Specimen {
 	return Specimen{new_city_order, new_genome}
 }
 
+func select_parents_rulette(population []Specimen, cities_data [][]int) []Specimen {
+	fitness_cache := make([]int, len(population))
+	for i, speci := range population {
+		fitness_cache[i] = fitness(cities_data, speci)
+	}
+
+	cumulative_population_finess := 0
+	for i := range population {
+		cumulative_population_finess += fitness_cache[i]
+	}
+	fmt.Println(fmt.Sprintf("Cumulative fitness: %v", cumulative_population_finess))
+
+	cirlce_parts := make([]float64, len(population))
+    current_fitness_sum := 0
+
+	for i := range cirlce_parts {
+        relative_fitness := float64(current_fitness_sum) / float64(cumulative_population_finess)
+        cirlce_parts[i] =relative_fitness
+        current_fitness_sum+=fitness_cache[i]
+	}
+    cirlce_parts = append(cirlce_parts, 1.0)
+
+    fmt.Println(fmt.Sprintf("Circle parts: %v", cirlce_parts))
+	new_population := make([]Specimen, len(population))
+	for new_pop_idx := range new_population {
+		rng := rand.Float64()
+        fmt.Println(fmt.Sprintf("RNG %v ", rng))
+
+		for i := range cirlce_parts {
+            if rng > cirlce_parts[i] && rng <= cirlce_parts[i+1] {
+                new_population[new_pop_idx] = Specimen(population[i])
+                fmt.Println(fmt.Sprintf("Range start %v end: %v", cirlce_parts[i], cirlce_parts[i+1]))
+                break
+            }
+		}
+	}
+
+	return new_population
+}
 func main() {
 	rand.Seed(time.Now().Unix())
 
-//	MAX_ROAD_LEN := 8000 // just to make this minimization problem
-//	P_MUTATION := 0.1    // mutation probability
+	//	MAX_ROAD_LEN := 8000 // just to make this minimization problem
+	//	P_MUTATION := 0.1    // mutation probability
 	POPULATION_SIZE := 25
 	CITY_COUNT := 16
 
 	cities_data := get_cities_data("./miasta.txt")
-    for _, city_line :=  range cities_data {
-        fmt.Println(city_line)
-    }
+	for _, city_line := range cities_data {
+		fmt.Println(city_line)
+	}
 
 	best_specimen := create_specimen(CITY_COUNT)
-    population := make([]Specimen, POPULATION_SIZE)
-    for i := range population{
-        population[i] = create_specimen(CITY_COUNT)
-        fmt.Println(population[i])
+	population := make([]Specimen, POPULATION_SIZE)
+	for i := range population {
+		population[i] = create_specimen(CITY_COUNT)
+		fmt.Println(population[i])
 
-    }
+	}
 	current_fitness := road_len(cities_data, best_specimen)
-    
-    for _, s := range population{
-        new_fitness := fitness(cities_data, s)
+
+	for _, s := range population {
+		new_fitness := fitness(cities_data, s)
 		if current_fitness > new_fitness {
-            best_specimen = s
+			best_specimen = s
 			current_fitness = new_fitness
 		}
-    }
+	}
 
-    fmt.Println(fmt.Sprintf("Genome %v \nCity order %v", best_specimen.genome, best_specimen.cities))
-    fmt.Println(fmt.Sprintf("Fitness %v", current_fitness))
-	for i := 0; i < 1_000_000; i++ {
-		cumulative_population_finess :=0
-        for _,s:= range population{
-            cumulative_population_finess+=fitness(cities_data, s)
-        }
-        fmt.Println(fmt.Sprintf("Cumulative fitness: %v", cumulative_population_finess))
+	fmt.Println(fmt.Sprintf("Genome %v \nCity order %v", best_specimen.genome, best_specimen.cities))
+	fmt.Println(fmt.Sprintf("Fitness %v", current_fitness))
+	for i := 0; i < 1; i++ {
+        new_parents := select_parents_rulette(population, cities_data)
+        fmt.Println(fmt.Sprintf("New parents %v ", new_parents))
+    
+		// TODO
+		// Wybieramy osobiniki które będą rodziami na zasadzie ruletki
+		// Krzyżujemy geny w połowie
+		// Robimy losową mutację genów z prawdopodobieństwem 0.1
+		// Strategia elitanra
+		// wyszykujmy osobnika najlepszego i najgorszego
+		//
+		//  new_population := make([]Specimen, POPULATION_SIZE)
+		//  for _,s:= range population{
+		//      rfitness:=float64((cities_data, s))/float64(cumulative_population_finess)
 
-       // TODO
-       // Wybieramy osobiniki które będą rodziami na zasadzie ruletki
-       // Krzyżujemy geny w połowie
-       // Robimy losową mutację genów z prawdopodobieństwem 0.1
-       // Strategia elitanra
-            // wyszykujmy osobnika najlepszego i najgorszego
-            // 
-      //  new_population := make([]Specimen, POPULATION_SIZE)
-      //  for _,s:= range population{
-      //      rfitness:=float64((cities_data, s))/float64(cumulative_population_finess)
+		//      if rfitness>rand.Float64(){
+		//
 
-      //      if rfitness>rand.Float64(){
-      //          
-
-      //      }
-      //  }
-
-
-
+		//      }
+		//  }
 
 	}
 
