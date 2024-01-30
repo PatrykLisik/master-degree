@@ -36,22 +36,22 @@ func fitness(g Genome) float64 {
 }
 
 func change_genome(genome Genome, dist float64, field_count_to_change int) Genome {
-	new_gens := make([]float64, len(genome.gens))
-	copy(new_gens, genome.gens)
-	new_genome := Genome{new_gens}
+    new_gens := make([]float64, len(genome.gens))
+    copy(new_gens, genome.gens)
+    new_genome := Genome{new_gens}
 
-	order := rand.Perm(len(genome.gens))
+    order := rand.Perm(len(genome.gens))
 
-	for _, gen_position := range order[0:field_count_to_change] {
-		new_val := new_genome.gens[gen_position]
-		new_val += random_float(-dist, dist)
-		new_val = math.Min(math.Pi, new_val)
-		new_val = math.Max(0, new_val)
-		new_genome.gens[gen_position] = new_val
+    for _, gen_position := range order[0:field_count_to_change] {
+        new_val := new_genome.gens[gen_position]
+        new_val += random_float(-dist, dist)
+        new_val = math.Min(math.Pi, new_val)
+        new_val = math.Max(0, new_val)
+        new_genome.gens[gen_position] = new_val
 
-	}
+    }
 
-	return new_genome
+    return new_genome
 }
 
 type SimulationData struct {

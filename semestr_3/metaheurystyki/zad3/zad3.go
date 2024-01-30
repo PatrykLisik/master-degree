@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
-	"time"
 )
 
 func check(e error) {
@@ -106,6 +107,39 @@ func evolve(s Specimen) Specimen {
 	return Specimen{new_city_order, new_genome}
 }
 
+func select_parents_tournament(population []Specimen, cities_data [][]int, group_size int) []Specimen {
+	fitness_cache := make([]int, len(population))
+	for i, speci := range population {
+		fitness_cache[i] = fitness(cities_data, speci)
+	}
+	new_population := make([]Specimen,len(population))
+    for new_pop_idx := range population {
+        // find parents idx
+		idxs := make([]int, 0)
+		for len(idxs) < group_size {
+
+            // println("Population size ", len(population))
+			new_idx := rand.Intn(len(population))
+			if !slices.Contains(idxs, new_idx) {
+				idxs = append(idxs, new_idx)
+			}
+		}
+        // find index of winner  
+		current_best_fit := 0
+		best_index := 0
+		for _, idx := range idxs {
+			if fitness_cache[idx] > current_best_fit {
+				current_best_fit = fitness_cache[idx]
+				best_index = idx
+			}
+		}
+        new_population[new_pop_idx] = population[best_index]
+	}
+
+	return new_population
+
+}
+
 func select_parents_rulette(population []Specimen, cities_data [][]int) []Specimen {
 	fitness_cache := make([]int, len(population))
 	for i, speci := range population {
@@ -116,55 +150,171 @@ func select_parents_rulette(population []Specimen, cities_data [][]int) []Specim
 	for i := range population {
 		cumulative_population_finess += fitness_cache[i]
 	}
-	fmt.Println(fmt.Sprintf("Cumulative fitness: %v", cumulative_population_finess))
+	// fmt.Println(fmt.Sprintf("Cumulative fitness: %v", cumulative_population_finess))
 
 	cirlce_parts := make([]float64, len(population))
-    current_fitness_sum := 0
+	current_fitness_sum := 0
 
 	for i := range cirlce_parts {
-        relative_fitness := float64(current_fitness_sum) / float64(cumulative_population_finess)
-        cirlce_parts[i] =relative_fitness
-        current_fitness_sum+=fitness_cache[i]
+		relative_fitness := float64(current_fitness_sum) / float64(cumulative_population_finess)
+		cirlce_parts[i] = relative_fitness
+		current_fitness_sum += fitness_cache[i]
 	}
-    cirlce_parts = append(cirlce_parts, 1.0)
+	cirlce_parts = append(cirlce_parts, 1.0)
 
-    fmt.Println(fmt.Sprintf("Circle parts: %v", cirlce_parts))
+	// fmt.Println(fmt.Sprintf("Circle parts: %v", cirlce_parts))
 	new_population := make([]Specimen, len(population))
 	for new_pop_idx := range new_population {
 		rng := rand.Float64()
-        fmt.Println(fmt.Sprintf("RNG %v ", rng))
+		// fmt.Println(fmt.Sprintf("RNG %v ", rng))
 
 		for i := range cirlce_parts {
-            if rng > cirlce_parts[i] && rng <= cirlce_parts[i+1] {
-                new_population[new_pop_idx] = Specimen(population[i])
-                fmt.Println(fmt.Sprintf("Range start %v end: %v", cirlce_parts[i], cirlce_parts[i+1]))
-                break
-            }
+			if rng > cirlce_parts[i] && rng <= cirlce_parts[i+1] {
+				new_population[new_pop_idx] = Specimen(population[i])
+				// fmt.Println(fmt.Sprintf("Range start %v end: %v", cirlce_parts[i], cirlce_parts[i+1]))
+				break
+			}
 		}
 	}
 
 	return new_population
 }
-func main() {
-	rand.Seed(time.Now().Unix())
 
+func select_parents_threshold(population []Specimen, cities_data [][]int, ro float64) []Specimen {
+	new_population := make([]Specimen, len(population))
+
+	return new_population
+}
+func crossover(s1 Specimen, s2 Specimen) Specimen {
+	new_genome := make([]int, len(s1.genome))
+	point := rand.Intn(len(s1.cities))
+	if point == 0 {
+		return s2
+	}
+	if point == len(s1.cities)-1 {
+		return s1
+	}
+	copy(new_genome[0:point], s1.genome[0:point])
+	copy(new_genome[point:len(s1.genome)], s2.genome[point:len(s1.genome)])
+
+	return Specimen{cities_order(new_genome), new_genome}
+}
+
+func crossover_population(population []Specimen, p_cross float64) []Specimen {
+	pop_size := len(population)
+	new_population := make([]Specimen, pop_size)
+	for i := 0; i < len(population); i++ {
+		rng := rand.Float64()
+		if rng < p_cross {
+			new_population[i] = crossover(population[i], population[(i+1)%pop_size]) // modulo to crossover last with first
+			//     fmt.Println(fmt.Sprintf("Crossover \ns1: %-2v \ns2: %-2v \ns3: %-2v",
+			//     population[i].genome,
+			//     population[(i+1)%pop_size].genome,
+			//     new_population[i].genome),
+			// )
+
+		} else {
+			new_population[i] = population[i]
+		}
+	}
+	return new_population
+}
+
+func mutate_population(population []Specimen, p_mutation float64) []Specimen {
+	for _, specimen := range population {
+		for gen_idx := range specimen.genome {
+			rng := rand.Float64()
+			if rng > p_mutation {
+				specimen.genome[gen_idx] = rand.Intn(len(specimen.cities) - gen_idx)
+			}
+		}
+	}
+	for _, s := range population {
+		s.cities = cities_order(s.genome)
+	}
+	return population
+}
+
+// jezeli najlepszy osobnik z nowej populacji jest lepszy niz
+// najlepszy osobnik z poprzednich populacji, to skopiuj
+// najlepszego z nowej populacji, jezeli nie, to zastap
+// najgorszego osobnika z biezacej populacji przez najlepszego
+// z poprzednich pokolen
+func elitist(population []Specimen, best_specimen Specimen, cities_data [][]int) ([]Specimen, Specimen) {
+	population_best_specimen := population[0]
+	population_best_fitness := fitness(cities_data, population_best_specimen)
+	
+    for _, s := range population {
+		fit := fitness(cities_data, s)
+		if population_best_fitness < fit {
+			population_best_fitness = fit
+            population_best_specimen = s
+		}
+	}
+
+	if population_best_fitness > fitness(cities_data, best_specimen) {
+		best_specimen = population_best_specimen
+		println(fmt.Sprintf("Population has new best at %v", population_best_fitness))
+	} else {
+		// println(fmt.Sprint("Population is not better at %v", population_best_specimen))
+		worst_index := 0
+		worst_fitness := math.MaxInt32
+
+		for i, specimen := range population {
+			fit := fitness(cities_data, specimen)
+			if fit < worst_fitness {
+				worst_fitness = fit
+				worst_index = i
+			}
+		}
+		// best_fitness := fitness(cities_data, best_specimen)
+		// println(fmt.Sprint("Replacing the worst at %v with fitness %v ", worst_index, worst_fitness))
+		// println(fmt.Sprint("Replacing the worst with old best with fitness %v ", best_fitness))
+
+		population[worst_index] = best_specimen
+	}
+
+	return population, best_specimen
+}
+
+func print_population(population []Specimen) {
+	println()
+	for _, s := range population {
+		fmt.Println(fmt.Sprintf("New parent genome %-2v city order %-2v", s.genome, s.cities))
+	}
+}
+
+func main() {
 	//	MAX_ROAD_LEN := 8000 // just to make this minimization problem
 	//	P_MUTATION := 0.1    // mutation probability
-	POPULATION_SIZE := 25
+	POPULATION_SIZE :=  25
 	CITY_COUNT := 16
+	P_CROSSOVER := 0.8 // crossover probability
+	P_MUTATION := 0.1
 
 	cities_data := get_cities_data("./miasta.txt")
+    println("Cities data")
 	for _, city_line := range cities_data {
-		fmt.Println(city_line)
+		fmt.Println(fmt.Sprintf("%-3v", city_line))
 	}
 
-	best_specimen := create_specimen(CITY_COUNT)
+    var best_specimen Specimen
+    best_fit := 0
 	population := make([]Specimen, POPULATION_SIZE)
-	for i := range population {
-		population[i] = create_specimen(CITY_COUNT)
-		fmt.Println(population[i])
 
+	fmt.Println(fmt.Sprintf("%-50v city order %-2v", "genome", "cities"))
+	for i:= range population {
+        s := create_specimen(CITY_COUNT)
+        population[i] = s
+        fit:= fitness(cities_data, s)
+        if fit>best_fit{
+            println("New best @", fit)
+            best_fit = fit
+            best_specimen=s
+        }
+		fmt.Println(fmt.Sprintf("%-2v  %-2v | fitness %v", s.genome, s.cities,fit))
 	}
+
 	current_fitness := road_len(cities_data, best_specimen)
 
 	for _, s := range population {
@@ -175,12 +325,19 @@ func main() {
 		}
 	}
 
-	fmt.Println(fmt.Sprintf("Genome %v \nCity order %v", best_specimen.genome, best_specimen.cities))
-	fmt.Println(fmt.Sprintf("Fitness %v", current_fitness))
-	for i := 0; i < 1; i++ {
-        new_parents := select_parents_rulette(population, cities_data)
-        fmt.Println(fmt.Sprintf("New parents %v ", new_parents))
-    
+	for i := 0; i < 10_000_000; i++ {
+		// new_parents := select_parents_rulette(population, cities_data)
+        new_parents := select_parents_tournament(population, cities_data, len(population)/7 )
+		 // print_population(new_parents)
+		new_parents = crossover_population(new_parents, P_CROSSOVER)
+		// print_population(new_parents)
+
+		new_parents = mutate_population(new_parents, P_MUTATION)
+		// print_population(new_parents)
+
+		population, best_specimen = elitist(new_parents, best_specimen, cities_data)
+
+		// println(fmt.Sprintf("best fitness %v", fitness(cities_data, best_specimen)))
 		// TODO
 		// Wybieramy osobiniki które będą rodziami na zasadzie ruletki
 		// Krzyżujemy geny w połowie
