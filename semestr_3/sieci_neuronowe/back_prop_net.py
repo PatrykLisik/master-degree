@@ -1,6 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
-
 
 neuron_count = 5
 out_neuron_count = 1
@@ -152,25 +150,6 @@ while True:
         # print("New weigths")
         # print(w)
     if epoch % 1 == 0:
-        user_in = input("Press k to plot ")
-        if user_in == "k":
-            plt.scatter(data.copy(), expected.copy(), label="Training points")
-            for drif in [0.01, 0.1, 0.2, 0.3, 0.4]:
-                y = np.array([np.linspace(0, 2 * np.pi, 14)]) - drif
-                net_out = np.array(
-                    [
-                        run_neuron(
-                            h_weigths=h_w,
-                            input=yy,
-                            activation_func=sigmoid,
-                            o_weigths=o_w,
-                        )
-                        for yy in y
-                    ]
-                )
-                plt.scatter(y, net_out, color="red")
-            plt.grid()
-            plt.legend()
-            plt.show()
+        user_in = input("Press to continue")
     epoch += 1
     print("\n\n\n\n")
