@@ -2,22 +2,56 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-neuron_count = 14
+neuron_count = 5
 out_neuron_count = 1
 
 
-data = np.array([np.linspace(0, 2 * np.pi, neuron_count)])
+data = np.array(
+    [
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+        ],
+        [
+            1,
+            1,
+            0,
+            0,
+            0,
+        ],
+        [
+            1,
+            0,
+            1,
+            0,
+            1,
+        ],
+    ]
+)
+
 h_w = np.random.uniform(-1, 1, (data.shape[1], neuron_count))
 o_w = np.random.uniform(-1, 1, (out_neuron_count, neuron_count))
 
-expected = np.array([[(np.sin(np.linspace(0, 2 * np.pi, neuron_count)) + 1) / 2]])
+expected = np.array([1, 0, 0.3, 0.7])
 
-learn_speed = 0.01
+learn_speed = 0.1
 
 
-def run_neuron(input, h_weigths, o_weigths, activation_func):
-    h_out = activation_func(np.dot(input, h_weigths))
-    return activation_func(np.dot(o_weigths, h_out))
+def run_neuron(inputs, h_weigths, o_weigths, activation):
+    inputs = np.array(inputs, ndmin=2).T
+    h_out = activation(np.dot(h_weigths, inputs))
+    o_out = activation(np.dot(o_weigths, h_out))
+    return o_out
 
 
 def error(output, expected):
@@ -35,15 +69,21 @@ def learn(
     d_activation,
     activation,
 ):
+    inputs = np.array(inputs, ndmin=2).T
+    expected = np.array(expected, ndmin=2).T
     h_out = activation(np.dot(h_weigths, inputs))
     o_out = activation(np.dot(o_weigths, h_out))
 
     o_err = expected - o_out
-    print(f"p_err {o_err}")
-    h_err = np.dot(h_weigths, o_err.T)
+    # print(f"p_err {o_err}")
+    h_err = np.dot(o_weigths.T, o_err) * (h_out * (1 - h_out))
 
+    # print(f"{h_out=}")
+    # print(f"{o_weigths=}")
     o_weigths += learn_speed * np.dot(o_err * d_activation(o_out), h_out.T)
-    h_weigths += learn_speed * np.dot(h_err * h_out * (1 - h_out), inputs.T)
+    h_weigths += learn_speed * np.dot(h_err, inputs.T)
+
+    return h_weigths, o_weigths
 
 
 def line_activation(a, b):
@@ -89,14 +129,14 @@ while True:
 
     for in_, exp_ in zip(d_norm, expected):
         n_out = run_neuron(
-            h_weigths=h_w, o_weigths=o_w, input=in_, activation_func=sigmoid
+            h_weigths=h_w, o_weigths=o_w, inputs=in_, activation=sigmoid
         )
         err_ = exp_ - n_out
-        print(f"Inp {in_}")
-        print(f"Out {n_out}")
-        print(f"Exp {exp_}")
-        print(f"error to learn {err_}")
-        h_w = learn(
+        # print(f"Inp {in_}")
+        # print(f"Out {n_out}")
+        # print(f"Exp {exp_}")
+        # print(f"error to learn {err_}")
+        h_w, o_w = learn(
             inputs=in_,
             expected=exp_,
             out_err=err_,
@@ -104,22 +144,33 @@ while True:
             o_weigths=o_w,
             learn_speed=learn_speed,
             d_activation=d_sigmoid,
-            activation=sigmoid
+            activation=sigmoid,
         )
-        print(f"error avg {np.mean(np.abs(err_))} | error max {np.max(np.abs(err_))}")
+        print(
+            f"error avg {np.mean(np.abs(err_)):<30} | error max {np.max(np.abs(err_))}"
+        )
         # print("New weigths")
         # print(w)
-    user_in = input("Press k to plot ")
-    if user_in == "k":
-        plt.scatter(data.copy(), expected.copy(), label="Training points")
-        for drif in [0.01, 0.1, 0.2, 0.3, 0.4]:
-            y = np.array([np.linspace(0, 2 * np.pi, 14)]) - drif
-            net_out = [
-                run_neuron(h_weigths=h_w, input=yy, activation_func=sigmoid) for yy in y
-            ]
-            plt.scatter(y, net_out, color="red")
-        plt.grid()
-        plt.legend()
-        plt.show()
+    if epoch % 1 == 0:
+        user_in = input("Press k to plot ")
+        if user_in == "k":
+            plt.scatter(data.copy(), expected.copy(), label="Training points")
+            for drif in [0.01, 0.1, 0.2, 0.3, 0.4]:
+                y = np.array([np.linspace(0, 2 * np.pi, 14)]) - drif
+                net_out = np.array(
+                    [
+                        run_neuron(
+                            h_weigths=h_w,
+                            input=yy,
+                            activation_func=sigmoid,
+                            o_weigths=o_w,
+                        )
+                        for yy in y
+                    ]
+                )
+                plt.scatter(y, net_out, color="red")
+            plt.grid()
+            plt.legend()
+            plt.show()
     epoch += 1
     print("\n\n\n\n")
