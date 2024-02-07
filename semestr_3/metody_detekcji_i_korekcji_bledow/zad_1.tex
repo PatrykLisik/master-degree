@@ -1,0 +1,42 @@
+    \documentclass[12pt]{article}
+    \usepackage[utf8]{inputenc}
+    \usepackage{polski}
+    \usepackage{enumitem}
+    \usepackage{amsmath}
+
+
+    \title{Zadanie 1--1}
+    \author{Patryk Lisik}
+    \date{\(6\) Lutego  2023}
+
+    \begin{document}
+
+    \maketitle
+    \renewcommand{\abstractname}{Treść}
+
+    \begin{abstract}
+    \end{abstract}
+
+
+    \section*{Rozwiązanie}
+
+    Entropia źródła
+    \begin{equation*}
+        H(X) = -\sum_i p_i \log p_i = -(0.2 \log 0.2 + 0.8 \log 0.8) = 0.72
+    \end{equation*}
+
+    Informacja wzajemna
+    \begin{multline*}
+        I(X,Y)  = \sum_{i}\sum_j P(x_j,y_j)\log_2 \frac{P(x_i|y_j)}{P(x_i)}
+        = \sum_{i}\sum_j P(y_j|x_i)P(x_i)\log_2 \frac{P(x_i|y_j)}{P(x_i)} \\
+        = P(y_0|x_0)P(x_0)\log_2 \frac{P(x_0|y_0)}{P(x_0)} \\
+        + P(y_1|x_0)P(x_0)\log_2 \frac{P(x_0|y_1)}{P(x_0)} \\
+        + P(y_0|x_1)P(x_1)\log_2 \frac{P(x_1|y_0)}{P(x_1)} \\
+        + P(y_1|x_1)P(x_1)\log_2 \frac{P(x_1|y_1)}{P(x_1)} \\
+        = 
+    \end{multline*}
+Pojemność binarnego kanału symerycznego
+\begin{equation*}
+    C_s = \Omega(\alpha + p - 2\alpha p) - \Omega (p) = \Omega(0.2+0.25 - 2 \cdot 0.2\cdot 0.25)-\Omega(0.25) = \Omega(-0.05)-\Omega(0.25)
+\end{equation*}
+    \end{document}
