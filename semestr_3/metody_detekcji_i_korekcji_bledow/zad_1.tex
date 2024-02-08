@@ -33,10 +33,11 @@
         + P(y_1|x_0)P(x_0)\log_2 \frac{P(x_0|y_1)}{P(x_0)} \\
         + P(y_0|x_1)P(x_1)\log_2 \frac{P(x_1|y_0)}{P(x_1)} \\
         + P(y_1|x_1)P(x_1)\log_2 \frac{P(x_1|y_1)}{P(x_1)} \\
-        = 
     \end{multline*}
 Pojemność binarnego kanału symerycznego
-\begin{equation*}
-    C_s = \Omega(\alpha + p - 2\alpha p) - \Omega (p) = \Omega(0.2+0.25 - 2 \cdot 0.2\cdot 0.25)-\Omega(0.25) = \Omega(-0.05)-\Omega(0.25)
-\end{equation*}
+    \begin{multline*}
+    C_s = \Omega(\alpha + p - 2\alpha p) - \Omega (p) = \Omega(0.2+0.25 - 2 \cdot 0.2 \cdot 0.25)-\Omega(0.25) \\
+        = \Omega(0.35)-\Omega(0.25) \\
+        = 0.35 \log_2 0.35 - (1-0.35) \log_2(1-0.35) -(-0.25\log_2 0.25 - (1-0.25)\log_2(1-0.25) \approx 0.12 
+\end{multline*}
     \end{document}
