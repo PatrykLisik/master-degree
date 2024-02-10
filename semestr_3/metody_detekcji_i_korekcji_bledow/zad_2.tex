@@ -1,0 +1,155 @@
+
+    \documentclass[12pt]{article}
+    \usepackage[utf8]{inputenc}
+    \usepackage{polski}
+    \usepackage{enumitem}
+    \usepackage{amsmath}
+
+    \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+    \title{Zadanie 2}
+    \author{Patryk Lisik}
+    \date{\(8\) Lutego  2024}
+
+    \begin{document}
+
+    \maketitle
+    \renewcommand{\abstractname}{Treść}
+
+    \begin{abstract}
+        Binarny kod blokowy składa się ze słów kodowych zapisanych w postaci systematycznej w tab. \ref{tab:kody}.
+        \begin{table}[h]
+            \centering
+            \begin{tabular}{l}
+                \hline
+                c       \\  \hline
+                000000  \\ 
+                011100  \\
+                101010  \\
+                110110  \\
+                110001  \\
+                101101  \\
+                011011  \\
+                000111  \\ \hline
+                
+            \end{tabular}
+            \caption{Tablica kodu blokowego} 
+            \label{tab:kody}
+        \end{table}
+    \end{abstract}
+
+    \begin{enumerate}[label=(\alph*)]
+            \item Jakie jest tempo kodu R? 
+            \item Zapisz macierz generującą $\mathbf{G}$ i kontroli parzystości $\mathbf{H}$ w postaci systematycznej.
+            \item Jaka jest minimalna odległość Hamminga $d_{min}$ tego kodu?
+            \item Jaka jest zdolność do poprawiania błędów $t$, a jaka zdolność do wykrywania błędów $l$ dla tego kodu?
+            \item Oblicz syndrom $s$ dla odebranego sygnału $\mathbf{r} = (101011)$
+    \end{enumerate}
+
+
+    \section*{Rozwiązanie}
+    
+        \begin{table}[h]
+            \centering
+            \begin{tabular}{c|c}
+                \hline
+                Bity parzystości & Bity wiadomości       \\  \hline
+                000 & 000  \\ 
+                011 & 100  \\
+                101 & 010  \\
+                110 & 110  \\
+                110 & 001  \\
+                101 & 101  \\
+                011 & 011  \\
+                000 & 111  \\ \hline
+            \end{tabular}
+            \caption{Tablica kodu blokowego} 
+        \end{table}
+
+    \subsection*{a) Jakie jest tempo kodu R}
+    \begin{equation*}
+        R = \frac{k}{n} = \frac{3}{6} = \frac{1}{2}
+    \end{equation*}
+
+    \subsection*{b) Zapisz macierz generującą $\mathbf{G}$ i kontroli parzystości $\mathbf{H}$ w postaci systematycznej}
+    \begin{align*}
+        c = mG \\
+        \mathbf{G} = (P \quad I_k) = \begin{pmatrix}
+            1 & 1 & 0 \quad & 1 & 0 & 0 \\ 
+            0 & 0 & 1 \quad & 0 & 1 & 0 \\ 
+            0 & 1 & 1 \quad & 0 & 0 & 1 \\ 
+        \end{pmatrix} \\ 
+        \mathbf{H} = (I_{n-k} \quad P^T) = \begin{pmatrix}
+            1 & 0 & 0 \quad & 1 & 1 & 0 \\ 
+            0 & 1 & 0 \quad & 1 & 0 & 1 \\ 
+            0 & 0 & 1 \quad & 0 & 1 & 1 \\ 
+        \end{pmatrix}
+    \end{align*}
+
+    \subsection*{c) Jaka jest minimalna odległość Hamminga $d_{min}$ tego kodu?}
+
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{l|cccccccc}
+            & 000000 & 011100 & 101010 & 110110 & 110001 & 101101 & 011011 & 000111 \\ \hline
+            000000 & -      &        &        &        &        &        &        &        \\
+            011100 & 3      & -      &        &        &        &        &        &        \\
+            101010 & 3      & 4      & -      &        &        &        &        &        \\
+            110110 & 4      & 3      & 3      & -      &        &        &        &        \\
+            110001 & 3      & 4      & 4      & 3      & -      &        &        &        \\
+            101101 & 4      & 3      & 3      & 4      & 3      & -      &        &        \\
+            011011 & 4      & 3      & 3      & 4      & 3      & 4      & -      &        \\
+            000111 & 3      & 4      & 4      & 3      & 4      & 3      & 3      & -     
+        \end{tabular}
+        \caption{Dystanse Hamminga pomiędzy słowami kodu}
+        \label{tab:hammind-dist}
+    \end{table}
+
+    Jak pokazano w tabeli \ref{tab:hammind-dist} minimalny dystans Hamminga to 3. 
+
+    \subsection*{d) Jaka jest zdolność do poprawiania błędów $t$, a jaka zdolność do wykrywania błędów $l$ dla tego kodu?}
+
+    Zdolność do poprawiania błędów
+    \begin{equation*}
+        t= \floor{\frac{d_{min}-1}{2}} = 1
+    \end{equation*}
+
+    Zdolność do wykrywania błędów
+    \begin{equation*}
+        l = d_{min}-1 = 2
+    \end{equation*}
+
+    \subsection*{Oblicz syndrom $s$ dla odebranego sygnału $\mathbf{r} = (101011)$ i znajdź pozycję błędu} 
+    $$ s = Hr^T $$
+    \begin{align*}
+        s=  \begin{pmatrix}
+            1 & 0 & 0  & 1 & 1 & 0 \\ 
+            0 & 1 & 0  & 1 & 0 & 1 \\ 
+            0 & 0 & 1  & 0 & 1 & 1 \\ 
+        \end{pmatrix} 
+        \cdot
+        \begin{pmatrix}
+           1 \\ 
+           0 \\ 
+           1 \\ 
+           0 \\ 
+           1 \\ 
+           1 \\ 
+        \end{pmatrix} = 
+        \begin{pmatrix}
+            0 \\ 
+            1 \\ 
+            1 \\ 
+        \end{pmatrix}
+    \end{align*}
+
+    Macierz syndromu jest 6 kolumną macierzy parzystości co oznacza że błąd jest na 6 pozycji odebranej wiadomości.
+
+
+
+
+
+
+
+
+    \end{document}
