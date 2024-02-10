@@ -1,0 +1,91 @@
+
+    \documentclass[12pt]{article}
+    \usepackage[utf8]{inputenc}
+    \usepackage{polski}
+    \usepackage{enumitem}
+    \usepackage{newunicodechar}
+    \usepackage{amsmath}
+
+    \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+    \setcounter{MaxMatrixCols}{20}
+
+    \title{Zadanie 4}
+    \author{Patryk Lisik}
+    \date{\(10\) Lutego  2024}
+
+    \begin{document}
+
+    \maketitle
+    \renewcommand{\abstractname}{Treść}
+
+    \begin{abstract}
+        Bianrny cykliczny kod BCH $C_{BHC}(15,7)$ o zdolności poprawiania błędów $t=2$ ma wielomian generujący 
+        $$ g(x) = (1\oplus x \oplus x^4)(1 \oplus x \oplus x^2 \oplus x^3 \oplus x^4) = 1 \oplus x^4 \oplus x^6 \oplus x^7 \oplus x^8 $$
+           nad ciałem $ F_{2^4} $. Zdekoduj sygnał $\mathbf{r}= (100000001000000)$ stosując alogrytm Euklidesa.
+           % \begin{table}[h]
+           %     \begin{tabular}{lll}
+           %         0             & 0                    & 0000 \\
+           %         1             & 1                    & 1000 \\
+           %         $\alpha$      & $\alpha$             & 0100 \\
+           %         $\alpha^2$    & $\alpha^2$             & 0100 \\
+           %     
+           %     \end{tabular}
+           % 
+           % \end{table}
+    \end{abstract}
+
+
+
+    \section*{Rozwiązanie}
+
+    $$C_{BCH}(15,7) \quad t=2 \quad GF(2^4) \quad p(x)=1\oplus x \oplus x^4 $$
+    $$ r(x) =  1\oplus ^8     $$
+    \begin{align*}
+        s_1 & = r(\alpha )   & = &  1 \oplus \alpha^8 & = \alpha ^2  \\
+        s_2 & = r(\alpha ^2) & = & 1 \oplus \alpha    & = \alpha ^4  \\
+        s_3 & = r(\alpha ^3) & = & 1 \oplus \alpha ^9  & = \alpha ^4  \\
+        s_4 & = r(\alpha ^4) & = & 1 \oplus \alpha ^2  & = \alpha ^8  
+    \end{align*}
+
+    \begin{align*}
+        &\sigma^{(-1)}(x)=1 & l_{-1}=0 &  & d_{-1} =-1   & \\
+        &\sigma^{(0)}(x)=1  & l_{0} =0 &  & d_{0}  =s_1   & \\
+    \end{align*}
+
+    $$p=\max_{d_{\mu}\ne 0}(\mu - l_{\mu}) $$
+    $$
+        d_{\mu} = s_{\mu}\oplus\sigma^{(\mu)}_1 s_{\mu}\oplus^{(\mu)}_2 s_{k-1}\oplus \dots 
+        \oplus \sigma^{(\mu)}_{l_{\mu}}s_{\mu+1-l_{\mu}} 
+    $$
+
+    $$
+    \sigma^{\mu+1}(x) = \begin{cases}
+        \sigma^{\mu}(x)                                           & \text{dla} \quad d_{\mu} = 0  \\ 
+        \sigma^{\mu}(x)\oplus d_{\mu}d^{-1}_p \sigma^{\mu - \rho} & \text{dla} \quad d_{\mu} = 0
+    \end{cases}
+    $$
+    
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{clcccccll}
+            $\mu$ & $\sigma^{(\mu)}(x)$                      & $l_{\mu}$ & $d_{\mu}$          & $\mu - l_{\mu}$ & $\rho$ & $\mu - \rho$ & \\ \hline
+            -1    & 1                                        &  0        &  1                 & -1              &        &              & \\  
+            0     & 1                                        &  0        &  $\alpha^2$        &  0              &   -1   &    1         & \\  
+            1     & $1\oplus\alpha^2x$                       &  1        &  0                 &  0              &   0    &    1         & \\  
+            2     & $1\oplus\alpha^2x$                       &  1        &  $\alpha^10$       &  0              &   0    &    2         & \\  
+            3     & $1\oplus\alpha^2x \oplus \alpha^8 x^2$   &  2        &  0                 &  1              &   2    &    1         & \\  
+            4     & $1\oplus\alpha^2x \oplus \alpha^8 x^2$   &           &                    &                 &        &              & \\  
+        \end{tabular}
+    \end{table}
+
+    $$  \sigma(x) = 1 \oplus \alpha^2x \oplus \alpha^8x^2 = (1\oplus x)(1\oplus \alpha^8x) $$
+    $$ \beta^{-jq}_1 = \alpha^0 \quad \sigma(1)=1\oplus\alpha^2\alpha^8x^2 = (1\oplus x)(1\oplus \alpha^8x) \quad j_1=0$$
+    $$ \sigma(x)=(1+\beta_1x)(1+\beta_2x) $$
+    \begin{align*}
+        &  \beta_1=1=\alpha^1 & j_1=0 & & e_1=1 & & &\\
+        & \beta_2=\alpha^8   & j_2=8  & & e_8=1 & & e(x)=1\oplus x^8 \\
+    \end{align*}
+    $$ c(x)=r(x)\oplus e(x) = 1\oplus x^8 \oplus 1 \oplus x^8 = 0$$
+    $$ c=0000000000000000 $$ 
+
+    \end{document}
