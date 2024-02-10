@@ -1,0 +1,113 @@
+
+    \documentclass[12pt]{article}
+    \usepackage[utf8]{inputenc}
+    \usepackage{polski}
+    \usepackage{enumitem}
+    \usepackage{amsmath}
+
+    \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+    \setcounter{MaxMatrixCols}{20}
+
+    \title{Zadanie 3}
+    \author{Patryk Lisik}
+    \date{\(10\) Lutego  2024}
+
+    \begin{document}
+
+    \maketitle
+    \renewcommand{\abstractname}{Treść}
+
+    \begin{abstract}
+    Binarny liniowy kod cykliczny $C_{cyc}(n,k)$ o długości kodu $n=14$ ma wielomian generujący
+        $g(x) = 1 \oplus x^2 \oplus x^6$.
+
+    \begin{enumerate}[label=(\alph*)]
+        \item Wyznacz liczbę bitów wiadomości $k$ i przystości w każdym słowie kodowym $\mathbf{c}$
+        \item Wyznacz liczbę słów kodowych kodu $M$.
+        \item Wyznacz macierz generującą $\mathbf{G}$ i kontroli przystości $\mathbf{H}$ kodu. 
+        \item Wyznacz minimalną odległość Hamminga $d_{min}$ kodu. 
+    \end{enumerate}
+    \end{abstract}
+
+
+
+    \section*{Rozwiązanie}
+    \subsection*{a) Wyznacz liczbę bitów wiadomości $k$ i przystości w każdym słowie kodowym $\mathbf{c}$} 
+    Niech $r$ będzie stopniem wielominu generującego $g(x)$. Jeśli wielomian jest stopnia $r$ to genruje kod cykliczny
+    $C_{cyc}(n,l) $ taki, że $r=n-k$. Wielomin $g(x)$ jest stopnia 6, co onzacza że kod jest $C_{cyc}(14, 8)$.   
+    Kod ma 8 bitów wiadomości o 6 bitów parzystości.
+
+    \subsection*{b) Wyznacz liczbę słów kodowych kodu $M$} 
+
+    $$M=2^k=2^8=256 $$
+    \subsection*{c) Wyznacz macierz generującą $\mathbf{G}$ i kontroli przystości $\mathbf{H}$ kodu} 
+    Liniowy kod cykliczny jest rozpianany przez $k=8$ wielomianów kodowych $g(x),xg(x),\dots x^{6}g(x)$. 
+    Oznacza to, że macierz $G$ skłąda się z przesuniętych wektorów 
+    $ ( \underbrace{1}_{x^0}
+      \underbrace{0}_{x^1}
+      \underbrace{1}_{x^2}
+      \underbrace{0}_{x^3}
+      \underbrace{0}_{x^5}
+      \underbrace{1}_{x^6}
+      \underbrace{0}_{x^7}
+      \underbrace{0}_{x^8}
+      \underbrace{0}_{x^9}
+      \underbrace{0}_{x^{10}}
+      \underbrace{0}_{x^{11}}
+      \underbrace{0}_{x^{12}}
+      \underbrace{0}_{x^{13}}
+      \underbrace{0}_{x^{14}}
+    )
+    $ 
+    \begin{equation*}
+        \mathbf{G} = \begin{pmatrix}
+           1 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+           0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\ 
+           0 & 0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0  \\ 
+           0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0  \\ 
+           0 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0  \\ 
+           0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0  \\ 
+           0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & 0  \\ 
+           0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 1 & 0  \\ 
+           0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 1 
+       \end{pmatrix} 
+    \end{equation*}
+
+    Macierz kontroli parzystości
+    \begin{equation*}
+        \mathbf{H} = (I_{n-k} \quad P^T ) = \begin{pmatrix}
+            1 & 0 & 0 & 0 & 0 & 0 &  \quad  1 & 0 & 0 & 0 & 1 & 0 & 1 & 0  \\
+            0 & 1 & 0 & 0 & 0 & 0 &  \quad  0 & 1 & 0 & 0 & 0 & 1 & 0 & 1  \\
+            0 & 0 & 1 & 0 & 0 & 0 &  \quad  1 & 0 & 1 & 0 & 1 & 0 & 0 & 0  \\
+            0 & 0 & 0 & 1 & 0 & 0 &  \quad  0 & 1 & 0 & 1 & 0 & 1 & 0 & 0  \\
+            0 & 0 & 0 & 0 & 1 & 0 &  \quad  0 & 0 & 1 & 0 & 1 & 0 & 1 & 0  \\
+            0 & 0 & 0 & 0 & 0 & 1 &  \quad  0 & 0 & 0 & 1 & 0 & 1 & 0 & 1  \\
+        \end{pmatrix}
+    \end{equation*}
+    \subsection*{d) Wyznacz minimalną odległość Hamminga $d_{min}$ kodu}
+
+    Dla linowego kodu blokowego, odległość minimalna kodu jest równa minimalnej liczbie kolumn z macierzy $\mathbf{H}$,
+    które dodane razem dają $0$. 
+
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{ccccccccccccccc}
+            $c_0$ &  $c_1$ & $c_2$ & $c_3$ &  $c_4$ & $c_5$ & $c_6$ & $c_7$ & $c_8$ & $c_9$ &$c_{10}$ & $c_{11}$ & $c_{12}$ & $c_{13}$  \\ \hline
+            1     &    0   & 0     & 0     & 0      & 0     & 1     & 0     & 0     & 0     & 1      & 0      & 1      & 0       \\
+            0     &    1   & 0     & 0     & 0      & 0     & 0     & 1     & 0     & 0     & 0      & 1      & 0      & 1       \\
+            0     &    0   & 1     & 0     & 0      & 0     & 1     & 0     & 1     & 0     & 1      & 0      & 0      & 0       \\
+            0     &    0   & 0     & 1     & 0      & 0     & 0     & 1     & 0     & 1     & 0      & 1      & 0      & 0       \\
+            0     &    0   & 0     & 0     & 1      & 0     & 0     & 0     & 1     & 0     & 1      & 0      & 1      & 0       \\
+            0     &    0   & 0     & 0     & 0      & 1     & 0     & 0     & 0     & 1     & 0      & 1      & 0      & 1       \\
+        \end{tabular}
+    \end{table}
+
+    $$d_{min}=3 $$
+
+
+
+
+
+
+
+    \end{document}
