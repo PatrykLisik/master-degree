@@ -1,0 +1,58 @@
+    \documentclass[12pt]{article}
+    \usepackage[utf8]{inputenc}
+    \usepackage{polski}
+    \usepackage{enumitem}
+    \usepackage{newunicodechar}
+    \usepackage{amsmath}
+
+    \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+    \setcounter{MaxMatrixCols}{20}
+
+    \title{Zadanie 5}
+    \author{Patryk Lisik}
+    \date{\(11\) Lutego  2024}
+
+    \begin{document}
+
+    \maketitle
+    \renewcommand{\abstractname}{Treść}
+
+    \begin{abstract}
+        Rozważ kod $C_{RS}(7,3)$ nad ciałem $F_{2^3}$ o wielomianie generującym 
+        $$ g(x)=(x \oplus \alpha^2)(x \alpha^3)(x \oplus \alpha^4)(x \oplus \alpha^5) $$
+        gdzie alpha jest pierwiastkiem wielomianu pierwotnego $p(x) = 1 \oplus \oplus x^3$, stosowanego do reprezentacji
+        elementów $F_{2^3}$ 
+
+
+    \begin{enumerate}[label=(\alph*)]
+        \item Jaka jest zdolność poprawiania błędów tego kodu?
+        \item Zdekoduj sygnał $\mathbf{r} = (000 111 111 000 111 111 111)$
+    \end{enumerate}
+
+        \begin{table}[h]
+            \centering
+            \begin{tabular}{ccc}
+                element & wielomian & wektor \\ \hline
+                0 & 0 & 000 \\ 
+                1 & 1 & 100 \\ 
+                $\alpha$ & $\alpha$ & 010 \\
+                $\alpha^2$ & $\alpha^2$ & 001 \\
+                $\alpha^3$ & $1 \oplus \alpha$ & 110 \\
+                $\alpha^4$ & $\alpha \oplus \alpha^2$ & 011 \\
+                $\alpha^5$ & $1 \oplus \alpha \oplus \alpha^2$ & 111 \\
+                $\alpha^6$ & $1 \oplus \alpha^2$ & 101 \\
+            \end{tabular}
+            \caption{Ciało $F_{2^3}$ generowane przez $p(x) = 1\oplus x \oplus x^3 $  }
+        \end{table}
+
+    \end{abstract}
+
+
+
+    \section*{Rozwiązanie}
+    \subsection*{Jaka jest zdolność do poprawiania błędów tego kody? } 
+    $$ n - k = 2t \implies t=2 $$ 
+    Kod jest w stanie poprawić 2 błędy na wektor 
+
+
+    \end{document}
