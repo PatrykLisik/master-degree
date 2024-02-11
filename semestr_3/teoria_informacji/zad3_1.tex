@@ -1,0 +1,54 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{tikz}
+
+\title{Zadanie 3--1}
+\author{Patryk Lisik}
+\date{\(11\) Luty  2024}
+
+\begin{document}
+
+\maketitle
+\renewcommand{\abstractname}{Treść}
+
+\begin{abstract}
+    Wylicz wszystkie słowa kodowe kodu Hamminga $\mathcal{H}_7$ i sprawdź, że jedgo odległość minimalna to $ d=3 $.
+\end{abstract}
+
+
+\section*{Rozwiązanie}
+W kodach liniowych każde słowo kodowe jest sumą $\mod 2$ dwóch innych słów kodowych. 
+Oznacza to że możemy dlatego minimalną odległość $d$ można wyrazić jako odległość od wektora zerowego lub 
+jako ilość $1$ w danym słowie kodowym.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ccc}
+        wiadomość & kod       & $d$ \\ \hline
+        0000      & 0000000   &  - \\ 
+        0001      & 1101001   &  4 \\ 
+        0010      & 0101010   &  3 \\ 
+        0011      & 1000011   &  3 \\ 
+        0100      & 1000110   &  3 \\ 
+        0101      & 0100101   &  3 \\ 
+        0110      & 1100110   &  4 \\ 
+        0111      & 0001111   &  4 \\ 
+        1000      & 1110000   &  4 \\ 
+        1001      & 0011001   &  4 \\ 
+        1010      & 1011010   &  4 \\ 
+        1011      & 0110011   &  4 \\ 
+        1100      & 0111100   &  4 \\ 
+        1101      & 1010101   &  3 \\ 
+        1110      & 0010110   &  3 \\ 
+        1111      & 1111111   &  7 \\ 
+    \end{tabular}
+    \caption{Wiadomości kody i ich odległość od wektora zerowego)}
+    \label{tab}
+\end{table}
+
+Jak pokazano w tabeli \ref{tab} $d_{\min}=3$.
+
+\end{document}
