@@ -147,7 +147,7 @@ while True:
         print(
             f"error avg {np.mean(np.abs(err_)):<30} | error max {np.max(np.abs(err_))}"
         )
-        # print("New weigths")
+        # print("New weights")
         # print(w)
     if epoch % 1 == 0:
         user_in = input("Press to continue")

@@ -1,0 +1,133 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{gauss}
+\usepackage{xparse}
+
+\ExplSyntaxOn
+\keys_define:nn { gauss }
+ {
+  type .tl_set:N = \l_gauss_type_tl,
+  type .initial:n = {},
+  right .code:n = \tl_set:cn { g@post } { \relax$ },
+  right .value_forbidden:n = true,
+  spread .tl_set:N = \l_gauss_spread_tl,
+  spread .initial:n = 1,
+  colsep .dim_set:N = \l_gauss_colsep_dim,
+  colsep .initial:n = \arraycolsep,
+ }
+\NewDocumentEnvironment{xgmatrix}{O{}}
+ {
+  \keys_set:nn { gauss } { #1 }
+  \normalbaselines % <-----------  ADDED
+  \linespread{\l_gauss_spread_tl}\selectfont
+  \setlength{\arraycolsep}{\l_gauss_colsep_dim}
+  \begin{gmatrix}[\l_gauss_type_tl]
+ }
+ {
+  \end{gmatrix}
+ }
+\ExplSyntaxOff
+
+
+\title{Zadanie 3--4}
+\author{Patryk Lisik}
+\date{\(11\) Luty  2024}
+
+\begin{document}
+
+\maketitle
+\renewcommand{\abstractname}{Treść}
+
+\begin{abstract}
+    Niech $\mathcal{C}$ będzie $[6,3]$-birnarnym kodem liniowym rozpinanym przez bazowe słowa kodowe
+    $\mathbf{u}_1 = 011011$, $\mathbf{u}_2 = 101101$ i $\mathbf{u}_3 = 111000$. Wyznacz macierz generującą $\mathbf{G}$
+    dla kodu $\mathcal{C}$ w postaci systematycznej, następnie wyznacz macierz sprawdzanai parzystości $\mathbf{H}$ dla 
+    kodu $\mathcal{C}$. Znajdź słowo kodowe $\mathbf{c}$ dla wiadomości $110$ i sprawdź, $\mathbf{cH^T}=0 $. Znajdź tempo
+    $R$ i minimalną odległość $d$ dla kodu $\mathcal{C}$. Wyznacz tablę syndormu dla $\mathcal{C}$; jakie wzorce błędu 
+    są przez niego poprawiane? Znajdź prawdopodobieństwo błędnego dekodowania $Pr_E$ przy przesyłaniu wiadomości 
+    zadkodowanej tym kodem przez binarny kanał symertyczny $\Gamma \circ P < \frac{1}{2} $ i regule dekodowania $\Delta$ 
+    przez najbiższgo sąsiada. 
+
+\end{abstract}
+
+
+\section*{Rozwiązanie}
+
+\subsection*{Macierz generująca $ \mathbf{G} $ i macierz parzystości $\mathbf{H}$ }
+$$ \mathbf{G'} = \begin{pmatrix}
+    0 & 1 & 1 & 0 & 1 & 1 \\
+    1 & 0 & 1 & 1 & 0 & 1 \\
+    1 & 1 & 1 & 0 & 0 & 0 \\
+\end{pmatrix}
+$$ 
+
+\begin{multline*}
+\mathbf{G} = \begin{gmatrix}[b]
+    0 & 1 & 1 & 0 & 1 & 1 \\
+    1 & 0 & 1 & 1 & 0 & 1 \\
+    1 & 1 & 1 & 0 & 0 & 0 
+\rowops
+ \swap{0}{1}
+\end{gmatrix} = \begin{gmatrix}[b]
+    1 & 0 & 1 & 1 & 0 & 1 \\
+    0 & 1 & 1 & 0 & 1 & 1 \\
+    1 & 1 & 1 & 0 & 0 & 0 
+    \rowops
+\add[]{0}{2}
+\end{gmatrix} = 
+ \begin{gmatrix}[b]
+    1 & 0 & 1 & 1 & 0 & 1 \\
+    0 & 1 & 1 & 0 & 1 & 1 \\
+    0 & 1 & 0 & 1 & 0 & 1 
+    \rowops
+\add[]{1}{2}
+\end{gmatrix} = \\
+ = 
+ \begin{gmatrix}[b]
+    1 & 0 & 1 & 1 & 0 & 1 \\
+    0 & 1 & 1 & 0 & 1 & 1 \\
+    0 & 0 & 1 & 1 & 1 & 0 
+    \rowops
+\add[]{2}{0}
+\add[]{2}{1}
+\end{gmatrix} = 
+ \begin{gmatrix}[b]
+    1 & 0 & 0 & 0 & 1 & 1 \\
+    0 & 1 & 0 & 1 & 0 & 1 \\
+    0 & 0 & 1 & 1 & 1 & 0 
+\end{gmatrix}
+\end{multline*} 
+
+$$\mathbf{H} = \begin{pmatrix}
+    0 & 1 & 1 & 1 & 0 & 0 \\
+    1 & 0 & 1 & 0 & 1 & 0 \\
+    1 & 1 & 0 & 0 & 0 & 1
+\end{pmatrix} $$
+
+\subsection*{Obliczenie wiadomości i sprawdzenie poprawności} 
+
+$$c=(110) \cdot \begin{pmatrix}
+     1 & 0 & 0 & 0 & 1 & 1 \\
+    0 & 1 & 0 & 1 & 0 & 1 \\
+    0 & 0 & 1 & 1 & 1 & 0 
+\end{pmatrix} = (110110)
+$$
+
+$$ c \mathbf{H}^T = (110110) \cdot \begin{pmatrix}
+    0 & 1 & 1 \\
+    1 & 0 & 1 \\
+    1 & 1 & 0 \\
+    1 & 0 & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & 1 \\
+\end{pmatrix} = (000)
+$$
+
+\subsection*{Tempo transmisji kodu $R$}
+$$R = \frac{k}{n} = \frac{3}{6} = \frac{1}{2} $$
+
+\end{document}
