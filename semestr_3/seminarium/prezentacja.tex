@@ -1,94 +1,32 @@
- \documentclass[xcolor=table]{beamer}
+ \documentclass{beamer}
 \mode<presentation> {
-
-% The Beamer class comes with a number of default slide themes
-% which change the colors and layouts of slides. Below this is a list
-% of all the themes, uncomment each in turn to see what they look like.
-
-% \usetheme{default}
-%\usetheme{AnnArbor}
-%\usetheme{Antibes}
-%\usetheme{Bergen}
-%\usetheme{Berkeley}����JFIF����C
-%\usetheme{Berlin}
-%\usetheme{Boadilla}
-%\usetheme{CambridgeUS}
-%\usetheme{Copenhagen}
-%\usetheme{Darmstadt}
-%\usetheme{Dresden}
-%\usetheme{Frankfurt}
-%\usetheme{Goettingen}
-%\usetheme{Hannover}
-%\usetheme{Ilmenau}
-% \usetheme{JuanLesPins}
-% \usetheme{Luebeck}
-% \usetheme{Madrid}
-%\usetheme{Malmoe}
-%\usetheme{Marburg}
-%\usetheme{Montpellier}
 \usetheme{PaloAlto}
-%\usetheme{Pittsburgh}
-%\usetheme{Rochester}
-%\usetheme{Singapore}
-%\usetheme{Szeged}
-% \usetheme{Warsaw}
-
-% As well as themes, the Beamer class has a number of color themes
-% for any slide theme. Uncomment each of these in turn to see how it
-% changes the colors of your current slide theme.
-
-% \usecolortheme{albatross}
-%\usecolortheme{beaver}
-%\usecolortheme{beetle}
-% \usecolortheme{crane}
-%\usecolortheme{dolphin}
- \usecolortheme{dove}
-% \usecolortheme{fly}
-% \usecolortheme{lily}
-% \usecolortheme{orchid}
-% \usecolortheme{rose}
-% \usecolortheme{seagull}
-% \usecolortheme{seahorse}
-% \usecolortheme{whale}
-% \usecolortheme{wolverine}
-% \usecolortheme{dracula}
-
-%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
-\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
-
-%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+\usecolortheme{dove}
+\setbeamertemplate{footline}[page number] 
 }
-
-% \usepackage[demo]{graphicx}
 
 \usepackage{polski}
 \usepackage[utf8]{inputenc}
 \usepackage{neuralnetwork}
 \usepackage{adjustbox}
-
-\usepackage[para,online,flushleft]{threeparttable}
-\usepackage{enumitem}
-\usepackage{pifont}
-\usepackage[normalem]{ulem}
-\usepackage{listings}
 \usepackage{xcolor}
 \usepackage{minted}
 
 \setbeamertemplate{caption}[numbered]
 
 \defbeamertemplate{description item}{align left}{\insertdescriptionitem\hfill}
-\beamertemplatenavigationsymbolsempty
+% \beamertemplatenavigationsymbolsempty
 \setbeamertemplate{description item}[align left]
-
+%\usepackage{subcaption}
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
-\title[Cykl życia Obiektów]{Inicjalizacja i niszczenie obiektów w wybranym języku programowania.} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[Cykl życia obiektów]{Inicjalizacja i niszczenie obiektów w wybranym języku programowania.} % The short title appears at the bottom of every slide, the full title is only on the title page
 
 \author{Patryk Lisik} % Your name
 \institute[] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
 {
-  Uniwersytet Łódzki \\ % Your institution for the title page
+ Uniwersytet Łódzki \\ % Your institution for the title page
 }
 
 \date{2023/24} % Date, can be changed to a custom date
@@ -100,12 +38,35 @@
 % Print the title page as the first slide
 \end{frame}
 
-\begin{frame}
-    
+\begin{frame}{Agenda}
+    \begin{itemize}
+        \item Pojęcia
+        \item  Inicjalizacja w językach systemowych. 
+            \begin{itemize}
+                \item Stos (stack)
+                \item Sterta (heap)
+                \item Problem fragmentacji
+                \item Alokacja pamięci
+            \end{itemize}
+        \item Inicjalizacja w językach obiektowych
+        \item Bezpieczeństwo pamięci w językach bez GC
+            \begin{itemize}
+                \item Zliczanie referencji(shared\_prt)
+                \item Przekazywanie własności(unique\_ptr)
+            \end{itemize}
+        \item Problem cyklicznych referencji
+        \item Garbage collectory 
+            \begin{itemize}
+                    \item Taksonomia
+                    \item Działanie Mark/Sweep/Compact
+                
+            \end{itemize}
+
+    \end{itemize}
 \end{frame}
 
 %----------------------------------------------------------------------------------
-\section{Typ i obiekt}
+\section{Pojęcia}
 
 \begin{frame}[containsverbatim]{Co to typ?}
     \begin{block}{Typ}
@@ -113,21 +74,13 @@
     \end{block}
     \begin{figure}
         \centering
-    \begin{minted}{cpp}
-    class LineFunction {
-        double a, b; //dane
-
-        // operajca
-        double operator()(double x) const{ 
-            return a * x + b;
-        }
-    };
-    \end{minted}
+        \inputminted{cpp}{./LineFunc.cpp}
     \caption{Przykład własnego typu w C++}
-        \label{fig:cpp-operator-overload}
+        \label{fig:cpp-operator-oveerload}
     \end{figure}
 
 \end{frame}
+
 
 \begin{frame}[containsverbatim]{Co to obiekt?}
 
@@ -135,27 +88,67 @@
         Ukonkretnienie typu w postaci zaalokowanej pamięci. 
     \end{block}
 
-    \begin{block}{Obiekt}
+    \begin{block}{}
     \begin{figure}
         \centering
-    \begin{minted}{cpp}
-        LineFunction func{4.5, 2.1};
-        double d = func(7.2);
-    \end{minted}
+        \inputminted{cpp}{./cpp_object.cpp}
+        \label{fig:cpp-obj-on-stack}
     \end{figure}
 
     \end{block}
     
 \end{frame}
 
-\begin{frame}
-    
+\begin{frame}{Rola systemu operacyjnego w przydziale pamięci}
+    \begin{columns}
+        \begin{column}{0.58\textwidth} 
+            \begin{figure}
+                \centering
+                \includegraphics[width=7cm]{./os_in_memory_alloc.png}
+                \caption{Układ pamięci programu}
+                \label{img:os_in_memory_alloc}
+            \end{figure}
+        \end{column}
+        \begin{column}{0.4\textwidth} 
+            \begin{itemize}
+                    \item Program/Process ma dostęp tylko do pamięci przydzielonej przez OS.
+                    \item Odczyt z nie dozwolonej pamięci kończy się wyjątkiem segmentation fault core dumped
+            \end{itemize}
+        \end{column}
+\end{columns}
+
+
 \end{frame}
 
-\section{Cykl życia obiektów w C++}
+
+\begin{frame}[containsverbatim]{Pamięć programu}
+
+\begin{columns}
+    \begin{column}{0.5\textwidth} 
+        \begin{figure}
+        \centering
+        \includegraphics[width=2cm]{memory_layout.png}
+        \caption{Układ pamięci programu}
+        \label{img:memory_layout}
+        \end{figure}
+    \end{column}
+        \begin{column}{0.5\textwidth} 
+        \begin{block}{}
+            \begin{description}
+                \item [Argumenty] *argc, zmienne środowiskowe
+                \item [Stos] Zmienne lokalne programu. ok 1mb
+                \item [Sterta] Dane alokowane dynamicznie
+                \item [Dane] Zmienne globalne, vtable, 
+                \item [Tekst] Kod programu
+            \end{description}
+        \end{block}
+    \end{column}
+\end{columns}
+
+\end{frame}
 
 
-
+\section{Inicjalizacja w językach systemowych}
 
 %----------------------------------------------------------------------------------------
 %     class LineFucntion {
@@ -176,205 +169,132 @@
 % }
 
 %----------------------------------------------------------------------------------------
-\begin{frame}[containsverbatim]{Konstruktor}
-    \begin{figure}
+
+\begin{frame}[containsverbatim]{Alokacja na stosie}
+    \begin{columns}
+        \begin{column}{0.3\textwidth} 
+            \inputminted{cpp}{stack_alloc.cpp}
+        \end{column}
+        \begin{column}{0.65\textwidth} 
+            \begin{description}
+                \item[Szybkość] Kolejna zmienna jest zawsze alokowana na wskaźniku stosu +1
+                \item[Rozmiar] Rozmiar stosu jest stały. 
+                    Przy jego przekroczeniu występuje wyjątek stack overflow.
+                \item[Dane] Rozmiar danych przechowywanych na stosie musi być znany w czasie kompilacji.
+            \end{description}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Dynamiczna alokacja na stosie?}
+    \begin{columns}
+        \begin{column}{0.3\textwidth} 
+            \inputminted{cpp}{stack_alloc.cpp}
+        \end{column}
+        \begin{column}{0.65\textwidth} 
+        \begin{figure}
         \centering
-        \tiny
-    \begin{minted}{cpp}
-    #include <cstdio>
-    #include <algorithm>
-    class LineFucntion {
-        public:
-            double a, b;
-            //konstruktor
-            LineFucntion(double a , double b){ 
-                puts("Constructor");
-                this->a=a;
-                this->b=b;
-            }
-
-            // kontruktor kopiujący 
-            LineFucntion(LineFucntion const & lf){
-                 puts("Copy constuctor");
-            }
-
-            //destruktor
-            ~LineFucntion(){
-                puts("Destructor");
-            }
-        double operator()(double x) const{ return a * x + b;}
-    };
-
-
-    \end{minted}
-        \label{fig:cpp-constructor}
-        \caption{Jawnie zdefiniowany konstruktor w C++. Zgodnie z zasadą 0/3/5.}
-    \end{figure}
-    
-\end{frame}
-
-\begin{frame}[containsverbatim]{Type alokacji}
-    \begin{figure}
-        \centering
-        \tiny
-    \begin{minted}{cpp}
-            int main(){
-                LineFucntion func{4.5, 2.1};
-                double d = func(7.2);
-                puts("In between");
-                return 0;
-            }
-    \end{minted}
-        \label{fig:cpp-stack-allocation}
-        \caption{Alokacja na stosie}
-    \end{figure}
-    
-    \begin{figure}
-        \centering
-        \tiny
-    \begin{minted}{cpp}
-            int main(){
-                LineFucntion* func = new LineFucntion(4.5, 2.1);
-                double d = (*func)(7.2);
-                puts("In between");
-                delete func;
-                return 0;
-            }
-    \end{minted}
-        \label{fig:cpp-heap-allocation}
-        \caption{Alokacja na stercie}
-    \end{figure}
-\end{frame}
-
-
-\begin{frame}[containsverbatim]{ABI konstruktorów w C++ }
-
-\begin{block}{Interfejs binarny aplikacji w c++}
-    Kompilatory C++ są zgodne z Itanium C++ ABI \cite{itanium-abi}.
-    Które definiuje następujące konstruktory i ich nazwy:
-
-\begin{minted}{text}
-<ctor-dtor-name>
-::= C1# complete object constructor 
-::= C2# base object constructor 
-::= C3# complete object allocating constructor 
-::= CI1 <base type>#complete inheriting constructor
-::= CI2 <base type>#base inheriting constructor
-::= D0# deleting destructor
-::= D1# complete object destructor
-::= D2# base object destructor
- \end{minted}
-\end{block}
-\end{frame}
-
-\begin{frame}[containsverbatim]{Użycie konstruktorów z ABI}
-    \begin{block}{}
-     Konstruktor C1 jest używany gdy obiekt nie jest klasą pochodną \cite{IBM-Two-identical-constructor}.
-     Konstruktor C2 jest używany gdy tworzony jest obiekt jest klasą pochodną. Kompilator zawsze emituje oba konstruktory. 
-    \end{block}
-    
-    \begin{block}{}
-     Konstruktor C3 nie jest nigdy generowany przez GCC \cite{gcc-constructor}.
-    \end{block}
-
-\begin{block}{}
-    W C++ konstruktory domyślnie nie są dziedziczone.
-    CI1 i CI2 są używane gdy w standardzie C++11 je dziedziczymy.
-    \tiny
-    \begin{minted}{cpp}
-class A{
-    public: 
-        A(int x) {}
-};
-
-class B: public A{
-     using A::A;
-};
-    \end{minted}
-\end{block}
-
-\end{frame}
-
-
-
-
-\begin{frame}[containsverbatim]{Podwójne wywołanie destruktora?}
-\tiny
-\begin{block}{}
-    ABI wymaga destruktora D1 i D2, które są tożsame w przypadku braku dziedziczenia.
-\end{block}
-    \begin{figure}
-        \tiny
-    \begin{minted}{cpp}
-main:
-//usunięta nieistotna czesc
-        call    LineFucntion::LineFucntion(double, double) [complete object constructor]
-        mov     rdx, QWORD PTR .LC4[rip]
-        lea     rax, [rbp-48]
-        movq    xmm0, rdx
-        mov     rdi, rax
-        call    LineFucntion::operator()(double) const
-        movq    rax, xmm0
-        mov     QWORD PTR [rbp-24], rax
-        mov     edi, OFFSET FLAT:.LC5
-        call    puts
-        mov     ebx, 0
-        lea     rax, [rbp-48]
-        mov     rdi, rax
-        call    LineFucntion::~LineFucntion() [complete object destructor]
-        mov     eax, ebx
-        jmp     .L9
-        mov     rbx, rax
-        lea     rax, [rbp-48]
-        mov     rdi, rax
-        call    LineFucntion::~LineFucntion() [complete object destructor]
-//usunięta nieistotna czesc 
-        \end{minted}
-                \label{fig:cpp-constructor-asm}
-                \caption{Wynik kompilacji kodu z rys. \ref{fig:cpp-stack-allocation} za pomocą GCC 13.3 z flagą -00}
+        \includegraphics[width=5cm]{stack_of_foo.png}
         \end{figure}
+        \end{column}
+    \end{columns}
+    \begin{block}{}
+        Dynamiczna alokacja na stosie jest niemożliwa, ponieważ elementy nadpisywały by swoje wartości. 
+    \end{block}
 \end{frame}
+    
+    
+
+\begin{frame}{Alokacja na stercie}
+    
+    \begin{columns}
+        \begin{column}{0.3\textwidth} 
+            \inputminted{cpp}{stack_alloc.cpp}
+        \end{column}
+        \begin{column}{0.65\textwidth} 
+            \begin{description}
+                \item[Szybkość] Kolejna zmienna jest zawsze alokowana na wskaźniku stosu +1
+                \item[Ograniczony rozmiar] Rozmiar stosu jest stały. 
+                    Przy jego przekroczeniu występuje wyjątek stack overflow.
+            \end{description}
+        \end{column}
+    \end{columns}
+\end{frame} 
+
+\begin{frame}{Działanie malloc/new}
 
 
-\begin{frame}[containsverbatim]{Alokacja i dealokacja na stercie}
-    \begin{figure}
-        \tiny
-    \begin{minted}{cpp}
-main:
-//usunięta nieistotna czesc
-        call    operator new(unsigned long)
-        mov     rbx, rax
-        mov     r13d, 1
-        movsd   xmm0, QWORD PTR .LC2[rip]
-        mov     rax, QWORD PTR .LC3[rip]
-        movapd  xmm1, xmm0
-        movq    xmm0, rax
-        mov     rdi, rbx
-        call    LineFucntion::LineFucntion(double, double) [complete object constructor]
-        mov     QWORD PTR [rbp-40], rbx
-        mov     rdx, QWORD PTR .LC4[rip]
-        mov     rax, QWORD PTR [rbp-40]
-        movq    xmm0, rdx
-        mov     rdi, rax
-        call    LineFucntion::operator()(double) const
-        movq    rax, xmm0
-        mov     QWORD PTR [rbp-48], rax
-        mov     edi, OFFSET FLAT:.LC5
-        call    puts
-        mov     rbx, QWORD PTR [rbp-40]
-        test    rbx, rbx
-        je      .L6
-        mov     rdi, rbx
-        call    LineFucntion::~LineFucntion() [complete object destructor]
-        mov     esi, 16
-        mov     rdi, rbx
-        call    operator delete(void*, unsigned long)
-//usunięta nieistotna czesc 
-        \end{minted}
-                \label{fig:cpp-constructor-heap-asm}
-                \caption{Wynik kompilacji kodu z rys. \ref{fig:cpp-stack-allocation} za pomocą GCC 13.3 z flagą -00}
-        \end{figure}
 \end{frame}
+% \begin{frame}[containsverbatim]{Typy alokacji}
+%     \begin{figure}
+%         \centering
+%         \tiny
+%     \begin{minted}{cpp}
+%             int main(){
+%                 LineFucntion func{4.5, 2.1};
+%                 double d = func(7.2);
+%                 puts("In between");
+%                 return 0;
+%             }
+%     \end{minted}
+%         \label{fig:cpp-stack-allocation}
+%         \caption{Alokacja na stosie}
+%     \end{figure}
+    
+%     \begin{figure}
+%         \centering
+%         \tiny
+%     \begin{minted}{cpp}
+%             int main(){
+%                 LineFucntion* func = new LineFucntion(4.5, 2.1);
+%                 double d = (*func)(7.2);
+%                 puts("In between");
+%                 delete func;
+%                 return 0;
+%             }
+%     \end{minted}
+%         \label{fig:cpp-heap-allocation}
+%         \caption{Alokacja na stercie.}
+%     \end{figure}
+% \end{frame}
+
+% \begin{frame}[containsverbatim]{Konstruktor}
+%     \begin{figure}
+%         \centering
+%         \tiny
+%     \begin{minted}{cpp}
+%     #include <cstdio>
+%     #include <algorithm>
+%     class LineFucntion {
+%         public:
+%             double a, b;
+%             //konstruktor
+%             LineFucntion(double a , double b){ 
+%                 puts("Constructor");
+%                 this->a=a;
+%                 this->b=b;
+%             }
+
+%             // kontruktor kopiujący 
+%             LineFucntion(LineFucntion const & lf){
+%                  puts("Copy constuctor");
+%             }
+
+%             //destruktor
+%             ~LineFucntion(){
+%                 puts("Destructor");
+%             }
+%         double operator()(double x) const{ return a * x + b;}
+%     };
+
+
+%     \end{minted}
+%         \label{fig:cpp-constructor}
+%         \caption{Jawnie zdefniowany konstruktor w C++. Zgodnie z zasadą 0/3/5.}
+%     \end{figure}
+    
+% \end{frame}
+
 
 \begin{frame}{Alokacja pamięci}
     \begin{block}{Alokacja pamięci}
@@ -391,7 +311,7 @@ main:
     \end{block}
 \end{frame}
 
-\begin{frame}[containsverbatim]{Kolejność wywoływania konstruktorów}
+\begin{frame}[containsverbatim]{Bezpieczeństwo pamięci w językach bez GC}
 \begin{minted}{cpp}
 class ChildFucntion : public LineFucntion { 
     public:
@@ -399,7 +319,7 @@ ChildFucntion(double a, double b): LineFunction(a,b){
     puts("Child");}
     
 ChildFucntion(ChildFucntion const & cf{
-   puts("Child copy constuctor");
+    puts("Child copy constuctor");
     }
 ~CholdFucntion(){puts("Child destructor");}
     }
@@ -411,7 +331,16 @@ ChildFucntion(ChildFucntion const & cf{
 %----------------------------------------------------------------------------------------
 \section{Automatyczne zarządzanie pamięcią w C++}
 
-\begin{frame}{Unique\_ptr}
+\begin{frame}{Zliczanie referencji}
+    \begin{block}{}
+        std:shared\_ptr składa się z licznika referencji i właściwego wskaźnika. 
+        Podczas kopi licznik referencji jest zwiększany, a podczas wywołania destruktora zmniejszany. 
+        Przy wywołaniu ostatniego destruktora pamięć jest zwlaniana \cite{cpp-shared-ptr}. 
+    \end{block}
+\end{frame}
+
+
+\begin{frame}{Uniqe\_ptr}
     \begin{block}{Własność w programowaniu}
         Własność określa kto jest odpowiedzialny za zwolnienie pamięci \cite{rust-ownership, cpp-unique-ptr}.
     \end{block}
@@ -422,13 +351,6 @@ ChildFucntion(ChildFucntion const & cf{
 \end{frame}
 
 %----------------------------------------------------------------------------------------
-\begin{frame}{Shared\_ptr}
-    \begin{block}{}
-        std:shared\_ptr składa się z licznika referencji i właściwego wskaźnika. 
-        Podczas kopi licznik referencji jest zwiększany, a podczas wywołania destruktora zmniejszany. 
-        Przy wywołaniu ostatniego destruktora pamięć jest zwalniana \cite{cpp-shared-ptr}. 
-    \end{block}
-\end{frame}
 
 %----------------------------------------------------------------------------------------
 \begin{frame}{Problem cyklicznych referencji}
@@ -437,16 +359,14 @@ ChildFucntion(ChildFucntion const & cf{
         \includegraphics[width=7cm]{cyclic_ref.png}
         \caption{Problem cyklicznych referencji gdzie pamięć nigdy nie jest zwalniana. Źródło: \cite{weak-ptr-vs-magazine}}
         \label{fig:enter-label}
-    \end{figure} 
+    \end{figure}
 
 \begin{block}{std::weak\_ptr}
     Rozwiązaniem problemu cyklicznych referencji jest referencja słaba(std::weak\_ptr) która nie powoduje inkrementacji licznika referencji. Nie gwarantuje one że obiekt nie został już usunięty \cite{weak-ptr-vs-magazine, cpp-weak-ptr}. 
 \end{block}
 \end{frame}
 
-
-
-\section{Odśmiecanie Garbage Collector}
+\section{Odśmiecanie  Garbage Collctor}
 
 \begin{frame}{Oznacz i zmieć (ang. \textit{mark and sweep})}
     \begin{block}{Faza mark}
@@ -467,11 +387,10 @@ ChildFucntion(ChildFucntion const & cf{
     \end{block}
 \end{frame}
 
-
 \begin{frame}{Inne rodzaje odśmiecaczy/garbage collectorów}
 \begin{block}{}
 Generacyjny \\
-Trzy kolorowy  \\
+Trzykolorowy  \\
 Arenowy
 \end{block}
 
@@ -479,11 +398,9 @@ Arenowy
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Literatura}
-
-\begin{thebibliography}{99}
 \bibliographystyle{ieeetr}
 \bibliography{refs} 
-\end{thebibliography}
-
 \end{frame}
+
+
 \end{document}
