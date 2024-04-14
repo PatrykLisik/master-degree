@@ -29,7 +29,7 @@
  Uniwersytet Łódzki \\ % Your institution for the title page
 }
 
-\date{2023/24} % Date, can be changed to a custom date
+\date{2024/25} % Date, can be changed to a custom date
 
 \begin{document}
 
@@ -48,7 +48,6 @@
                 \item Problem fragmentacji
                 \item Alokacja pamięci
             \end{itemize}
-        \item Inicjalizacja w językach obiektowych
         \item Bezpieczeństwo pamięci w językach bez GC
             \begin{itemize}
                 \item Zliczanie referencji(shared\_prt)
@@ -59,9 +58,7 @@
             \begin{itemize}
                     \item Taksonomia
                     \item Działanie Mark/Sweep/Compact
-                
             \end{itemize}
-
     \end{itemize}
 \end{frame}
 
@@ -74,7 +71,7 @@
     \end{block}
     \begin{figure}
         \centering
-        \inputminted{cpp}{./LineFunc.cpp}
+        \inputminted{cpp}{LineFunc.cpp}
     \caption{Przykład własnego typu w C++}
         \label{fig:cpp-operator-oveerload}
     \end{figure}
@@ -203,97 +200,52 @@
     \end{block}
 \end{frame}
     
+   \begin{frame}{Problem fragmentacji}
+       \begin{block}{Fragmentacja zewnętrzna}
+           W przypadku pamięci alokowanej dynamicznie nie znamy kolejności alokowania i zwalniania.
+          Możliwe jest, że nowy obiekt nie może zostać umieszczony w pamięci pomimo tego że suma wolnej pamięci 
+           jest większa niż jego rozmiar. 
+       \end{block}
     
+        \begin{figure}
+        \centering
+        \includegraphics[width=10cm]{fragmentation.png}
+        \end{figure}
+   \end{frame} 
+   
+   \begin{frame}{Problem fragmentacji}
+       \begin{block}{Fragmentacja wewnętrzna}
+           System operacyjny przydziela programom całe bloki pamięci(strony). 
+           Zwykle o rozmiarze 8-16 bajtów. 
+       \end{block}
+    
+        \begin{figure}
+        \centering
+        \includegraphics[width=10cm]{memory_page.png}
+        \end{figure}
+   \end{frame}
 
 \begin{frame}{Alokacja na stercie}
     
-    \begin{columns}
-        \begin{column}{0.3\textwidth} 
-            \inputminted{cpp}{stack_alloc.cpp}
-        \end{column}
-        \begin{column}{0.65\textwidth} 
-            \begin{description}
-                \item[Szybkość] Kolejna zmienna jest zawsze alokowana na wskaźniku stosu +1
-                \item[Ograniczony rozmiar] Rozmiar stosu jest stały. 
-                    Przy jego przekroczeniu występuje wyjątek stack overflow.
-            \end{description}
-        \end{column}
-    \end{columns}
+    \inputminted{cpp}{heap_alloc.cpp}
+    Alokacja tablicy 10 intów w C++.
 \end{frame} 
 
 \begin{frame}{Działanie malloc/new}
 
+        \begin{figure}
+        \centering
+        \includegraphics[width=10cm]{new_context_switch.png}
+        \end{figure}
 
 \end{frame}
-% \begin{frame}[containsverbatim]{Typy alokacji}
-%     \begin{figure}
-%         \centering
-%         \tiny
-%     \begin{minted}{cpp}
-%             int main(){
-%                 LineFucntion func{4.5, 2.1};
-%                 double d = func(7.2);
-%                 puts("In between");
-%                 return 0;
-%             }
-%     \end{minted}
-%         \label{fig:cpp-stack-allocation}
-%         \caption{Alokacja na stosie}
-%     \end{figure}
-    
-%     \begin{figure}
-%         \centering
-%         \tiny
-%     \begin{minted}{cpp}
-%             int main(){
-%                 LineFucntion* func = new LineFucntion(4.5, 2.1);
-%                 double d = (*func)(7.2);
-%                 puts("In between");
-%                 delete func;
-%                 return 0;
-%             }
-%     \end{minted}
-%         \label{fig:cpp-heap-allocation}
-%         \caption{Alokacja na stercie.}
-%     \end{figure}
-% \end{frame}
 
-% \begin{frame}[containsverbatim]{Konstruktor}
-%     \begin{figure}
-%         \centering
-%         \tiny
-%     \begin{minted}{cpp}
-%     #include <cstdio>
-%     #include <algorithm>
-%     class LineFucntion {
-%         public:
-%             double a, b;
-%             //konstruktor
-%             LineFucntion(double a , double b){ 
-%                 puts("Constructor");
-%                 this->a=a;
-%                 this->b=b;
-%             }
-
-%             // kontruktor kopiujący 
-%             LineFucntion(LineFucntion const & lf){
-%                  puts("Copy constuctor");
-%             }
-
-%             //destruktor
-%             ~LineFucntion(){
-%                 puts("Destructor");
-%             }
-%         double operator()(double x) const{ return a * x + b;}
-%     };
-
-
-%     \end{minted}
-%         \label{fig:cpp-constructor}
-%         \caption{Jawnie zdefniowany konstruktor w C++. Zgodnie z zasadą 0/3/5.}
-%     \end{figure}
-    
-% \end{frame}
+\begin{frame}{Działanie new/malloc}
+    \begin{figure}
+        \centering
+        \includegraphics[width=5cm]{new_no_context_switch.png}
+    \end{figure}
+\end{frame}
 
 
 \begin{frame}{Alokacja pamięci}
@@ -311,29 +263,13 @@
     \end{block}
 \end{frame}
 
-\begin{frame}[containsverbatim]{Bezpieczeństwo pamięci w językach bez GC}
-\begin{minted}{cpp}
-class ChildFucntion : public LineFucntion { 
-    public:
-ChildFucntion(double a, double b): LineFunction(a,b){
-    puts("Child");}
-    
-ChildFucntion(ChildFucntion const & cf{
-    puts("Child copy constuctor");
-    }
-~CholdFucntion(){puts("Child destructor");}
-    }
-\end{minted}
-\begin{block}{}
-    Najpierw wywoływany jest konstruktor rodzica.
-\end{block}
-\end{frame}
 %----------------------------------------------------------------------------------------
-\section{Automatyczne zarządzanie pamięcią w C++}
+\section{Bezpieczeństwo pamięci w językach bez GC}
 
 \begin{frame}{Zliczanie referencji}
+    \inputminted{cpp}{shared_ptr.cpp}
     \begin{block}{}
-        std:shared\_ptr składa się z licznika referencji i właściwego wskaźnika. 
+        std:shared\_ptr składa się z licznika referencji i właściwego wskaźnika.  
         Podczas kopi licznik referencji jest zwiększany, a podczas wywołania destruktora zmniejszany. 
         Przy wywołaniu ostatniego destruktora pamięć jest zwlaniana \cite{cpp-shared-ptr}. 
     \end{block}
@@ -341,11 +277,13 @@ ChildFucntion(ChildFucntion const & cf{
 
 
 \begin{frame}{Uniqe\_ptr}
+
+    \inputminted{cpp}{unique_ptr.cpp}
     \begin{block}{Własność w programowaniu}
         Własność określa kto jest odpowiedzialny za zwolnienie pamięci \cite{rust-ownership, cpp-unique-ptr}.
     \end{block}
 
-    \begin{block}{}
+    \begin{block}{move}
         std::move informuje kompilator o możliwości przeniesienie zasobów już istniejącego obiektu.
     \end{block}
 \end{frame}
@@ -357,7 +295,7 @@ ChildFucntion(ChildFucntion const & cf{
     \begin{figure}
         \centering
         \includegraphics[width=7cm]{cyclic_ref.png}
-        \caption{Problem cyklicznych referencji gdzie pamięć nigdy nie jest zwalniana. Źródło: \cite{weak-ptr-vs-magazine}}
+        \caption{Problem cyklicznych referencji gdzie pamięć nigdy nie jest zwalniana.}
         \label{fig:enter-label}
     \end{figure}
 
@@ -366,7 +304,26 @@ ChildFucntion(ChildFucntion const & cf{
 \end{block}
 \end{frame}
 
-\section{Odśmiecanie  Garbage Collctor}
+\section{Garbage Collector}
+
+\begin{frame}{Typy Garbage collectorów}
+    \begin{block}{Rodzaj przetwarzania}
+    \begin{description}
+        \item[\textit{Stop the world}] Zatrzymuje aplikację do działania.
+        \item[Współbieżny (ang.\textit{Concurrent})] Operuje na wielu wątkach procesach. 
+        \item[Równoległy (ang \textit{Parallel})] Operuje wraz z przetwarzaniem aplikacji. 
+    \end{description}
+   \end{block} 
+    \begin{block}{Fazy przetwarzania}
+    \begin{description}
+        \item[Monolityczny] Wykonuje cały process na raz
+        \item[Inkrementalny] Process podzielony na  fazy. 
+    \end{description}
+   \end{block}
+    \begin{block}{Generacyjny}
+        Nowe obiekty są częściej poddawane procesowi GC. Pozwala rzadziej wykonywać defragmentację starszych obiektów. 
+   \end{block}
+\end{frame}
 
 \begin{frame}{Oznacz i zmieć (ang. \textit{mark and sweep})}
     \begin{block}{Faza mark}
@@ -379,23 +336,8 @@ ChildFucntion(ChildFucntion const & cf{
         Obiekty przesuwane są blisko siebie w pamięci.
     \end{block}
 
-    \begin{block}{Krytyka}
-    \begin{itemize}
-        \item Jest to bardzo wolny algorytm, który wymaga zatrzymania przetwarzania do działania (ang. \textit{stop the world GC}).
-        \item  Bez fazy compact powoduje dużą fragmentację pamięci. 
-    \end{itemize}
-    \end{block}
 \end{frame}
 
-\begin{frame}{Inne rodzaje odśmiecaczy/garbage collectorów}
-\begin{block}{}
-Generacyjny \\
-Trzykolorowy  \\
-Arenowy
-\end{block}
-
-
-\end{frame}
 
 \begin{frame}[allowframebreaks]{Literatura}
 \bibliographystyle{ieeetr}
